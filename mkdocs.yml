@@ -1,0 +1,14 @@
+
+site_name: PeeringDB
+site_url: https://beta.peeringdb.com/
+site_description: PeeringDB facilitates the exchange of information related to Peering.
+
+repo_url: https://github.com/peeringdb/peeringdb-py
+
+pages:
+  - Home: 'index.md'
+  - CLI: 'cli.md'
+  - API: 'api.md'
+
+markdown_extensions: [abbr,def_list,footnotes,tables,admonition,nl2br,toc]
+

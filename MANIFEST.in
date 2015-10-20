@@ -1,0 +1,4 @@
+include LICENSE
+recursive-include peeringdb
+include facsimile/requirements.txt
+include facsimile/VERSION
