@@ -1,4 +1,4 @@
-include LICENSE
-recursive-include peeringdb
+include LICENSE.txt
+recursive-include peeringdb *.py
 include facsimile/requirements.txt
 include facsimile/VERSION
