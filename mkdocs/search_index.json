@@ -1,0 +1,79 @@
+{
+    "docs": [
+        {
+            "location": "/", 
+            "text": "PeeringDB Python Client\n\n\nThis is the first release of our client package, it's fairly new, but we're releasing early to get feedback as soon as possible.\n\n\nHow to install\n\n\nFor those unfamiliar with python, you'll usually want to install to a separate \nvirtualenv\n.\n\n\nvirtualenv pdbvenv\n. pdbvenv/bin/activate\n\n\n\nThen install the peeringdb package with\n\n\npip install peeringdb\n\n\n\nWhat's included?\n\n\nThere's currently a hard dependency on django_peeringdb, so the django models are included.\n\n\nBy installing the package, you get both a \nclient library\n and a \ncommand line utility\n.\n\n\nConfiguration\n\n\nBoth command line and librarys will try to use a common config file, by default located at \n~/.peeringdb/config.yaml", 
+            "title": "Home"
+        }, 
+        {
+            "location": "/#peeringdb-python-client", 
+            "text": "This is the first release of our client package, it's fairly new, but we're releasing early to get feedback as soon as possible.", 
+            "title": "PeeringDB Python Client"
+        }, 
+        {
+            "location": "/#how-to-install", 
+            "text": "For those unfamiliar with python, you'll usually want to install to a separate  virtualenv .  virtualenv pdbvenv\n. pdbvenv/bin/activate  Then install the peeringdb package with  pip install peeringdb", 
+            "title": "How to install"
+        }, 
+        {
+            "location": "/#whats-included", 
+            "text": "There's currently a hard dependency on django_peeringdb, so the django models are included.  By installing the package, you get both a  client library  and a  command line utility .", 
+            "title": "What's included?"
+        }, 
+        {
+            "location": "/#configuration", 
+            "text": "Both command line and librarys will try to use a common config file, by default located at  ~/.peeringdb/config.yaml", 
+            "title": "Configuration"
+        }, 
+        {
+            "location": "/cli/", 
+            "text": "Command Line Interface\n\n\nusage: peeringdb [-h] [-c CONFIG] [-O OUTPUT_FORMAT] [--list-codecs] [cmd]\n\npositional arguments:\n  cmd                   subcommand {sync,conf_write,\nobj\nid\n} (default: None)\n\noptional arguments:\n  -h, --help            show this help message and exit\n  -c CONFIG, --config CONFIG\n                        config directory (default: ~/.peeringdb)\n  -O OUTPUT_FORMAT, --output-format OUTPUT_FORMAT\n                        output data format (default: yaml)\n  --list-codecs         list all available codecs (default: False)\n\n\n\nconf_write\n\n\nWrites a config file with all options and defaults to the config directory (changable with -c)\n\n\nsync\n\n\nSynchronizes PeeringDB to a local database\n\n\nobj\nid\n\n\nFetches a specific object and outputs to stdout\n\n\nConfiguration\n\n\nFetching objects\n\n\nYou may use the CLI to dump any object in the database with \n, for example:\n\n\npeeringdb net1\n\n\n\nYou may also change the output format to anything munge supports, so to get json, it would be:\n\n\npeeringdb -O json net1\n\n\n\nLocal database sync\n\n\nAfter doing a full sync, it only updates objects that have changed, so it's safe / efficient to run it as often as you want.\n\n\nBy default, peeringdb will sync to a file in the config dir called peeringdb.sqlite3 - to change that:\n\n\npeeringdb conf_write\n\n\n\nThen edit the file it created (default \n~/peeringdb/config.yaml\n). Currently, it directly uses django, so any database backend django supports will work, for example, to sync to MySQL, you could use the following database config:\n\n\ndatabase:\n  engine: mysql\n  host: localhost\n  name: peeringdb\n  user: peeringdb\n  password: supers3cr3t\n\n\n\nOnce the database is configured how you'd like it, you can do an initial sync of the database with\n\n\npeeringdb sync\n\n\n\nThen add a cron job to keep it in sync, for example, once a day at midnight\n\n\ncrontab -l | { cat; echo \"0 0 * * * `which peeringdb` sync \n /dev/null 2\n1\"; } | crontab -", 
+            "title": "CLI"
+        }, 
+        {
+            "location": "/cli/#command-line-interface", 
+            "text": "usage: peeringdb [-h] [-c CONFIG] [-O OUTPUT_FORMAT] [--list-codecs] [cmd]\n\npositional arguments:\n  cmd                   subcommand {sync,conf_write, obj id } (default: None)\n\noptional arguments:\n  -h, --help            show this help message and exit\n  -c CONFIG, --config CONFIG\n                        config directory (default: ~/.peeringdb)\n  -O OUTPUT_FORMAT, --output-format OUTPUT_FORMAT\n                        output data format (default: yaml)\n  --list-codecs         list all available codecs (default: False)  conf_write  Writes a config file with all options and defaults to the config directory (changable with -c)  sync  Synchronizes PeeringDB to a local database  obj id  Fetches a specific object and outputs to stdout", 
+            "title": "Command Line Interface"
+        }, 
+        {
+            "location": "/cli/#configuration", 
+            "text": "", 
+            "title": "Configuration"
+        }, 
+        {
+            "location": "/cli/#fetching-objects", 
+            "text": "You may use the CLI to dump any object in the database with  , for example:  peeringdb net1  You may also change the output format to anything munge supports, so to get json, it would be:  peeringdb -O json net1", 
+            "title": "Fetching objects"
+        }, 
+        {
+            "location": "/cli/#local-database-sync", 
+            "text": "After doing a full sync, it only updates objects that have changed, so it's safe / efficient to run it as often as you want.  By default, peeringdb will sync to a file in the config dir called peeringdb.sqlite3 - to change that:  peeringdb conf_write  Then edit the file it created (default  ~/peeringdb/config.yaml ). Currently, it directly uses django, so any database backend django supports will work, for example, to sync to MySQL, you could use the following database config:  database:\n  engine: mysql\n  host: localhost\n  name: peeringdb\n  user: peeringdb\n  password: supers3cr3t  Once the database is configured how you'd like it, you can do an initial sync of the database with  peeringdb sync  Then add a cron job to keep it in sync, for example, once a day at midnight  crontab -l | { cat; echo \"0 0 * * * `which peeringdb` sync   /dev/null 2 1\"; } | crontab -", 
+            "title": "Local database sync"
+        }, 
+        {
+            "location": "/api/", 
+            "text": "Application Program Interface\n\n\nInstantiate\n\n\nfrom peeringdb import PeeringDB\n\npdb = PeeringDB()\n\n\n\nCalls\n\n\nall\n\n\ndef all(self, typ, **kwargs):\n\n\n\nGets all objects of specified type, matching query from kwargs, valid kwargs are available \nhere\n.\n\n\nget\n\n\ndef get(self, typ, id, **kwargs):\n\n\n\nGets a single object of specified type and id, matching query from kwargs, valid kwargs are available \nhere\n.\n\n\ncreate\n\n\ndef create(self, typ, data, return_response=False):\n\n\n\nCreate an object of specified type from data.\n\n\nupdate\n\n\ndef update(self, typ, id, **kwargs):\n\n\n\nUpdate an object of specified type from kwargs.\n\n\nsave\n\n\ndef save(self, typ, data):\n\n\n\nSaves object of specified type from data.\n\n\nrm\n\n\ndef rm(self, typ, id):\n\n\n\nRemoves specified object.\n\n\ntype_wrap\n\n\ndef type_wrap(self, typ):\n\n\n\nReturns an object that directly does operations on the specified type.\n\n\nFull Example\n\n\n# unauthenticated to default endpoing (unless ~/.peeringdb/config.yaml exists)\nfrom peeringdb import PeeringDB\n\npdb = PeeringDB()\n\n# get a single record\nnet = pdb.type_wrap('net')\n# both are equal\nassert net.get(1) == pdb.get('net', 1)\n\n# query by parameter\npdb.all('net', asn=2906)\n# or\nnet.all(asn=2906)", 
+            "title": "API"
+        }, 
+        {
+            "location": "/api/#application-program-interface", 
+            "text": "", 
+            "title": "Application Program Interface"
+        }, 
+        {
+            "location": "/api/#instantiate", 
+            "text": "from peeringdb import PeeringDB\n\npdb = PeeringDB()", 
+            "title": "Instantiate"
+        }, 
+        {
+            "location": "/api/#calls", 
+            "text": "all  def all(self, typ, **kwargs):  Gets all objects of specified type, matching query from kwargs, valid kwargs are available  here .  get  def get(self, typ, id, **kwargs):  Gets a single object of specified type and id, matching query from kwargs, valid kwargs are available  here .  create  def create(self, typ, data, return_response=False):  Create an object of specified type from data.  update  def update(self, typ, id, **kwargs):  Update an object of specified type from kwargs.  save  def save(self, typ, data):  Saves object of specified type from data.  rm  def rm(self, typ, id):  Removes specified object.  type_wrap  def type_wrap(self, typ):  Returns an object that directly does operations on the specified type.", 
+            "title": "Calls"
+        }, 
+        {
+            "location": "/api/#full-example", 
+            "text": "# unauthenticated to default endpoing (unless ~/.peeringdb/config.yaml exists)\nfrom peeringdb import PeeringDB\n\npdb = PeeringDB()\n\n# get a single record\nnet = pdb.type_wrap('net')\n# both are equal\nassert net.get(1) == pdb.get('net', 1)\n\n# query by parameter\npdb.all('net', asn=2906)\n# or\nnet.all(asn=2906)", 
+            "title": "Full Example"
+        }
+    ]
+}
