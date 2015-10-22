@@ -25,7 +25,10 @@ setup(
     include_package_data=True,
     install_requires=requirements,
     test_requires=test_requirements,
-    scripts=['peeringdb/bin/peeringdb'],
+    entry_points='''
+        [console_scripts]
+        peeringdb=peeringdb.cli:cli
+    ''',
 # TODO __main__ should make this zipsafe
     zip_safe=False,
 )
