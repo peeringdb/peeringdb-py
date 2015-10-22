@@ -43,6 +43,8 @@ def db_prompt(data):
         dict_prompt(data, k)
 
 def cb_list_codecs(ctx, param, value):
+    if not value or ctx.resilient_parsing:
+        return
     click.echo(', '.join(munge.codec.list_codecs()))
     ctx.exit()
 
