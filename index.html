@@ -131,14 +131,31 @@
 <pre><code>virtualenv pdbvenv
 . pdbvenv/bin/activate
 </code></pre>
-<p>Then install the peeringdb package with</p>
+<p>Install the peeringdb package with</p>
 <pre><code>pip install peeringdb
 </code></pre>
 <h2 id="whats-included">What's included?</h2>
 <p>There's currently a hard dependency on django_peeringdb, so the django models are included.</p>
 <p>By installing the package, you get both a <a href="api/">client library</a> and a <a href="cli/">command line utility</a>.</p>
 <h2 id="configuration">Configuration</h2>
-<p>Both command line and librarys will try to use a common config file, by default located at <code>~/.peeringdb/config.yaml</code></p></div>
+<p>Both command line and library will try to use a common config file, by default located at <code>~/.peeringdb/config.yaml</code></p>
+<p>You can go through a setup wizard to configure and create the config (also downloads any needed requirements) with:</p>
+<pre><code>peeringdb configure
+</code></pre>
+<p>Alternatively, to write a config file with the defaults:</p>
+<pre><code>peeringdb conf_write
+</code></pre>
+<p>Then edit the file it created (default <code>~/peeringdb/config.yaml</code>). Currently, it directly uses django, so any database backend django supports will work, for example, to sync to MySQL, you could use the following database config:</p>
+<pre><code>database:
+  engine: mysql
+  host: localhost
+  name: peeringdb
+  user: peeringdb
+  password: supers3cr3t
+</code></pre>
+<p>After everything is configured, check your setup and install any new dependencies with:</p>
+<pre><code>peeringdb depcheck
+</code></pre></div>
             
         </div>
 
@@ -185,5 +202,5 @@
 
 <!--
 MkDocs version : 0.14.0
-Build Date UTC : 2015-10-22 07:46:52.238208
+Build Date UTC : 2015-10-22 13:18:28.004000
 -->

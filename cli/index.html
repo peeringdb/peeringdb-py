@@ -113,21 +113,7 @@
     
         <li class="main active"><a href="#command-line-interface">Command Line Interface</a></li>
         
-            <li><a href="#conf_write">conf_write</a></li>
-        
-            <li><a href="#configure">configure</a></li>
-        
-            <li><a href="#depcheck">depcheck</a></li>
-        
-            <li><a href="#get-objid">get &lt;obj&gt;&lt;id&gt;</a></li>
-        
-            <li><a href="#sync">sync</a></li>
-        
-            <li><a href="#configuration">Configuration</a></li>
-        
-            <li><a href="#fetching-objects">Fetching objects</a></li>
-        
-            <li><a href="#local-database-sync">Local database sync</a></li>
+            <li><a href="#commands">Commands</a></li>
         
     
     </ul>
@@ -151,6 +137,7 @@ Commands:
   get         get an object from peeringdb
   sync        synchronize to a local database
 </code></pre>
+<h2 id="commands">Commands</h2>
 <h3 id="conf_write">conf_write</h3>
 <p>Writes a config file with all options and defaults to the config directory (changable with -c)</p>
 <h3 id="configure">configure</h3>
@@ -159,21 +146,16 @@ Commands:
 <p>Checks for dependencies and installs any needed packages</p>
 <h3 id="get-objid">get <code>&lt;obj&gt;&lt;id&gt;</code></h3>
 <p>Fetches a specific object and outputs to stdout</p>
-<h3 id="sync">sync</h3>
-<p>Synchronizes PeeringDB to a local database</p>
-<h2 id="configuration">Configuration</h2>
-<h2 id="fetching-objects">Fetching objects</h2>
 <p>You may use the CLI to dump any object in the database with <object tag><id>, for example:</p>
-<pre><code>peeringdb net1
+<pre><code>peeringdb get net1
 </code></pre>
 <p>You may also change the output format to anything munge supports, so to get json, it would be:</p>
-<pre><code>peeringdb -O json net1
+<pre><code>peeringdb -O json get net1
 </code></pre>
-<h2 id="local-database-sync">Local database sync</h2>
+<h3 id="sync">sync</h3>
+<p>Synchronizes PeeringDB to a local database</p>
 <p>After doing a full sync, it only updates objects that have changed, so it's safe / efficient to run it as often as you want.</p>
-<p>By default, peeringdb will sync to a file in the config dir called peeringdb.sqlite3 - to change that:</p>
-<pre><code>peeringdb conf_write
-</code></pre>
+<p>By default, peeringdb will sync to a file in the config dir called peeringdb.sqlite3 - to change that, see <a href="..#configuration">configuration</a></p>
 <p>Then edit the file it created (default <code>~/peeringdb/config.yaml</code>). Currently, it directly uses django, so any database backend django supports will work, for example, to sync to MySQL, you could use the following database config:</p>
 <pre><code>database:
   engine: mysql
