@@ -17,6 +17,7 @@
       get         get an object from peeringdb
       sync        synchronize to a local database
 
+## Commands
 
 ### conf_write
 Writes a config file with all options and defaults to the config directory (changable with -c)
@@ -30,28 +31,21 @@ Checks for dependencies and installs any needed packages
 ### get `<obj><id>`
 Fetches a specific object and outputs to stdout
 
-### sync
-Synchronizes PeeringDB to a local database
-
-## Configuration
-
-## Fetching objects
-
 You may use the CLI to dump any object in the database with <object tag><id>, for example:
 
-    peeringdb net1
+    peeringdb get net1
 
 You may also change the output format to anything munge supports, so to get json, it would be:
 
-    peeringdb -O json net1
+    peeringdb -O json get net1
 
-## Local database sync
+
+### sync
+Synchronizes PeeringDB to a local database
 
 After doing a full sync, it only updates objects that have changed, so it's safe / efficient to run it as often as you want.
 
-By default, peeringdb will sync to a file in the config dir called peeringdb.sqlite3 - to change that:
-
-    peeringdb conf_write
+By default, peeringdb will sync to a file in the config dir called peeringdb.sqlite3 - to change that, see [configuration](index.md#configuration)
 
 Then edit the file it created (default `~/peeringdb/config.yaml`). Currently, it directly uses django, so any database backend django supports will work, for example, to sync to MySQL, you could use the following database config:
 
