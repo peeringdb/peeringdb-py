@@ -1,21 +1,21 @@
 
 # Command Line Interface
 
-Usage: peeringdb [OPTIONS] COMMAND [ARGS]...
+    Usage: peeringdb [OPTIONS] COMMAND [ARGS]...
 
-  PeeringDB
+      PeeringDB
 
-Options:
-  --version      Show the version and exit.
-  --list-codecs  list available codecs
-  --help         Show this message and exit.
+    Options:
+      --version      Show the version and exit.
+      --list-codecs  list available codecs
+      --help         Show this message and exit.
 
-Commands:
-  conf_write  write config file with defaults
-  configure   configure peeringdb
-  depcheck    check for dependencies, install if necessary
-  get         get an object from peeringdb
-  sync        synchronize to a local database
+    Commands:
+      conf_write  write config file with defaults
+      configure   configure peeringdb
+      depcheck    check for dependencies, install if necessary
+      get         get an object from peeringdb
+      sync        synchronize to a local database
 
 
 ### conf_write
