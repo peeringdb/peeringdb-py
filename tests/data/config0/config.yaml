@@ -1,0 +1,5 @@
+peeringdb:
+  url: https://beta.peeringdb.com/api
+  password: ''
+  timeout: 60
+  user: ''

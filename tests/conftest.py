@@ -1,9 +1,12 @@
-from django.conf import settings
 
-# lazy init for translations
-_ = lambda s: s
+from django.conf import settings
+import os
+
 
 def pytest_configure():
+    # lazy init for translations
+    _ = lambda s: s
+
 
     settings.configure(
         INSTALLED_APPS=[
@@ -52,3 +55,4 @@ def pytest_configure():
             'XK': _('Kosovo'),
         }
     )
+
