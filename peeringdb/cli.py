@@ -42,8 +42,15 @@ def db_prompt(data):
     for k in ('host', 'port', 'name', 'user', 'password'):
         dict_prompt(data, k)
 
+def cb_list_codecs(ctx, param, value):
+    click.echo(', '.join(munge.codec.list_codecs()))
+    ctx.exit()
+
 @click.group()
 @click.version_option()
+@click.option('--list-codecs', is_flag=True,
+    callback=cb_list_codecs,
+    expose_value=False, is_eager=True)
 def cli():
     """
     PeeringDB
@@ -95,6 +102,20 @@ def depcheck(config):
 
 @cli.command()
 @click.option('--config', envvar='PEERINGDB_HOME', default='~/.peeringdb')
+@click.option('--output-format', default='yaml', help='output data format')
+@click.argument('poids', nargs=-1)
+def get(config, output_format, poids):
+    """ get an object from peeringdb """
+    pdb = client.PeeringDB()
+    codec = munge.get_codec(output_format)()
+
+    for poid in poids:
+        res = parse_objid(poid)
+        data = pdb.get(res[0], res[1])
+        codec.dump(data, sys.stdout)
+
+@cli.command()
+@click.option('--config', envvar='PEERINGDB_HOME', default='~/.peeringdb')
 def sync(config):
     """ synchronize to a local database """
     cfg = peeringdb.config.get_config(config)
@@ -118,7 +139,4 @@ def try_dump_obj(args):
     codec = munge.get_codec(args.output_format)()
     codec.dump(data, sys.stdout)
     return True
-
-#    parser.add_argument('-O', '--output-format', action='store', default='yaml', help='output data format')
-#    parser.add_argument('--list-codecs', action='store_true', help='list all available codecs')
 
