@@ -50,8 +50,8 @@ def cb_list_codecs(ctx, param, value):
 
 @click.group()
 @click.version_option()
-@click.option('--list-codecs', is_flag=True,
-    callback=cb_list_codecs,
+@click.option('--list-codecs', help='list available codecs',
+    is_flag=True, callback=cb_list_codecs,
     expose_value=False, is_eager=True)
 def cli():
     """

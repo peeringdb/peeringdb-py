@@ -1,27 +1,37 @@
 
 # Command Line Interface
 
-    usage: peeringdb [-h] [-c CONFIG] [-O OUTPUT_FORMAT] [--list-codecs] [cmd]
+Usage: peeringdb [OPTIONS] COMMAND [ARGS]...
 
-    positional arguments:
-      cmd                   subcommand {sync,conf_write,<obj><id>} (default: None)
+  PeeringDB
 
-    optional arguments:
-      -h, --help            show this help message and exit
-      -c CONFIG, --config CONFIG
-                            config directory (default: ~/.peeringdb)
-      -O OUTPUT_FORMAT, --output-format OUTPUT_FORMAT
-                            output data format (default: yaml)
-      --list-codecs         list all available codecs (default: False)
+Options:
+  --version      Show the version and exit.
+  --list-codecs  list available codecs
+  --help         Show this message and exit.
+
+Commands:
+  conf_write  write config file with defaults
+  configure   configure peeringdb
+  depcheck    check for dependencies, install if necessary
+  get         get an object from peeringdb
+  sync        synchronize to a local database
+
 
 ### conf_write
 Writes a config file with all options and defaults to the config directory (changable with -c)
 
+### configure
+Prompts user for input to configure local database
+
+### depcheck
+Checks for dependencies and installs any needed packages
+
+### get `<obj><id>`
+Fetches a specific object and outputs to stdout
+
 ### sync
 Synchronizes PeeringDB to a local database
-
-### `<obj><id>`
-Fetches a specific object and outputs to stdout
 
 ## Configuration
 
