@@ -1,3 +1,2 @@
-django_peeringdb
-munge>=0.1.4
+munge==0.1.4
 PyYAML==3.11
