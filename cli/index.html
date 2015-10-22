@@ -115,9 +115,13 @@
         
             <li><a href="#conf_write">conf_write</a></li>
         
-            <li><a href="#sync">sync</a></li>
+            <li><a href="#configure">configure</a></li>
         
-            <li><a href="#objid">&lt;obj&gt;&lt;id&gt;</a></li>
+            <li><a href="#depcheck">depcheck</a></li>
+        
+            <li><a href="#get-objid">get &lt;obj&gt;&lt;id&gt;</a></li>
+        
+            <li><a href="#sync">sync</a></li>
         
             <li><a href="#configuration">Configuration</a></li>
         
@@ -131,25 +135,32 @@
                 <div class="col-md-9" role="main">
 
 <h1 id="command-line-interface">Command Line Interface</h1>
-<pre><code>usage: peeringdb [-h] [-c CONFIG] [-O OUTPUT_FORMAT] [--list-codecs] [cmd]
+<pre><code>Usage: peeringdb [OPTIONS] COMMAND [ARGS]...
 
-positional arguments:
-  cmd                   subcommand {sync,conf_write,&lt;obj&gt;&lt;id&gt;} (default: None)
+  PeeringDB
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -c CONFIG, --config CONFIG
-                        config directory (default: ~/.peeringdb)
-  -O OUTPUT_FORMAT, --output-format OUTPUT_FORMAT
-                        output data format (default: yaml)
-  --list-codecs         list all available codecs (default: False)
+Options:
+  --version      Show the version and exit.
+  --list-codecs  list available codecs
+  --help         Show this message and exit.
+
+Commands:
+  conf_write  write config file with defaults
+  configure   configure peeringdb
+  depcheck    check for dependencies, install if necessary
+  get         get an object from peeringdb
+  sync        synchronize to a local database
 </code></pre>
 <h3 id="conf_write">conf_write</h3>
 <p>Writes a config file with all options and defaults to the config directory (changable with -c)</p>
+<h3 id="configure">configure</h3>
+<p>Prompts user for input to configure local database</p>
+<h3 id="depcheck">depcheck</h3>
+<p>Checks for dependencies and installs any needed packages</p>
+<h3 id="get-objid">get <code>&lt;obj&gt;&lt;id&gt;</code></h3>
+<p>Fetches a specific object and outputs to stdout</p>
 <h3 id="sync">sync</h3>
 <p>Synchronizes PeeringDB to a local database</p>
-<h3 id="objid"><code>&lt;obj&gt;&lt;id&gt;</code></h3>
-<p>Fetches a specific object and outputs to stdout</p>
 <h2 id="configuration">Configuration</h2>
 <h2 id="fetching-objects">Fetching objects</h2>
 <p>You may use the CLI to dump any object in the database with <object tag><id>, for example:</p>
