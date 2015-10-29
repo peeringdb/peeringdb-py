@@ -7,7 +7,7 @@ import twentyc.rpc
 class PeeringDB(twentyc.rpc.RestClient):
     def __init__(self, **kwargs):
         # try to load config
-        cfg = config.get_config()
+        cfg = config.get_config(conf_dir=kwargs.get('conf_dir', config.default_conf_dir))
         pdb = cfg['peeringdb']
         # override config with kwargs
         munge.util.recursive_update(pdb, kwargs)

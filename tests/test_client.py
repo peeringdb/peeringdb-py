@@ -4,6 +4,10 @@ import pytest
 
 from peeringdb.client import PeeringDB
 
+def test_nonexistant_config():
+    with pytest.raises(IOError):
+		pdb = PeeringDB(conf_dir='nonexistant')
+
 def test_get():
     pdb = PeeringDB()
     net1 = pdb.get('net', 1)
