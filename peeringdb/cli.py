@@ -10,7 +10,6 @@ import munge.codec.all
 import os
 import peeringdb
 from peeringdb import client
-from peeringdb.localdb import LocalDB
 import pip
 from pkg_resources import resource_stream, Requirement
 import re
@@ -29,8 +28,8 @@ def install_deps(deps, quiet=True):
 def get_deps(typ):
     """ get deps from requirement file of specified type """
     deps=[]
-    filename = 'facsimile/requirements-%s.txt' % typ
-    with resource_stream(Requirement.parse("peeringdb"), filename) as req:
+    filename = 'deps/requirements-%s.txt' % typ
+    with resource_stream("peeringdb", filename) as req:
         for line in req:
             deps.append(line.strip())
     return deps
@@ -120,6 +119,9 @@ def get(config, output_format, poids):
 @click.option('--config', envvar='PEERINGDB_HOME', default='~/.peeringdb')
 def sync(config):
     """ synchronize to a local database """
+    # import here until the db is properly abstracted
+    from peeringdb.localdb import LocalDB
+
     cfg = peeringdb.config.get_config(config)
     db = LocalDB(cfg)
     db.sync()

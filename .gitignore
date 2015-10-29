@@ -1,6 +1,8 @@
 *.py[cod]
 *.egg
 *.egg-info
-
 .coverage
 .tox
+coverage.xml
+dist/
+site/

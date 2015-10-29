@@ -20,6 +20,9 @@ setup(
     packages=[
         'peeringdb',
     ],
+    package_data={'peeringdb': [
+        'deps/requirements*.txt',
+    ]},
     url='https://github.com/peeringdb/peeringdb-py',
     download_url='https://github.com/peeringdb/peeringdb-py/%s' % version,
     include_package_data=True,
@@ -29,7 +32,6 @@ setup(
         [console_scripts]
         peeringdb=peeringdb.cli:cli
     ''',
-# TODO __main__ should make this zipsafe
-    zip_safe=False,
+    zip_safe=True,
 )
 

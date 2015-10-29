@@ -1,2 +1,4 @@
-munge==0.1.4
-PyYAML==3.11
+click>=5.1
+munge>=0.1.5
+PyYAML>=3.11
+twentyc.rpc>=0.3.4
