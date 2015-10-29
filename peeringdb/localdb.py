@@ -76,7 +76,7 @@ def django_configure(cfg):
         }
     )
 
-class LocalDB():
+class LocalDB(object):
     """
     Abstraction for a local database
 

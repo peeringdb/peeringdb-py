@@ -3,7 +3,6 @@ import munge
 import munge.codec.all
 import munge.util
 import os
-import yaml
 
 
 def default_config():

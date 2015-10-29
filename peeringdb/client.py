@@ -1,11 +1,10 @@
 
 import munge.util
 from peeringdb import config
-from twentyc.rpc import RestClient
 import twentyc.rpc
 
 
-class PeeringDB(RestClient):
+class PeeringDB(twentyc.rpc.RestClient):
     def __init__(self, **kwargs):
         # try to load config
         cfg = config.get_config()

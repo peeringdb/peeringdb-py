@@ -2,16 +2,14 @@
 
 from __future__ import print_function
 
-import argparse
 import click
 import munge
 import munge.codec
 import munge.codec.all
-import os
 import peeringdb
 from peeringdb import client
 import pip
-from pkg_resources import resource_stream, Requirement
+from pkg_resources import resource_stream
 import re
 import sys
 
