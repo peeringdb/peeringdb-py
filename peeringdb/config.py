@@ -25,23 +25,27 @@ def default_config():
     }
     return conf.copy()
 
-def get_config(conf_dir='~/.peeringdb'):
+default_conf_dir = '~/.peeringdb'
+
+def get_config(conf_dir=default_conf_dir):
     if not conf_dir:
         return default_config()
 
-    conf_dir = os.path.expanduser(conf_dir)
-    data = default_config()
-    if not os.path.exists(conf_dir):
-        raise IOError("config dir not found at %s" % (conf_dir,))
+    conf_path = os.path.expanduser(conf_dir)
+    if not os.path.exists(conf_path):
+        # only throw if not default
+        if conf_dir != default_conf_dir:
+            raise IOError("config dir not found at %s" % (conf_path,))
 
-    config = munge.load_datafile('config', conf_dir, default=None)
+    data = default_config()
+    config = munge.load_datafile('config', conf_path, default=None)
     if config:
         munge.util.recursive_update(data, config)
-        data['__config_dir__'] = conf_dir
+        data['__config_dir__'] = conf_path
 
     return data
 
-def write_config(data, conf_dir='~/.peeringdb', codec=None):
+def write_config(data, conf_dir=default_conf_dir, codec=None):
     if not codec:
         codec=munge.get_codec('yaml')()
     conf_dir = os.path.expanduser(conf_dir)
