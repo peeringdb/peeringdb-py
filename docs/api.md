@@ -46,7 +46,7 @@ Returns an object that directly does operations on the specified type.
 
 ## Full Example
 
-    # unauthenticated to default endpoing (unless ~/.peeringdb/config.yaml exists)
+    # unauthenticated to default URL (unless ~/.peeringdb/config.yaml exists)
     from peeringdb import PeeringDB
 
     pdb = PeeringDB()
