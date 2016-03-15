@@ -1,6 +1,6 @@
 
 site_name: PeeringDB
-site_url: https://beta.peeringdb.com/
+site_url: https://www.peeringdb.com/
 site_description: PeeringDB facilitates the exchange of information related to Peering.
 
 repo_url: https://github.com/peeringdb/peeringdb-py

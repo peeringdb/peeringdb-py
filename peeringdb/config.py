@@ -8,7 +8,7 @@ import os
 def default_config():
     conf = {
         'peeringdb': {
-            'url': 'https://beta.peeringdb.com/api',
+            'url': 'https://www.peeringdb.com/api',
             'user': '',
             'password': '',
             'timeout': 0,
