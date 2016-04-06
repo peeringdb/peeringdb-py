@@ -8,11 +8,12 @@ import munge.codec
 import munge.codec.all
 import peeringdb
 from peeringdb import client
+from peeringdb import util
+from peeringdb.whois import WhoisFormat
 import pip
 from pkg_resources import resource_stream
 import re
 import sys
-
 
 
 def install_deps(deps, quiet=True):
@@ -23,6 +24,7 @@ def install_deps(deps, quiet=True):
                 pip.main(['install', pkg])
             raise RuntimeError("failed to install %s" % (pkg,))
 
+
 def get_deps(typ):
     """ get deps from requirement file of specified type """
     deps=[]
@@ -31,6 +33,7 @@ def get_deps(typ):
         for line in req:
             deps.append(line.strip())
     return deps
+
 
 def dict_prompt(data, key, default=''):
     data[key] = click.prompt(key, default=data.get(key, default))
@@ -45,6 +48,7 @@ def cb_list_codecs(ctx, param, value):
     click.echo(', '.join(munge.codec.list_codecs()))
     ctx.exit()
 
+
 @click.group()
 @click.version_option()
 @click.option('--list-codecs', help='list available codecs',
@@ -56,13 +60,16 @@ def cli():
     """
     pass
 
+
 @cli.command()
 @click.option('--config', envvar='PEERINGDB_HOME', default='~/.peeringdb')
 def conf_write(config):
     """ write config file with defaults """
     cfg = peeringdb.config.get_config(config)
     peeringdb.config.write_config(cfg, config)
+    print("config written to %s" % (config))
     return 0
+
 
 @cli.command()
 @click.option('--config', help='config directory',
@@ -88,6 +95,7 @@ def configure(config, database):
     peeringdb.config.write_config(cfg, config)
     return 0
 
+
 @cli.command()
 @click.option('--config', envvar='PEERINGDB_HOME', default='~/.peeringdb')
 def depcheck(config):
@@ -99,19 +107,44 @@ def depcheck(config):
     install_deps(get_deps(engine))
     return 0
 
+
 @cli.command()
 @click.option('--config', envvar='PEERINGDB_HOME', default='~/.peeringdb')
+@click.option('--depth', default=2, help='how many levels of nested objects to fetch')
 @click.option('--output-format', default='yaml', help='output data format')
 @click.argument('poids', nargs=-1)
-def get(config, output_format, poids):
+def get(config, depth, output_format, poids):
     """ get an object from peeringdb """
     pdb = client.PeeringDB()
     codec = munge.get_codec(output_format)()
 
     for poid in poids:
-        res = parse_objid(poid)
-        data = pdb.get(res[0], res[1])
+        (typ, pk) = util.split_ref(poid)
+        data = pdb.get(typ, pk, depth=depth)
         codec.dump(data, sys.stdout)
+
+
+@cli.command()
+@click.option('--config', envvar='PEERINGDB_HOME', default='~/.peeringdb')
+@click.option('--depth', default=1, help='how many levels of nested objects to fetch')
+@click.argument('poids', nargs=-1)
+def whois(config, depth, poids):
+    """ simulate a whois lookup
+
+        supports
+
+            as<ASN> : query by AS
+
+            ixlans<net id> : query networks on an IX
+    """
+    pdb = client.PeeringDB()
+    fmt = WhoisFormat()
+
+    for poid in poids:
+        (typ, pk) = util.split_ref(poid)
+        (typ, data) = pdb.whois(typ, pk)
+        fmt.print(typ, data[0])
+
 
 @cli.command()
 @click.option('--config', envvar='PEERINGDB_HOME', default='~/.peeringdb')
@@ -124,21 +157,4 @@ def sync(config):
     db = LocalDB(cfg)
     db.sync()
     return 0
-
-def parse_objid(objid):
-    match = re.search('(?P<typ>\w+)[^\d]*(?P<id>\d+)', objid)
-    if not match:
-        return None
-    return (match.group('typ'), match.group('id'))
-
-def try_dump_obj(args):
-    res = parse_objid(args.cmd)
-    if not res:
-        return False
-
-    pdb = client.PeeringDB()
-    data = pdb.get(res[0], res[1])
-    codec = munge.get_codec(args.output_format)()
-    codec.dump(data, sys.stdout)
-    return True
 

@@ -13,24 +13,17 @@ class PeeringDB(twentyc.rpc.RestClient):
         munge.util.recursive_update(pdb, kwargs)
         super(PeeringDB, self).__init__(**pdb)
 
-#    def all(self, typ, **kwargs):
-#        """
-#        List all of type
-#        Valid arguments available at
-#            http://docs.peeringdb.com/api_specs/#operations
-##        Currently:
-#            depth : int nested sets will be loaded (slow)
-#            fields : str comma separated list of field names - only matching
-#                fields will be returned in the data
-##            since : int timestamp (UTC) only get objects modified after this
-#            skip : number of records to skip
-#            limit : number of records to limit request to
-##            [field_name] : int|string queries for fields with matching value
-#        """
-#        return self.rpc.all(typ, **kwargs)
-#
-#    def get(self, typ, id):
-#        """
-#        Load type by id
-##        """
-#        return self._load(self._request(self._url(typ, id)))
+    def asn(self, pk):
+        return self.all('net', asn=pk, depth=2)
+
+    def ixnets(self, pk):
+        return self.all('net', ix_id__in=pk, depth=2)
+
+    def whois(self, typ, pk, **kwargs):
+        if typ == 'as':
+            return ('net', self.asn(pk))
+        elif typ == 'ixnets':
+            return ('net', self.ixnets(pk))
+        else:
+            return (typ, self.get(typ, pk, **kwargs))
+
