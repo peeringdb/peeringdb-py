@@ -72,4 +72,9 @@ Once the database is configured how you'd like it, you can do an initial sync of
 
 Then add a cron job to keep it in sync, for example, once a day at between midnight and midnight plus 10 minutes, with random sleep delay to prevent thundering hurd
 
+    crontab -l | { cat; echo "`expr $RANDOM % 60` 0 * * * `which peeringdb` sync > /dev/null 2>&1"; } | crontab -
+
+Or, if your cron supports random:
+
     crontab -l | { cat; echo "0 0 * * * sleep \$[RANDOM\%600] ; `which peeringdb` sync > /dev/null 2>&1"; } | crontab -
+
