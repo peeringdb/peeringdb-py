@@ -3,7 +3,6 @@ from __future__ import print_function
 
 import collections
 import sys
-import pprint
 from peeringdb.util import pretty_speed
 
 
@@ -167,4 +166,3 @@ class WhoisFormat(object):
 
         else:
             print("%s: %s" % (typ, data), file=self.fobj)
-

@@ -12,7 +12,6 @@ from peeringdb import util
 from peeringdb.whois import WhoisFormat
 import pip
 from pkg_resources import resource_stream
-import re
 import sys
 
 
@@ -27,7 +26,7 @@ def install_deps(deps, quiet=True):
 
 def get_deps(typ):
     """ get deps from requirement file of specified type """
-    deps=[]
+    deps = []
     filename = 'deps/requirements-%s.txt' % typ
     with resource_stream("peeringdb", filename) as req:
         for line in req:
@@ -38,9 +37,11 @@ def get_deps(typ):
 def dict_prompt(data, key, default=''):
     data[key] = click.prompt(key, default=data.get(key, default))
 
+
 def db_prompt(data):
     for k in ('host', 'port', 'name', 'user', 'password'):
         dict_prompt(data, k)
+
 
 def cb_list_codecs(ctx, param, value):
     if not value or ctx.resilient_parsing:

@@ -11,6 +11,7 @@ def split_ref(string):
 
     return (m.group('tag').lower(), int(m.group('pk')))
 
+
 def pretty_speed(value):
     if not value:
         return ''
@@ -24,5 +25,3 @@ def pretty_speed(value):
             return "%dM" % value
     except ValueError:
         return value
-
-

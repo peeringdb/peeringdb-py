@@ -59,7 +59,7 @@ def django_configure(cfg):
         },
         DEBUG=False,
         TEMPLATE_DEBUG=True,
-        LOGGING = {
+        LOGGING={
             'version': 1,
             'disable_existing_loggers': False,
             'filters': {
@@ -84,11 +84,12 @@ def django_configure(cfg):
 
         USE_TZ=False,
         # add user defined iso code for Kosovo
-        COUNTRIES_OVERRIDE = {
+        COUNTRIES_OVERRIDE={
             'XK': _('Kosovo'),
         },
         **extra
     )
+
 
 class LocalDB(object):
     """
@@ -137,4 +138,3 @@ class LocalDB(object):
     def sync(self):
         self.create()
         call_command('pdb_sync', interactive=False)
-
