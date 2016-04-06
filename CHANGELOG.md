@@ -6,6 +6,7 @@
 - CHANGELOG!
 - whois command
 - conf_dump command
+- drop_tables command
 - depth to get command
 - lookup net by asn, ixnets to client
 

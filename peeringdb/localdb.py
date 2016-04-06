@@ -3,6 +3,9 @@ import django
 import os
 from django.conf import settings
 from django.core.management import call_command
+from django.db import connection
+from django.db.models import get_app, get_models
+import warnings
 
 # lazy init for translations
 _ = lambda s: s
@@ -59,12 +62,17 @@ def django_configure(cfg):
         LOGGING = {
             'version': 1,
             'disable_existing_loggers': False,
+            'filters': {
+                'dev_warnings': {
+                    }
+                },
             'handlers': {
                 'stderr': {
                     'level': 'DEBUG',
                     'class': 'logging.StreamHandler',
+                    'filters': ['dev_warnings'],
                     },
-            },
+                },
             'loggers': {
                 '': {
                     'handlers': ['stderr'],
@@ -95,8 +103,36 @@ class LocalDB(object):
         django_configure(cfg)
         django.setup()
 
+        # get rid of django deprecation warnings
+        # TODO fix log filters
+        warnings.filterwarnings("ignore")
+
     def create(self):
         call_command('migrate', interactive=False)
+
+    def list_tables(self):
+        models = get_models(get_app('django_peeringdb'), include_auto_created=True)
+        return tuple(m._meta.db_table for m in models)
+
+    def fix_tables(self):
+        """ fix mysql table character set
+        shouldn't be used on tables with existing data
+        """
+        self.create()
+        dbcfg = self.cfg['database']
+
+        if dbcfg.get('engine', '') == 'mysql':
+            cursor = connection.cursor()
+
+            for each in self.list_tables():
+                cursor.execute('ALTER TABLE %s DEFAULT CHARACTER SET utf8;' % each)
+
+    def drop_tables(self):
+        """ drop tables this added """
+        cursor = connection.cursor()
+        cursor.execute('set foreign_key_checks = 0;')
+        cursor.execute('DROP TABLE IF EXISTS %s;' % ','.join(self.list_tables()))
+        cursor.execute('set foreign_key_checks = 1;')
 
     def sync(self):
         self.create()

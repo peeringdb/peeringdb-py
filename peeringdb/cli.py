@@ -168,3 +168,16 @@ def sync(config):
     db.sync()
     return 0
 
+
+@cli.command()
+@click.option('--config', envvar='PEERINGDB_HOME', default='~/.peeringdb')
+def drop_tables(config):
+    """ drop all peeringdb tables NOTE this will delete data """
+    # import here until the db is properly abstracted
+    from peeringdb.localdb import LocalDB
+
+    cfg = peeringdb.config.get_config(config)
+    db = LocalDB(cfg)
+    db.drop_tables()
+    return 0
+

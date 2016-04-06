@@ -56,6 +56,16 @@ Then edit the file it created (default `~/peeringdb/config.yaml`). Currently, it
       user: peeringdb
       password: supers3cr3t
 
+For MySQL, you need to use utf8 and a utf8 collation before doing the initial sync, for example:
+
+New database:
+
+    CREATE DATABASE peeringdb DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+or existing database
+
+    ALTER DATABASE peeringdb DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
 Once the database is configured how you'd like it, you can do an initial sync of the database with
 
     peeringdb sync
