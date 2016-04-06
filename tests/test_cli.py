@@ -14,7 +14,7 @@ def test_get_deps():
 def test_config():
     runner = CliRunner()
     result = runner.invoke(cli.cli, ['conf_dump'], catch_exceptions=False)
-    print result.output
-    print result.exception
-    print result.exc_info
-    assert 0
+#    print result.output
+#    print result.exception
+#    print result.exc_info
+#    assert 0
