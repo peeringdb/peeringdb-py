@@ -9,9 +9,11 @@
 - depth to get command
 - lookup net by asn, ixnets to client
 
+### Fixed
+- get/whois commands honor --config
+
 ### Changed
 ### Deprecated
 ### Removed
-### Fixed
 ### Security
 

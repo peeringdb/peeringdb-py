@@ -124,7 +124,7 @@ def depcheck(config):
 @click.argument('poids', nargs=-1)
 def get(config, depth, output_format, poids):
     """ get an object from peeringdb """
-    pdb = client.PeeringDB()
+    pdb = client.PeeringDB(conf_dir=config)
     codec = munge.get_codec(output_format)()
 
     for poid in poids:
@@ -136,7 +136,7 @@ def get(config, depth, output_format, poids):
 @cli.command()
 @click.option('--config', envvar='PEERINGDB_HOME', default='~/.peeringdb')
 @click.argument('poids', nargs=-1)
-def whois(config, depth, poids):
+def whois(config, poids):
     """ simulate a whois lookup
 
         supports
@@ -145,7 +145,7 @@ def whois(config, depth, poids):
 
             ixlans<net id> : query networks on an IX
     """
-    pdb = client.PeeringDB()
+    pdb = client.PeeringDB(conf_dir=config)
     fmt = WhoisFormat()
 
     for poid in poids:
