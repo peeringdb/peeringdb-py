@@ -5,6 +5,7 @@ site_description: PeeringDB facilitates the exchange of information related to P
 
 repo_url: https://github.com/peeringdb/peeringdb-py
 
+theme: readthedocs
 pages:
   - Home: 'index.md'
   - CLI: 'cli.md'

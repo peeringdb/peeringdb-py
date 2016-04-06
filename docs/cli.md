@@ -11,24 +11,40 @@
       --help         Show this message and exit.
 
     Commands:
+      conf_dump   output current config
       conf_write  write config file with defaults
-      configure   configure peeringdb
-      depcheck    check for dependencies, install if necessary
+
       get         get an object from peeringdb
-      sync        synchronize to a local database
+      whois       simulate a whois lookup
+
+      # local database management commands
+      configure    configure peeringdb
+      depcheck     check for dependencies, install if necessary
+      drop_tables  drop all peeringdb tables
+      sync         synchronize to a local database
 
 ## Commands
 
-### conf_write
+## conf_dump
+Outputs current config
+
+## conf_write
 Writes a config file with all options and defaults to the config directory (changable with -c)
 
-### configure
+## configure
 Prompts user for input to configure local database
 
-### depcheck
+## depcheck
 Checks for dependencies and installs any needed packages
 
-### get `<obj><id>`
+## drop_tables
+
+!!! Error "Warning"
+    This will delete data
+
+Drop all peeringdb tables
+
+## get `<obj><id>`
 Fetches a specific object and outputs to stdout
 
 You may use the CLI to dump any object in the database with <object tag><id>, for example:
@@ -39,8 +55,16 @@ You may also change the output format to anything munge supports, so to get json
 
     peeringdb -O json get net1
 
+## whois `<obj><id>`
+Fetches a specific object and outputs to stdout, supports everything that `get` does, as well as:
 
-### sync
+      as<ASN> : query by AS
+
+      ixlans<net id> : query networks on an IX
+
+If you provide authentication in your config file, it will include contacts much like version 1 did.
+
+## sync
 Synchronizes PeeringDB to a local database
 
 After doing a full sync, it only updates objects that have changed, so it's safe / efficient to run it as often as you want.
@@ -56,15 +80,16 @@ Then edit the file it created (default `~/peeringdb/config.yaml`). Currently, it
       user: peeringdb
       password: supers3cr3t
 
-For MySQL, you need to use utf8 and a utf8 collation before doing the initial sync, for example:
+!!! Tip "MySQL"
+    You need to use utf8 and a utf8 collation before doing the initial sync.
 
-New database:
+    New database:
 
-    CREATE DATABASE peeringdb DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+        CREATE DATABASE peeringdb DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-or existing database
+    or existing database:
 
-    ALTER DATABASE peeringdb DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+        ALTER DATABASE peeringdb DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 Once the database is configured how you'd like it, you can do an initial sync of the database with
 
