@@ -72,6 +72,15 @@ def conf_write(config):
 
 
 @cli.command()
+@click.option('--config', envvar='PEERINGDB_HOME', default='~/.peeringdb')
+@click.option('--output-format', default='yaml', help='output data format')
+def conf_dump(config, output_format):
+    """ output current config """
+    print(config)
+    return 0
+
+
+@cli.command()
 @click.option('--config', help='config directory',
     envvar='PEERINGDB_HOME',
     default='~/.peeringdb', prompt='config directory')
@@ -126,7 +135,6 @@ def get(config, depth, output_format, poids):
 
 @cli.command()
 @click.option('--config', envvar='PEERINGDB_HOME', default='~/.peeringdb')
-@click.option('--depth', default=1, help='how many levels of nested objects to fetch')
 @click.argument('poids', nargs=-1)
 def whois(config, depth, poids):
     """ simulate a whois lookup

@@ -6,12 +6,20 @@ import twentyc.rpc
 
 class PeeringDB(twentyc.rpc.RestClient):
     def __init__(self, **kwargs):
+        """
+        options:
+            conf_dir : directory to load config from
+            url      : URL to connect to
+            user     : user to connect as
+            password : password to use
+            timeout  : timeout to fail after
+        """
         # try to load config
         cfg = config.get_config(conf_dir=kwargs.get('conf_dir', config.default_conf_dir))
-        pdb = cfg['peeringdb']
+        self.config = cfg['peeringdb']
         # override config with kwargs
-        munge.util.recursive_update(pdb, kwargs)
-        super(PeeringDB, self).__init__(**pdb)
+        munge.util.recursive_update(self.config, kwargs)
+        super(PeeringDB, self).__init__(**self.config)
 
     def asn(self, pk):
         return self.all('net', asn=pk, depth=2)
