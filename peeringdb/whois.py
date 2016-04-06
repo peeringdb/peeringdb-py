@@ -69,8 +69,7 @@ class WhoisFormat(object):
 
     def display_field(self, fmt, obj, field, display=None):
         if not display:
-            display = obj._meta.get_field(field).verbose_name
-#        print fmt % (display, getattr(obj, field))
+            display = self._get_name(field)
         print(fmt % (display, obj[field]), file=self.fobj)
 
     def check_set(self, data, name):
