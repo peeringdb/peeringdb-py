@@ -30,6 +30,13 @@ def django_configure(cfg):
             'NAME': ':memory:',
         }
 
+    extra = {
+        'PEERINGDB_SYNC_URL': cfg['peeringdb'].get('url', ''),
+        'PEERINGDB_SYNC_USERNAME': cfg['peeringdb'].get('user', ''),
+        'PEERINGDB_SYNC_PASSWORD': cfg['peeringdb'].get('password', ''),
+        'PEERINGDB_SYNC_STRIP_TZ': True,
+    }
+
     # open file reletive to config dir
     if '__config_dir__' in cfg:
         os.chdir(cfg['__config_dir__'])
@@ -44,7 +51,6 @@ def django_configure(cfg):
             'django.contrib.sessions',
             'django_peeringdb',
         ],
-        DATABASE_ENGINE='django.db.backends.sqlite3',
         DATABASES={
             'default': db
         },
@@ -69,11 +75,11 @@ def django_configure(cfg):
         },
 
         USE_TZ=False,
-        PEERINGDB_SYNC_STRIP_TZ=True,
         # add user defined iso code for Kosovo
         COUNTRIES_OVERRIDE = {
             'XK': _('Kosovo'),
-        }
+        },
+        **extra
     )
 
 class LocalDB(object):
