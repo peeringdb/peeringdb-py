@@ -76,7 +76,9 @@ def conf_write(config):
 @click.option('--output-format', default='yaml', help='output data format')
 def conf_dump(config, output_format):
     """ output current config """
-    print(config)
+    cfg = peeringdb.config.get_config(config)
+    codec = munge.get_codec(output_format)()
+    codec.dump(cfg, sys.stdout)
     return 0
 
 
