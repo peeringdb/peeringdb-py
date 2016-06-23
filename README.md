@@ -1,6 +1,6 @@
 # peeringdb-py
 
-[![PyPI](https://img.shields.io/pypi/v/peeringdb-py.svg?maxAge=2592000)](https://pypi.python.org/pypi/peeringdb-py)
+[![PyPI](https://img.shields.io/pypi/v/peeringdb.svg?maxAge=2592000)](https://pypi.python.org/pypi/peeringdb)
 [![Travis CI](https://img.shields.io/travis/peeringdb/peeringdb-py.svg?maxAge=2592000)](https://travis-ci.org/peeringdb/peeringdb-py)
 [![Code Health](https://landscape.io/github/peeringdb/peeringdb-py/master/landscape.svg?style=flat)](https://landscape.io/github/peeringdb/peeringdb-py/master)
 [![Codecov](https://img.shields.io/codecov/c/github/peeringdb/peeringdb-py/master.svg?maxAge=2592000)](https://codecov.io/github/peeringdb/peeringdb-py)
