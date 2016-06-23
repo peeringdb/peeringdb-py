@@ -31,10 +31,11 @@ setup(
     include_package_data=True,
     install_requires=requirements,
     test_requires=test_requirements,
-    entry_points='''
-        [console_scripts]
-        peeringdb=peeringdb.cli:cli
-    ''',
+    entry_points={
+        'console_scripts': [
+            'peeringdb=peeringdb.cli:cli',
+        ]
+    },
     zip_safe=True,
 )
 
