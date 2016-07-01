@@ -1,7 +1,17 @@
 
-# Change Log
+# peeringdb-py change log
+
 
 ## [Unreleased]
+### Added
+### Fixed
+### Changed
+### Deprecated
+### Removed
+### Security
+
+
+## [0.4.4]
 ### Added
 - CHANGELOG!
 - whois command
@@ -12,9 +22,3 @@
 
 ### Fixed
 - get/whois commands honor --config
-
-### Changed
-### Deprecated
-### Removed
-### Security
-
