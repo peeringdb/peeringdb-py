@@ -8,7 +8,11 @@ test_dir = os.path.relpath(os.path.dirname(__file__))
 
 
 def test_get_deps():
-    assert ['django_peeringdb'] == cli.get_deps('sqlite3')
+    has_django = 0
+    for dep in cli.get_deps('sqlite3'):
+        if dep.startswith('django_peeringdb'):
+            has_django += 1
+    assert 1 == has_django
 
 
 def test_config():
