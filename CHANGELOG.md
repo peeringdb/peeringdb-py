@@ -22,3 +22,4 @@
 
 ### Fixed
 - get/whois commands honor --config
+- fix #2, pass through settings to db
