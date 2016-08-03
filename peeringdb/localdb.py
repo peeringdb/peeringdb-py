@@ -37,6 +37,7 @@ def django_configure(cfg):
         'PEERINGDB_SYNC_URL': cfg['peeringdb'].get('url', ''),
         'PEERINGDB_SYNC_USERNAME': cfg['peeringdb'].get('user', ''),
         'PEERINGDB_SYNC_PASSWORD': cfg['peeringdb'].get('password', ''),
+        'PEERINGDB_SYNC_ONLY': cfg['peeringdb'].get('sync_only', []),
         'PEERINGDB_SYNC_STRIP_TZ': True,
     }
 
