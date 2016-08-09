@@ -87,7 +87,7 @@ class WhoisFormat(object):
         self.display_field(fmt, data, 'irr_as_set', 'IRR AS-SET')
         self.display_field(fmt, data, 'info_type', 'Network Type')
         self.display_field(fmt, data, 'info_prefixes6', 'Approx IPv6 Prefixes')
-        self.display_field(fmt, data, 'info_prefixes4', 'Approx IPv6 Prefixes')
+        self.display_field(fmt, data, 'info_prefixes4', 'Approx IPv4 Prefixes')
         self.display_field(fmt, data, 'looking_glass', 'Looking Glass')
         self.display_field(fmt, data, 'route_server', 'Route Server')
         self.display_field(fmt, data, 'created', 'Created at')
