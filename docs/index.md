@@ -43,3 +43,8 @@ After everything is configured, check your setup and install any new dependencie
 
     peeringdb depcheck
 
+## Platform Tips
+### Ubuntu / Debian
+If you have issues building the mysqlclient install the dev libraries:
+
+    sudo apt install libmysqlclient-dev
