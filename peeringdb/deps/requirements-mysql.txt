@@ -1,2 +1,2 @@
-django_peeringdb>=0.2.2,<1.0.0
+django_peeringdb>=0.3.1,<1.0.0
 mysqlclient
