@@ -18,7 +18,13 @@ def test_get_deps():
 def test_config():
     runner = CliRunner()
     result = runner.invoke(cli.cli, ['conf_dump'], catch_exceptions=False)
-#    print result.output
-#    print result.exception
-#    print result.exc_info
-#    assert 0
+    assert result.exit_code == 0
+
+
+def test_sync():
+    runner = CliRunner()
+    result = runner.invoke(cli.cli, ['depcheck'], catch_exceptions=False)
+    assert result.exit_code == 0
+
+    result = runner.invoke(cli.cli, ['sync'], catch_exceptions=False)
+    assert result.exit_code == 0
