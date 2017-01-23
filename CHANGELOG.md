@@ -11,6 +11,15 @@
 ### Security
 
 
+## [0.5.0]
+### Added
+- sync_only config option
+### Fixed
+- field name for info_prefixe4 in whois format
+### Changed
+- updated deps
+
+
 ## [0.4.4]
 ### Added
 - CHANGELOG!
