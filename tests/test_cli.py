@@ -23,6 +23,8 @@ def test_config():
 
 
 def test_drop_tables():
+    runner = CliRunner()
+    result = runner.invoke(cli.cli, ['depcheck'], catch_exceptions=False)
     result = runner.invoke(cli.cli, ['drop_tables'], catch_exceptions=False)
     assert result.exit_code == 0
 

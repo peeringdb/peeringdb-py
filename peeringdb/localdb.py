@@ -116,9 +116,7 @@ class LocalDB(object):
 
     def drop_tables(self):
         """ drop tables this added """
-        print("This command has been removed, you could try issuing the following commands:")
-        # call_command('migrate', interactive=False)
-        call_command('sqlclear', 'django_peeringdb')
+        print("This command has been removed temporarily")
 
     def sync(self):
         self.create()
