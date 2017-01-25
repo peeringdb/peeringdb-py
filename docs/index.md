@@ -43,7 +43,16 @@ After everything is configured, check your setup and install any new dependencie
 
     peeringdb depcheck
 
-## Platform Tips
+## Tips
+
+### pip and setuputils
+If you are getting the error `'install_requires' must be a string or list of strings containing valid project/version requirement specifiers; Expected ',' or end-of-list in ipaddress>=1; python_version<'3.3' at ; python_version<'3.3'`, update pip and setuptools.
+
+```sh
+pip install -U pip
+pip install -U setuptools
+```
+
 ### Ubuntu / Debian
 If you have issues building the mysqlclient install the dev libraries:
 
