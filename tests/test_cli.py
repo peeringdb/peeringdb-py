@@ -32,8 +32,5 @@ def test_drop_tables():
 @pytest.mark.sync
 def test_sync():
     runner = CliRunner()
-    result = runner.invoke(cli.cli, ['depcheck'], catch_exceptions=False)
-    assert result.exit_code == 0
-
     result = runner.invoke(cli.cli, ['sync'], catch_exceptions=False)
     assert result.exit_code == 0
