@@ -5,9 +5,6 @@ from peeringdb import cli
 import pytest
 
 
-test_dir = os.path.relpath(os.path.dirname(__file__))
-
-
 def test_get_deps():
     has_django = 0
     for dep in cli.get_deps('sqlite3'):
@@ -26,11 +23,4 @@ def test_drop_tables():
     runner = CliRunner()
     result = runner.invoke(cli.cli, ['depcheck'], catch_exceptions=False)
     result = runner.invoke(cli.cli, ['drop_tables'], catch_exceptions=False)
-    assert result.exit_code == 0
-
-
-@pytest.mark.sync
-def test_sync():
-    runner = CliRunner()
-    result = runner.invoke(cli.cli, ['sync'], catch_exceptions=False)
     assert result.exit_code == 0

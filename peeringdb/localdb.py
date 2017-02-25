@@ -35,13 +35,18 @@ def django_configure(cfg):
             'NAME': ':memory:',
         }
 
-    extra = {
-        'PEERINGDB_SYNC_URL': cfg['peeringdb'].get('url', ''),
-        'PEERINGDB_SYNC_USERNAME': cfg['peeringdb'].get('user', ''),
-        'PEERINGDB_SYNC_PASSWORD': cfg['peeringdb'].get('password', ''),
-        'PEERINGDB_SYNC_ONLY': cfg['peeringdb'].get('sync_only', []),
-        'PEERINGDB_SYNC_STRIP_TZ': True,
-    }
+    if 'peeringdb' in cfg:
+        extra = {
+            'PEERINGDB_SYNC_URL': cfg['peeringdb'].get('url', ''),
+            'PEERINGDB_SYNC_USERNAME': cfg['peeringdb'].get('user', ''),
+            'PEERINGDB_SYNC_PASSWORD': cfg['peeringdb'].get('password', ''),
+            'PEERINGDB_SYNC_ONLY': cfg['peeringdb'].get('sync_only', []),
+            'PEERINGDB_SYNC_STRIP_TZ': True,
+        }
+    else:
+        extra = {
+            'PEERINGDB_SYNC_STRIP_TZ': True,
+        }
 
     # open file reletive to config dir
     if '__config_dir__' in cfg:
