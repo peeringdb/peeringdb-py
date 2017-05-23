@@ -1,4 +1,3 @@
-
 from __future__ import print_function
 
 import collections
@@ -46,13 +45,13 @@ class WhoisFormat(object):
         return data.keys()
 
     def display_section(self, name):
-        print(name, file=self.fobj)
-        print('=' * len(name), file=self.fobj)
-        print("", file=self.fobj)
+        self._print(name)
+        self._print('=' * len(name))
+        self._print("")
 
     def display_headers(self, fmt, headers):
-        print(fmt % headers, file=self.fobj)
-        print(fmt % tuple('-' * len(x) for x in headers), file=self.fobj)
+        self._print(fmt % headers)
+        self._print(fmt % tuple('-' * len(x) for x in headers))
 
     def display_set(self, typ, data, columns):
         """ display a list of dicts """
@@ -63,14 +62,14 @@ class WhoisFormat(object):
 
         for each in data:
             row = tuple(self._get_val(each, k) for k,v in each.items())
-            print(fmt % row, file=self.fobj)
+            self._print(fmt % row)
 
-        print("\n", file=self.fobj)
+        self._print("\n")
 
     def display_field(self, fmt, obj, field, display=None):
         if not display:
             display = self._get_name(field)
-        print(fmt % (display, obj[field]), file=self.fobj)
+        self._print(fmt % (display, obj[field]))
 
     def check_set(self, data, name):
         if data.get(name, None):
@@ -92,7 +91,7 @@ class WhoisFormat(object):
         self.display_field(fmt, data, 'route_server', 'Route Server')
         self.display_field(fmt, data, 'created', 'Created at')
         self.display_field(fmt, data, 'updated', 'Updated at')
-        print("\n", file=self.fobj)
+        self._print("\n")
 
         self.display_section("Peering Policy Information")
         self.display_field(fmt, data, 'policy_url', 'URL')
@@ -100,7 +99,7 @@ class WhoisFormat(object):
         self.display_field(fmt, data, 'policy_locations', 'Location Requirement')
         self.display_field(fmt, data, 'policy_ratio', 'Ratio Requirement')
         self.display_field(fmt, data, 'policy_contracts', 'Contract Requirement')
-        print("\n", file=self.fobj)
+        self._print("\n")
 
         self.check_set(data, 'poc_set')
         self.check_set(data, 'netixlan_set')
@@ -112,12 +111,12 @@ class WhoisFormat(object):
         hdr = ('Role', 'Name', 'Email', 'URL', 'Phone')
         self.display_headers(fmt, hdr)
         for poc in data:
-            print(fmt % (poc.get('role', ''), poc.get('name', ''), poc.get('email', ''), poc.get('url', ''), poc.get('phone', '')), file=self.fobj)
+            self._print(fmt % (poc.get('role', ''), poc.get('name', ''), poc.get('email', ''), poc.get('url', ''), poc.get('phone', '')))
 
         for poc in data:
-            print(fmt % (poc.get('role', ''), poc.get('name', ''), poc.get('email', ''), poc.get('url', ''), poc.get('phone', '')), file=self.fobj)
+            self._print(fmt % (poc.get('role', ''), poc.get('name', ''), poc.get('email', ''), poc.get('url', ''), poc.get('phone', '')))
 
-        print("\n", file=self.fobj)
+        self._print("\n")
 
     def print_netfac_set(self, data):
         self.display_section("Private Peering Facilities (%d)" % len(data))
@@ -125,8 +124,8 @@ class WhoisFormat(object):
         hdr = ('Facility Name', 'ASN', 'City', 'CO')
         self.display_headers(fmt, hdr)
         for each in data:
-            print(fmt % (each.get('name', each.get('id')), each.get('local_asn', ''), each.get('city', ''), each.get('country', '')), file=self.fobj)
-        print("\n", file=self.fobj)
+            self._print(fmt % (each.get('name', each.get('id')), each.get('local_asn', ''), each.get('city', ''), each.get('country', '')))
+        self._print("\n")
 
     def print_netixlan_set(self, data):
         self.display_section("Public Peering Points (%d)" % len(data))
@@ -135,23 +134,33 @@ class WhoisFormat(object):
         self.display_headers(fmt, hdr)
         for ix in data:
             if ix.get('ipaddr4', None):
-                print(fmt % (ix.get('name', ix.get('ixlan_id')), ix['asn'], ix['ipaddr4'], pretty_speed(ix['speed'])), file=self.fobj)
+                self._print(fmt % (ix.get('name', ix.get('ixlan_id')), ix['asn'], ix['ipaddr4'], pretty_speed(ix['speed'])))
             if ix.get('ipaddr6', None):
                 if ix.get('ipaddr4', None):
-                    print(fmt % ('', '', ix['ipaddr6'], ''), file=self.fobj)
+                    self._print(fmt % ('', '', ix['ipaddr6'], ''))
                 else:
-                    print(fmt % (ix['name'], ix['asn'], ix['ipaddr6'], pretty_speed(ix['speed'])), file=self.fobj)
-        print("\n", file=self.fobj)
+                    self._print(fmt % (ix['name'], ix['asn'], ix['ipaddr6'], pretty_speed(ix['speed'])))
+        self._print("\n")
+
+    def _print(self, *args):
+        """ internal print to self.fobj """
+        string = u" ".join(args) + '\n'
+        self.fobj.write(string.encode('utf8'))
 
     def print(self, typ, data):
+        """ *deprecated* - use display() """
+        return self.display(typ, data)
+
+    def display(self, typ, data):
+        """ display section of typ with data """
         if hasattr(self, 'print_' + typ):
             getattr(self, 'print_' + typ)(data)
 
         elif not data:
-            print("%s: %s" % (typ, data), file=self.fobj)
+            self._print("%s: %s" % (typ, data))
 
         elif isinstance(data, collections.Mapping):
-            print("\n", typ, file=self.fobj)
+            self._print("\n", typ)
             for k,v in data.items():
                 self.print(k, v)
 
@@ -164,4 +173,6 @@ class WhoisFormat(object):
                     self.print(typ, each)
 
         else:
-            print("%s: %s" % (typ, data), file=self.fobj)
+            self._print("%s: %s" % (typ, data))
+
+        self.fobj.flush()
