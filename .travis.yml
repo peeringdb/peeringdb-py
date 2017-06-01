@@ -9,8 +9,7 @@ env:
 before_install:
   - sudo apt-get -qq update
 install:
-  - python -m pip install -U pip
-  - pip install -U setuptools
+  - python -m pip install -U pip setuptools
   - pip install -U six
   - pip install codecov
   - pip install tox
