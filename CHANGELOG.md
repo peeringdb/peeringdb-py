@@ -11,6 +11,14 @@
 ### Security
 
 
+## [0.5.1]
+### Added
+- separate sync tests
+### Fixed
+- output whois in utf8, fixed #15
+- django requirements
+
+
 ## [0.5.0]
 ### Added
 - sync_only config option
