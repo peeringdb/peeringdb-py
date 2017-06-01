@@ -56,10 +56,6 @@ def django_configure(cfg):
 
     settings.configure(
         INSTALLED_APPS=[
-            'django.contrib.auth',
-            'django.contrib.contenttypes',
-            'django.contrib.admin',
-            'django.contrib.sessions',
             'django_peeringdb',
         ],
         DATABASES={
