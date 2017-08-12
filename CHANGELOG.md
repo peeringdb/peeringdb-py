@@ -11,6 +11,11 @@
 ### Security
 
 
+## [0.6.0]
+### Fixed
+- pinned dependencies version
+
+
 ## [0.5.1]
 ### Added
 - separate sync tests
