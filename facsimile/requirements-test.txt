@@ -1,6 +1,6 @@
 codecov>=2.0.5
 coverage>=4.1
-django>1.8,<1.9
+django>=1.11,<1.12
 pytest>=2.9.2
 pytest-cov>=2.2.1
 six==1.10.0
