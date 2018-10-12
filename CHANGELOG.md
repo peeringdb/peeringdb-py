@@ -5,6 +5,8 @@
 ## [Unreleased]
 ### Added
 ### Fixed
+- don't use pip.main, instead lauch a subprocess
+
 ### Changed
 ### Deprecated
 ### Removed

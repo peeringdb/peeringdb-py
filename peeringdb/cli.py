@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+import subprocess
+
 import click
 import munge
 import munge.codec
@@ -8,18 +10,13 @@ import peeringdb
 from peeringdb import client
 from peeringdb import util
 from peeringdb.whois import WhoisFormat
-import pip
 from pkg_resources import resource_stream
 import sys
 
 
 def install_deps(deps, quiet=True):
     for pkg in deps:
-        if pip.main(['install', pkg, '--quiet']):
-            # run again to display output
-            if not quiet:
-                pip.main(['install', pkg])
-            raise RuntimeError("failed to install %s" % (pkg,))
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', pkg])
 
 
 def get_deps(typ):
