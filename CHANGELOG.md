@@ -5,12 +5,15 @@
 ## [Unreleased]
 ### Added
 ### Fixed
-- don't use pip.main, instead lauch a subprocess
-
 ### Changed
 ### Deprecated
 ### Removed
 ### Security
+
+
+## [0.6.1] 2018-10-12
+### Fixed
+- don't use pip.main, instead lauch a subprocess
 
 
 ## [0.6.0]
