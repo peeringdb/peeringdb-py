@@ -3,5 +3,5 @@ coverage>=4.1
 django>=2.1,<2.2
 pytest>=2.9.2
 pytest-cov>=2.2.1
-six==1.11.0
+six==1.12.0
 tox>=2.3.1
