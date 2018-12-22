@@ -110,8 +110,6 @@ class WhoisFormat(object):
         fmt = self.mk_fmt(6, 20, 15, 20, 14)
         hdr = ('Role', 'Name', 'Email', 'URL', 'Phone')
         self.display_headers(fmt, hdr)
-        for poc in data:
-            self._print(fmt % (poc.get('role', ''), poc.get('name', ''), poc.get('email', ''), poc.get('url', ''), poc.get('phone', '')))
 
         for poc in data:
             self._print(fmt % (poc.get('role', ''), poc.get('name', ''), poc.get('email', ''), poc.get('url', ''), poc.get('phone', '')))
