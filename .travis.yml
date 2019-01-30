@@ -28,6 +28,6 @@ matrix:
       env:
         - TOX_ENV=py37
 script:
-  - tox -e TOX_ENV
+  - tox -e $TOX_ENV
 after_success:
   - codecov
