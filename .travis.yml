@@ -1,11 +1,8 @@
 
 language: python
-python: 2.7
 branches:
   except:
     - gh-pages
-env:
-  - TOX_ENV=py27
 before_install:
   - sudo apt-get -qq update
 install:
@@ -13,7 +10,24 @@ install:
   - pip install -U six
   - pip install codecov
   - pip install tox
+matrix:
+  include:
+    - python: 2.7
+      env:
+        - TOX_ENV=py27
+    - python: 3.4
+      env:
+        - TOX_ENV=py34
+    - python: 3.5
+      env:
+        - TOX_ENV=py35
+    - python: 3.6
+      env:
+        - TOX_ENV=py36
+    - python: 3.7
+      env:
+        - TOX_ENV=py37
 script:
-  - tox
+  - tox -e TOX_ENV
 after_success:
   - codecov
