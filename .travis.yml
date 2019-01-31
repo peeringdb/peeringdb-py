@@ -14,13 +14,22 @@ matrix:
   include:
     - python: 2.7
       env:
-        - TOXENV=py27
+        - TOXENV=py27-sync
+    - python: 2.7
+      env:
+        - TOXENV=py27-nosync
     - python: 3.5
       env:
-        - TOXENV=py35
+        - TOXENV=py35-sync
+    - python: 3.5
+      env:
+        - TOXENV=py35-nosync
     - python: 3.6
       env:
-        - TOXENV=py36
+        - TOXENV=py36-sync
+    - python: 3.6
+      env:
+        - TOXENV=py36-nosync
 script:
   - tox
 after_success:
