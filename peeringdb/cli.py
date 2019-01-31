@@ -16,40 +16,45 @@ import sys
 
 def install_deps(deps, quiet=True):
     for pkg in deps:
-        subprocess.check_call([sys.executable, '-m', 'pip', 'install', pkg])
+        subprocess.check_call([sys.executable, "-m", "pip", "install", pkg])
 
 
 def get_deps(typ):
     """ get deps from requirement file of specified type """
     deps = []
-    filename = 'deps/requirements-%s.txt' % typ
+    filename = "deps/requirements-%s.txt" % typ
     with resource_stream("peeringdb", filename) as req:
         for line in req:
             deps.append(line.strip())
     return deps
 
 
-def dict_prompt(data, key, default=''):
+def dict_prompt(data, key, default=""):
     data[key] = click.prompt(key, default=data.get(key, default))
 
 
 def db_prompt(data):
-    for k in ('host', 'port', 'name', 'user', 'password'):
+    for k in ("host", "port", "name", "user", "password"):
         dict_prompt(data, k)
 
 
 def cb_list_codecs(ctx, param, value):
     if not value or ctx.resilient_parsing:
         return
-    click.echo(', '.join(munge.codec.list_codecs()))
+    click.echo(", ".join(munge.codec.list_codecs()))
     ctx.exit()
 
 
 @click.group()
 @click.version_option()
-@click.option('--list-codecs', help='list available codecs',
-    is_flag=True, callback=cb_list_codecs,
-    expose_value=False, is_eager=True)
+@click.option(
+    "--list-codecs",
+    help="list available codecs",
+    is_flag=True,
+    callback=cb_list_codecs,
+    expose_value=False,
+    is_eager=True,
+)
 def cli():
     """
     PeeringDB
@@ -58,7 +63,7 @@ def cli():
 
 
 @cli.command()
-@click.option('--config', envvar='PEERINGDB_HOME', default='~/.peeringdb')
+@click.option("--config", envvar="PEERINGDB_HOME", default="~/.peeringdb")
 def conf_write(config):
     """ write config file with defaults """
     cfg = peeringdb.config.get_config(config)
@@ -68,8 +73,8 @@ def conf_write(config):
 
 
 @cli.command()
-@click.option('--config', envvar='PEERINGDB_HOME', default='~/.peeringdb')
-@click.option('--output-format', default='yaml', help='output data format')
+@click.option("--config", envvar="PEERINGDB_HOME", default="~/.peeringdb")
+@click.option("--output-format", default="yaml", help="output data format")
 def conf_dump(config, output_format):
     """ output current config """
     cfg = peeringdb.config.get_config(config)
@@ -79,47 +84,58 @@ def conf_dump(config, output_format):
 
 
 @cli.command()
-@click.option('--config', help='config directory',
-    envvar='PEERINGDB_HOME',
-    default='~/.peeringdb', prompt='config directory')
-@click.option('--database', help='database type for local sync',
-    type=click.Choice(['none', 'mysql', 'sqlite3']),
-    default='none',
-    prompt='database type for local sync (mysql,sqlite3)')
+@click.option(
+    "--config",
+    help="config directory",
+    envvar="PEERINGDB_HOME",
+    default="~/.peeringdb",
+    prompt="config directory",
+)
+@click.option(
+    "--database",
+    help="database type for local sync",
+    type=click.Choice(["none", "mysql", "sqlite3"]),
+    default="none",
+    prompt="database type for local sync (mysql,sqlite3)",
+)
 def configure(config, database):
     """ configure peeringdb """
     cfg = peeringdb.config.get_config(config)
     db = {}
-    if database != 'none':
+    if database != "none":
         print("enter the database config, blank for engine defaults")
-        db['engine'] = database
-        if database == 'mysql':
+        db["engine"] = database
+        if database == "mysql":
             db_prompt(db)
-        elif database == 'sqlite3':
-            db['name'] = click.prompt('sqlite filename', default='peeringdb.sqlite3')
+        elif database == "sqlite3":
+            db["name"] = click.prompt(
+                "sqlite filename", default="peeringdb.sqlite3"
+            )
 
-    cfg['database'] = db
+    cfg["database"] = db
     peeringdb.config.write_config(cfg, config)
     return 0
 
 
 @cli.command()
-@click.option('--config', envvar='PEERINGDB_HOME', default='~/.peeringdb')
+@click.option("--config", envvar="PEERINGDB_HOME", default="~/.peeringdb")
 def depcheck(config):
     """ check for dependencies, install if necessary """
     cfg = peeringdb.config.get_config(config)
-    engine = cfg.get('database', {}).get('engine')
-#    if engine == 'mysql':
-#    elif engine == 'sqlite3':
+    engine = cfg.get("database", {}).get("engine")
+    #    if engine == 'mysql':
+    #    elif engine == 'sqlite3':
     install_deps(get_deps(engine))
     return 0
 
 
 @cli.command()
-@click.option('--config', envvar='PEERINGDB_HOME', default='~/.peeringdb')
-@click.option('--depth', default=2, help='how many levels of nested objects to fetch')
-@click.option('--output-format', default='yaml', help='output data format')
-@click.argument('poids', nargs=-1)
+@click.option("--config", envvar="PEERINGDB_HOME", default="~/.peeringdb")
+@click.option(
+    "--depth", default=2, help="how many levels of nested objects to fetch"
+)
+@click.option("--output-format", default="yaml", help="output data format")
+@click.argument("poids", nargs=-1)
 def get(config, depth, output_format, poids):
     """ get an object from peeringdb """
     pdb = client.PeeringDB(conf_dir=config)
@@ -132,8 +148,8 @@ def get(config, depth, output_format, poids):
 
 
 @cli.command()
-@click.option('--config', envvar='PEERINGDB_HOME', default='~/.peeringdb')
-@click.argument('poids', nargs=-1)
+@click.option("--config", envvar="PEERINGDB_HOME", default="~/.peeringdb")
+@click.argument("poids", nargs=-1)
 def whois(config, poids):
     """ simulate a whois lookup
 
@@ -153,7 +169,7 @@ def whois(config, poids):
 
 
 @cli.command()
-@click.option('--config', envvar='PEERINGDB_HOME', default='~/.peeringdb')
+@click.option("--config", envvar="PEERINGDB_HOME", default="~/.peeringdb")
 def sync(config):
     """ synchronize to a local database """
     # import here until the db is properly abstracted
@@ -166,7 +182,7 @@ def sync(config):
 
 
 @cli.command()
-@click.option('--config', envvar='PEERINGDB_HOME', default='~/.peeringdb')
+@click.option("--config", envvar="PEERINGDB_HOME", default="~/.peeringdb")
 def drop_tables(config):
     """ drop all peeringdb tables NOTE this will delete data """
     # import here until the db is properly abstracted
@@ -176,4 +192,3 @@ def drop_tables(config):
     db = LocalDB(cfg)
     db.drop_tables()
     return 0
-

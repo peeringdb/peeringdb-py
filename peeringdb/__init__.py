@@ -1,2 +1,2 @@
 # namespace imports
-from .client import PeeringDB  # noqa
+from peeringdb.client import PeeringDB  # noqa

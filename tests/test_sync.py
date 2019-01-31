@@ -1,4 +1,3 @@
-
 from peeringdb.localdb import LocalDB
 import pytest
 

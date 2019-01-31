@@ -1,4 +1,3 @@
-
 import django
 import os
 from django.conf import settings
@@ -14,83 +13,61 @@ def django_configure(cfg):
     if settings.configured:
         return
 
-    db_fields = (
-        'ENGINE',
-        'HOST',
-        'NAME',
-        'PASSWORD',
-        'PORT',
-        'USER',
-    )
+    db_fields = ("ENGINE", "HOST", "NAME", "PASSWORD", "PORT", "USER")
     db = {}
-    if 'database' in cfg:
-        for k,v in cfg['database'].items():
+    if "database" in cfg:
+        for k, v in list(cfg["database"].items()):
             k = k.upper()
             if k in db_fields:
                 db[k] = v
 
     else:
-        db = {
-            'ENGINE': 'sqlite3',
-            'NAME': ':memory:',
-        }
+        db = {"ENGINE": "sqlite3", "NAME": ":memory:"}
 
-    if 'peeringdb' in cfg:
+    if "peeringdb" in cfg:
         extra = {
-            'PEERINGDB_SYNC_URL': cfg['peeringdb'].get('url', ''),
-            'PEERINGDB_SYNC_USERNAME': cfg['peeringdb'].get('user', ''),
-            'PEERINGDB_SYNC_PASSWORD': cfg['peeringdb'].get('password', ''),
-            'PEERINGDB_SYNC_ONLY': cfg['peeringdb'].get('sync_only', []),
-            'PEERINGDB_SYNC_STRIP_TZ': True,
+            "PEERINGDB_SYNC_URL": cfg["peeringdb"].get("url", ""),
+            "PEERINGDB_SYNC_USERNAME": cfg["peeringdb"].get("user", ""),
+            "PEERINGDB_SYNC_PASSWORD": cfg["peeringdb"].get("password", ""),
+            "PEERINGDB_SYNC_ONLY": cfg["peeringdb"].get("sync_only", []),
+            "PEERINGDB_SYNC_STRIP_TZ": True,
         }
     else:
-        extra = {
-            'PEERINGDB_SYNC_STRIP_TZ': True,
-        }
+        extra = {"PEERINGDB_SYNC_STRIP_TZ": True}
 
     # open file reletive to config dir
-    if '__config_dir__' in cfg:
-        os.chdir(cfg['__config_dir__'])
+    if "__config_dir__" in cfg:
+        os.chdir(cfg["__config_dir__"])
 
-    db['ENGINE'] = 'django.db.backends.' + db['ENGINE']
+    db["ENGINE"] = "django.db.backends." + db["ENGINE"]
 
     settings.configure(
-        INSTALLED_APPS=[
-            'django_peeringdb',
-        ],
-        DATABASES={
-            'default': db
-        },
+        INSTALLED_APPS=["django_peeringdb"],
+        DATABASES={"default": db},
         DEBUG=False,
         TEMPLATE_DEBUG=True,
         LOGGING={
-            'version': 1,
-            'disable_existing_loggers': False,
-            'filters': {
-                'dev_warnings': {
-                    }
-                },
-            'handlers': {
-                'stderr': {
-                    'level': 'DEBUG',
-                    'class': 'logging.StreamHandler',
-                    'filters': ['dev_warnings'],
-                    },
-                },
-            'loggers': {
-                '': {
-                    'handlers': ['stderr'],
-                    'level': 'DEBUG',
-                    'propagate': False
-                },
+            "version": 1,
+            "disable_existing_loggers": False,
+            "filters": {"dev_warnings": {}},
+            "handlers": {
+                "stderr": {
+                    "level": "DEBUG",
+                    "class": "logging.StreamHandler",
+                    "filters": ["dev_warnings"],
+                }
+            },
+            "loggers": {
+                "": {
+                    "handlers": ["stderr"],
+                    "level": "DEBUG",
+                    "propagate": False,
+                }
             },
         },
-
         USE_TZ=False,
         # add user defined iso code for Kosovo
-        COUNTRIES_OVERRIDE={
-            'XK': _('Kosovo'),
-        },
+        COUNTRIES_OVERRIDE={"XK": _("Kosovo")},
         **extra
     )
 
@@ -113,7 +90,7 @@ class LocalDB(object):
         warnings.filterwarnings("ignore")
 
     def create(self):
-        call_command('migrate', interactive=False)
+        call_command("migrate", interactive=False)
 
     def drop_tables(self):
         """ drop tables this added """
@@ -121,4 +98,4 @@ class LocalDB(object):
 
     def sync(self):
         self.create()
-        call_command('pdb_sync', interactive=False)
+        call_command("pdb_sync", interactive=False)

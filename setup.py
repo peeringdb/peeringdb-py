@@ -27,7 +27,9 @@ setup(
     packages=["peeringdb"],
     package_data={"peeringdb": ["deps/requirements*.txt"]},
     url="https://github.com/peeringdb/peeringdb-py",
-    download_url="https://github.com/peeringdb/peeringdb-py/%s" % version,
+    download_url="https://github.com/peeringdb/peeringdb-py/{}".format(
+        version
+    ),
     include_package_data=True,
     install_requires=requirements,
     test_requires=test_requirements,
