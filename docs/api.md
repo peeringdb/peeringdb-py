@@ -1,63 +1,46 @@
-
-# Application Program Interface
-
+# Application Programming Interface
 ## Instantiate
-    from peeringdb import PeeringDB
 
+    from peeringdb import PeeringDB
     pdb = PeeringDB()
 
 ## Calls
+Methods on `Client` correspond directly to PeeringDB REST API calls.
 
-### all
-    def all(self, typ, **kwargs):
+### `get(self, res, id)`
+Gets a single object of specified type and id.
 
+### `all(self, res, **kwargs)`
 Gets all objects of specified type, matching query from kwargs, valid kwargs are available [here](http://docs.peeringdb.com/api_specs/#operations).
 
-### get
-    def get(self, typ, id, **kwargs):
+### `query(self, res)`
+Returns a wrapper object that directly performs operations on data of the specified resource type.
 
-Gets a single object of specified type and id, matching query from kwargs, valid kwargs are available [here](http://docs.peeringdb.com/api_specs/#operations).
-
-### create
-    def create(self, typ, data, return_response=False):
-
-Create an object of specified type from data.
-
-### update
-    def update(self, typ, id, **kwargs):
-
+### `update(self, res, id, **kwargs)`
 Update an object of specified type from kwargs.
-
-### save
-    def save(self, typ, data):
-
-Saves object of specified type from data.
-
-### rm
-    def rm(self, typ, id):
-
-Removes specified object.
-
-### type_wrap
-    def type_wrap(self, typ):
-
-Returns an object that directly does operations on the specified type.
-
 
 ## Full Example
 
-    # unauthenticated to default URL (unless ~/.peeringdb/config.yaml exists)
-    from peeringdb import PeeringDB
+    from peeringdb import PeeringDB, config, resource
 
+    # same as PeeringDB(config.load_config())
     pdb = PeeringDB()
 
+    # sync database with remote data
+    # unauthenticated to default URL unless configured
+    pdb.update_all()
+
     # get a single record
-    net = pdb.type_wrap('net')
+    n1 = pdb.get(resource.Network, 1)
+
+    # equivalently:
+    net = pdb.tags.net              # type wrap - new method
+    # net = pdb.type_wrap('net')      # old method
+
     # both are equal
-    assert net.get(1) == pdb.get('net', 1)
+    assert net.get(1) == n1
 
     # query by parameter
-    pdb.all('net', asn=2906)
+    pdb.all(resource.Network, asn=2906)
     # or
     net.all(asn=2906)
-

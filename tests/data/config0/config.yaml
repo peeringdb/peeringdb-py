@@ -1,5 +1,8 @@
-peeringdb:
-  url: https://www.peeringdb.com/api
-  password: ''
+sync:
+  url: https://test.peeringdb.com/api
   timeout: 60
-  user: ''
+orm:
+  database:
+    engine: sqlite3
+    name: ':memory:'
+  migrate: true

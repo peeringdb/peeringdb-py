@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 version = open('facsimile/VERSION').read().strip()
 requirements = open('facsimile/requirements.txt').read().split("\n")
@@ -16,16 +16,11 @@ setup(
         'Intended Audience :: System Administrators',
         'Intended Audience :: Telecommunications Industry',
         'License :: OSI Approved :: Apache Software License',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.5',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Internet',
     ],
-    packages=[
-        'peeringdb',
-    ],
-    package_data={'peeringdb': [
-        'deps/requirements*.txt',
-    ]},
+    packages=['peeringdb'],
     url='https://github.com/peeringdb/peeringdb-py',
     download_url='https://github.com/peeringdb/peeringdb-py/%s' % version,
     include_package_data=True,
@@ -33,7 +28,7 @@ setup(
     test_requires=test_requirements,
     entry_points={
         'console_scripts': [
-            'peeringdb=peeringdb.cli:cli',
+            'peeringdb=peeringdb.cli:main',
         ]
     },
     zip_safe=True,

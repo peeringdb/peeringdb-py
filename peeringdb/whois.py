@@ -11,7 +11,7 @@ class WhoisFormat(object):
 
         self.display_names = {
             'fac_set': 'Facilities',
-            }
+        }
 
     def mk_fmt(self, *widths):
         return '%-' + 's %-'.join(map(str, widths)) + 's'
@@ -61,7 +61,7 @@ class WhoisFormat(object):
         self.display_headers(fmt, headers)
 
         for each in data:
-            row = tuple(self._get_val(each, k) for k,v in each.items())
+            row = tuple(self._get_val(each, k) for k, v in each.items())
             self._print(fmt % row)
 
         self._print("\n")
@@ -96,9 +96,11 @@ class WhoisFormat(object):
         self.display_section("Peering Policy Information")
         self.display_field(fmt, data, 'policy_url', 'URL')
         self.display_field(fmt, data, 'policy_general', 'General Policy')
-        self.display_field(fmt, data, 'policy_locations', 'Location Requirement')
+        self.display_field(fmt, data, 'policy_locations',
+                           'Location Requirement')
         self.display_field(fmt, data, 'policy_ratio', 'Ratio Requirement')
-        self.display_field(fmt, data, 'policy_contracts', 'Contract Requirement')
+        self.display_field(fmt, data, 'policy_contracts',
+                           'Contract Requirement')
         self._print("\n")
 
         self.check_set(data, 'poc_set')
@@ -110,11 +112,11 @@ class WhoisFormat(object):
         fmt = self.mk_fmt(6, 20, 15, 20, 14)
         hdr = ('Role', 'Name', 'Email', 'URL', 'Phone')
         self.display_headers(fmt, hdr)
-        for poc in data:
-            self._print(fmt % (poc.get('role', ''), poc.get('name', ''), poc.get('email', ''), poc.get('url', ''), poc.get('phone', '')))
 
         for poc in data:
-            self._print(fmt % (poc.get('role', ''), poc.get('name', ''), poc.get('email', ''), poc.get('url', ''), poc.get('phone', '')))
+            self._print(fmt % (poc.get('role', ''), poc.get('name', ''),
+                               poc.get('email', ''), poc.get('url', ''),
+                               poc.get('phone', '')))
 
         self._print("\n")
 
@@ -124,7 +126,9 @@ class WhoisFormat(object):
         hdr = ('Facility Name', 'ASN', 'City', 'CO')
         self.display_headers(fmt, hdr)
         for each in data:
-            self._print(fmt % (each.get('name', each.get('id')), each.get('local_asn', ''), each.get('city', ''), each.get('country', '')))
+            self._print(fmt % (each.get('name', each.get('id')),
+                               each.get('local_asn', ''), each.get('city', ''),
+                               each.get('country', '')))
         self._print("\n")
 
     def print_netixlan_set(self, data):
@@ -134,18 +138,21 @@ class WhoisFormat(object):
         self.display_headers(fmt, hdr)
         for ix in data:
             if ix.get('ipaddr4', None):
-                self._print(fmt % (ix.get('name', ix.get('ixlan_id')), ix['asn'], ix['ipaddr4'], pretty_speed(ix['speed'])))
+                self._print(
+                    fmt % (ix.get('name', ix.get('ixlan_id')), ix['asn'],
+                           ix['ipaddr4'], pretty_speed(ix['speed'])))
             if ix.get('ipaddr6', None):
                 if ix.get('ipaddr4', None):
                     self._print(fmt % ('', '', ix['ipaddr6'], ''))
                 else:
-                    self._print(fmt % (ix['name'], ix['asn'], ix['ipaddr6'], pretty_speed(ix['speed'])))
+                    self._print(fmt % (ix['name'], ix['asn'], ix['ipaddr6'],
+                                       pretty_speed(ix['speed'])))
         self._print("\n")
 
     def _print(self, *args):
         """ internal print to self.fobj """
         string = u" ".join(args) + '\n'
-        self.fobj.write(string.encode('utf8'))
+        self.fobj.write(string)
 
     def print(self, typ, data):
         """ *deprecated* - use display() """
@@ -161,7 +168,7 @@ class WhoisFormat(object):
 
         elif isinstance(data, collections.Mapping):
             self._print("\n", typ)
-            for k,v in data.items():
+            for k, v in data.items():
                 self.print(k, v)
 
         elif isinstance(data, (list, tuple)):
@@ -171,7 +178,6 @@ class WhoisFormat(object):
             else:
                 for each in data:
                     self.print(typ, each)
-
         else:
             self._print("%s: %s" % (typ, data))
 
