@@ -1,34 +1,118 @@
-
-import os
-from peeringdb import config
 import pytest
+import tempfile, contextlib
+from confu.exceptions import ValidationError
+try:
+    from tempfile import TemporaryDirectory
+except ImportError:
+    import shutil
+    @contextlib.contextmanager
+    def TemporaryDirectory():
+        path = tempfile.mkdtemp()
+        yield path
+        shutil.rmtree(path)
 
+import helper
 
-test_dir = os.path.relpath(os.path.dirname(__file__))
-default_config = config.default_config()
+import peeringdb
+from peeringdb import config
 
+helper.set_data_path(__file__, 'data')
 
+# Check round-tripping of config
 def test_default_config():
-    cfg = config.get_config(None)
-    assert default_config == cfg
-    assert '__config_dir__' not in cfg
+    DEFAULT = config.default_config()
+    with TemporaryDirectory() as path:
+        cfg = config.load_config(path)
+    assert DEFAULT == cfg
 
-
-def test_config_dir():
+def test_load_config(config0_dir):
     with pytest.raises(IOError):
-        config.get_config('nonexistant')
+        config.load_config('nonexistent')
 
+    c = config.load_config(config0_dir)
+    DEFAULT = config.default_config()
+    assert c['sync'] != DEFAULT['sync']
+    assert c['sync']['timeout'] == 60
+    assert c['sync']['strip_tz'] == DEFAULT['sync']['strip_tz']
+    assert c['sync']['url'] != DEFAULT['sync']['url']
 
-def test_config0():
-    cfg_dir = os.path.join(test_dir, 'data', 'config0')
-    cfg = config.get_config(cfg_dir)
+def test_write():
+    with TemporaryDirectory() as td:
+        DEFAULT = config.default_config()
+        config.write_config(DEFAULT, td)
 
-    assert cfg_dir == cfg['__config_dir__']
+def test_schema_migration():
+    "Test that old config files are successfully detected and converted to new schema"
 
-    assert default_config['database'] == cfg['database']
-    assert default_config['peeringdb'] != cfg['peeringdb']
-    assert 60 == cfg['peeringdb']['timeout']
+    old_data = {
+        'peeringdb': {
+            'url': 'https://test.peeringdb.com/api',
+            'user': 'dude',
+            'password': '12345',
+            'timeout': 5,
+        },
+        'database': {
+            'engine': 'sqlite3',
+            'name': 'peeringdb.sqlite3',
+            'host': '',
+            'port': 9000,
+            'user': 'guy',
+            'password': 'abc',
+        }
+    }
+    new_data = {
+        'sync': {
+            'url': 'https://test.peeringdb.com/api',
+            'user': 'dude',
+            'password': '12345',
+            'timeout': 5,
+            'only': [],
+            'strip_tz': 1,
+        },
+        'orm': {
+            'backend': 'django_peeringdb',
+            'secret_key': '',
+            'migrate': True,
+            'database': {
+                'engine': 'sqlite3',
+                'name': 'peeringdb.sqlite3',
+                'host': '',
+                'port': 9000,
+                'user': 'guy',
+                'password': 'abc',
+            }
+        }
+    }
 
+    # Test detection
+    assert config.detect_old(old_data)
+    assert not config.detect_old(new_data)
+    # Try partial data
+    old_part = {
+        'peeringdb': {
+            'url': 'https://test.peeringdb.com/api',
+            'timeout': 10,
+        }
+    }
+    assert config.detect_old(old_part)
+    # empty case
+    assert not config.detect_old({})
 
-def test_write_conf():
-    pass
+    # Test conversion
+    conv_data = config.convert_old(old_data)
+    assert config.CLIENT_SCHEMA.validate(conv_data)
+    assert not config.detect_old(conv_data)
+    assert conv_data == new_data
+
+    conv_part = config.convert_old(old_part)
+    assert config.CLIENT_SCHEMA.validate(conv_part)
+
+@contextlib.contextmanager
+def _patch_input(mp, inputs):
+    def _input(_):
+        return inputs.pop()
+    with mp.context() as m:
+        m.setattr('builtins.input', _input)
+        yield
+
+# TODO test_prompt_config
