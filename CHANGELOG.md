@@ -1,7 +1,6 @@
 
 # peeringdb-py change log
 
-
 ## [Unreleased]
 ### Added
 ### Fixed
@@ -9,6 +8,11 @@
 ### Deprecated
 ### Removed
 ### Security
+
+
+## [1.0.0] 2019-10-29
+### Changed
+- client refactor
 
 
 ## [0.6.1] 2018-10-12
