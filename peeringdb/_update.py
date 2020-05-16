@@ -94,7 +94,7 @@ class UpdateContext(object):
         self._jobs = {R: {}
                       for R in resource.all_resources()}, threading.Lock()
         self.disable_partial = True  # TODO
-        self.start_time = datetime.now()
+        self.start_time = datetime.utcnow()
 
     @_tasks.run_task
     def sync_resource(self, res, since=None):
