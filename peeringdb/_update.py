@@ -8,11 +8,7 @@ from datetime import datetime
 
 from peeringdb import resource, get_backend
 from peeringdb import _sync, _fetch, _config_logs
-
-try:
-    from peeringdb import _tasks_async as _tasks
-except:
-    from peeringdb import _tasks_sequential as _tasks
+from peeringdb import _tasks_async as _tasks
 
 
 class _CancelSave(Exception):

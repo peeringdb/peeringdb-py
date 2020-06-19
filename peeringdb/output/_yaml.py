@@ -57,6 +57,7 @@ def represent_wrapped(dumper, wrap):
 def default_representer(dumper, data):
     # Py2 workaround
     rep_func = getattr(dumper, 'represent_unicode', None)
+    print('using represent_unicode')
     if rep_func is None:
         rep_func = dumper.represent_str
     return rep_func(str(data))

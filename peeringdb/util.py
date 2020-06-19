@@ -3,11 +3,6 @@ from functools import reduce
 
 from peeringdb import resource, get_backend
 
-try:
-    input = raw_input
-except NameError:
-    pass
-
 
 def split_ref(string):
     """ splits a string into (tag, id) """
