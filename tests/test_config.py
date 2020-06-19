@@ -16,8 +16,6 @@ import helper
 import peeringdb
 from peeringdb import config
 
-helper.set_data_path(__file__, 'data')
-
 # Check round-tripping of config
 def test_default_config():
     DEFAULT = config.default_config()

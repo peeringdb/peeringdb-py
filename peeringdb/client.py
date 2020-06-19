@@ -82,3 +82,7 @@ class Client:
         "Get resources using a filter condition"
         B = get_backend()
         return B.get_objects(B.get_concrete(res))
+
+    @property
+    def backend(self):
+        return get_backend()

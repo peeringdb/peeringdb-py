@@ -4,7 +4,6 @@ import helper
 import peeringdb
 from peeringdb import resource
 
-helper.set_data_path(__file__, 'data')
 client = helper.client_fixture('insert_full.sql')
 NET0 = 7
 
