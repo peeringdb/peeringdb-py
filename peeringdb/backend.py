@@ -11,7 +11,8 @@ def reftag_to_cls(fn):
     and will properly set them to class references if a string (reftag) is
     passed as the value
     """
-    names, _, _, values = inspect.getargspec(fn)
+    spec = inspect.getfullargspec(fn)
+    names, values = spec.args, spec.defaults
     @wraps(fn)
     def wrapped(*args, **kwargs):
         i = 0
