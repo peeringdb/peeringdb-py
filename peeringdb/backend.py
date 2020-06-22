@@ -1,8 +1,6 @@
 from functools import wraps
 import inspect
 
-import six
-
 from peeringdb.resource import RESOURCES_BY_TAG
 
 def reftag_to_cls(fn):
@@ -19,9 +17,9 @@ def reftag_to_cls(fn):
         backend = args[0]
         for name in names[1:]:
             value = args[i]
-            if name == "concrete" and isinstance(value, six.string_types):
+            if name == "concrete" and isinstance(value, str):
                 args[i] = backend.REFTAG_CONCRETE[value]
-            elif name == "resource" and isinstance(value, six.string_types):
+            elif name == "resource" and isinstance(value, str):
                 args[i] = backend.REFTAG_RESOURCE[value]
             i += 1
         return fn(*args, **kwargs)
