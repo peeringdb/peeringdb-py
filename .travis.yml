@@ -1,16 +1,16 @@
 dist: xenial
 language: python
 python:
-  - "3.4"
   - "3.5"
   - "3.6"
+  - "3.7"
 branches:
   except:
     - gh-pages
 matrix:
   fast_finish: true
 env:
-  - TOX_ENV=py36
+  - TRAVIS=True
 before_install:
   - sudo apt-get -qq update
 install:
