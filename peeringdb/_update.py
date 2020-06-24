@@ -5,18 +5,18 @@ import logging
 import threading
 from itertools import chain
 from datetime import datetime
+from contextlib import contextmanager
 
 from peeringdb import resource, get_backend
 from peeringdb import _sync, _fetch, _config_logs
+from peeringdb.resource import all_resources
 
-try:
-    from peeringdb import _tasks_async as _tasks
-except:
-    from peeringdb import _tasks_sequential as _tasks
+from peeringdb import _tasks_sequential as _tasks
+wrap_generator = _tasks.wrap_generator
 
 
 class _CancelSave(Exception):
-    "Dummy exception to cancel transaction"
+    "Token exception to cancel transaction"
     pass
 
 
@@ -63,19 +63,22 @@ class Updater(object):
             rs = resource.all_resources()
         ctx = self._ContextClass(self)
         for r in rs:
-            self._atomic_update(lambda: ctx.sync_resource(r, since=since))
+            with self._transaction():
+                ctx.sync_resource(r, since=since)
 
     def _update(self, res, fetch_func, depth):
         ctx = self._ContextClass(self)
         data, e = fetch_func()
         if e: raise e
         self._log.info("Updates to be processed: {}".format(len(data)))
-        self._atomic_update(lambda: ctx.sync_rows(res, data, depth + 1))
+        with self._transaction():
+            ctx.sync_rows(res, data, depth + 1)
 
-    def _atomic_update(self, sync_func):
+    @contextmanager
+    def _transaction(self):
         try:
             with get_backend().atomic_transaction():
-                sync_func()
+                yield
                 if self.dry_run:
                     raise _CancelSave
                 self._log.debug('Committing transaction')
@@ -113,10 +116,8 @@ class UpdateContext(object):
         return _tasks.gather(self._schedule_rows(res, rows, depth))
 
     def _schedule_rows(self, res, rows, depth):
-        return [
-            self.set_job((res, row['id']), self.sync_row,
-                         (res, row, depth)) for row in rows
-        ]
+        return [self.set_job((res, row['id']), self.sync_row, (res, row, depth))
+                for row in rows]
 
     def get_task(self, key):
         """Get a scheduled task, or none"""
@@ -184,7 +185,8 @@ class UpdateContext(object):
             raise ValueError('depth > 0 sync is disabled')
 
         B = get_backend()
-        obj, fetched, dangling = _sync.initialize_object(B, res, row)
+        init = (_sync.initialize_object)
+        obj, fetched, dangling = init(B, res, row)
 
         # self._log.debug(' fetched: %s', fetched)
         # self._log.debug(' dangling: %s', dangling)
@@ -201,6 +203,7 @@ class UpdateContext(object):
             sync_jobs.extend(
                 self.set_job((R, pk), self.sync_row, (R, subrow, depth - 1))
                 for pk, subrow in sub.items() if not (pk in have))
+
         for R, pks in dangling.items():
             pks = pks.difference(_have(R, pks))
             pending = self.pending_tasks(R)
@@ -246,11 +249,8 @@ class UpdateContext(object):
                     return {}, None
                 return data, err
 
-            fetch_job = _tasks.UpdateTask(
-                self.fetch_and_index(fetch),
-                (res, dup_id))
-            job = self.set_job((res, dup_id), self.update_after,
-                               (res, dup_id, 0, fetch_job))
+            fetch_job = _tasks.UpdateTask(self.fetch_and_index(fetch), (res, dup_id))
+            job = self.set_job((res, dup_id), self.update_after, (res, dup_id, 0, fetch_job))
             sync_jobs.append(job)
 
         if missing:
