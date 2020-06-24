@@ -7,6 +7,7 @@
 ### Changed
 ### Deprecated
 ### Removed
+- remove py2.7 support (#37)
 ### Security
 
 

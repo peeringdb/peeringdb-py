@@ -69,7 +69,7 @@ def test_droptables(runcli, client, monkeypatch):
     # not empty before drop?
     assert client.tags.net.all()
     # pass in "yes" confirmation
-    monkeypatch.setattr('sys.stdin', io.StringIO(u'yes'))
+    monkeypatch.setattr('sys.stdin', io.StringIO('yes'))
     assert runcli('drop-tables') == 0
     # empty after drop?
     assert not client.tags.net.all()

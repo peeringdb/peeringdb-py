@@ -1,7 +1,6 @@
 dist: xenial
 language: python
 python:
-  - "2.7"
   - "3.4"
   - "3.5"
   - "3.6"
@@ -11,7 +10,7 @@ branches:
 matrix:
   fast_finish: true
 env:
-  - TOX_ENV=py27
+  - TOX_ENV=py36
 before_install:
   - sudo apt-get -qq update
 install:
