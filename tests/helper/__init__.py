@@ -4,6 +4,7 @@ import pytest
 import peeringdb
 
 SQL_COUNT_ROWS="select count(*) from peeringdb_facility"
+
 CONFIG = {
     'orm': {
         'backend': 'django_peeringdb',
