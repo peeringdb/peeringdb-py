@@ -53,9 +53,6 @@ def reset_data(filename=None):
     # Make sure db is empty
     client = peeringdb.client.Client(CONFIG)
     client.backend.delete_all()
-    with connection.cursor() as c:
-        count = c.execute(SQL_COUNT_ROWS).fetchone()
-        assert count == (0,), count
 
     if filename is None:
         print("Resetting database to empty")
