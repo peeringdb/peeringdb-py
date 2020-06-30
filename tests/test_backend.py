@@ -24,7 +24,7 @@ def test_init():
     with pytest.raises(peeringdb.BackendError):
         peeringdb.initialize_backend('_mock')
 
-client = helper.client_fixture('insert_full.sql')
+client = helper.client_fixture('full')
 def test_delete_all(client):
     from django.db import connection
 

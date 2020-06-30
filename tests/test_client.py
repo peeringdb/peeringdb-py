@@ -4,7 +4,7 @@ import helper
 import peeringdb
 from peeringdb import resource
 
-client = helper.client_fixture('insert_full.sql')
+client = helper.client_fixture('full')
 NET0 = 7
 
 def test_nonexistent_config():

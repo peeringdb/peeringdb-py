@@ -7,7 +7,7 @@ from peeringdb import cli as _cli
 
 CMD = 'peeringdb_test'
 
-client = helper.client_fixture('insert_full.sql')
+client = helper.client_fixture('full')
 
 # Run with config dir
 class RunCli:

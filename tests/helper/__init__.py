@@ -2,6 +2,7 @@ from pathlib import Path
 import pytest
 
 import peeringdb
+from peeringdb.util import client_load
 
 SQL_COUNT_ROWS="select count(*) from peeringdb_facility"
 
@@ -49,29 +50,25 @@ def data_path():
         raise RuntimeError('data path not set')
     return _DATA_PATH
 
-def reset_data(filename=None):
+def reset_data(dumppath=None):
     from django.db import connection # FIXME django-specific
     # Make sure db is empty
     client = peeringdb.client.Client(CONFIG)
     client.backend.delete_all()
 
-    if filename is None:
+    if dumppath is None:
         print("Resetting database to empty")
         return
 
-    print("Resetting database from", filename)
-    path = data_path() / filename
-    sql = path.open().read()
+    path = data_path() / dumppath
+    assert path.is_dir(), path
+    print("Resetting database from", path)
 
-    with connection.cursor() as c:
-        c.executescript(sql)
-
-def client_for_data(filename):
-    reset_data(filename)
-    return peeringdb.client.Client(CONFIG)
+    client_load(client, path)
 
 # Fixture factory
 def client_fixture(filename, scope='function'):
     def func():
-        return client_for_data(filename)
+        reset_data(filename)
+        return peeringdb.client.Client(CONFIG)
     return pytest.fixture(scope=scope)(func)

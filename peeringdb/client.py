@@ -1,8 +1,10 @@
+from collections import OrderedDict
+
 import munge.util
-from peeringdb import config
 from twentyc.rpc import RestClient
 
 import peeringdb
+from peeringdb import config
 from peeringdb import get_backend, resource
 from peeringdb.resource import get_resource, Network
 from peeringdb.sync import Updater, Fetcher
@@ -54,10 +56,14 @@ class Client:
         self.update = self._updater.update
         self.update_where = self._updater.update_where
 
-        tag_attrs = {
-            res.tag: _Query(self, res)
+        tag_res = OrderedDict([
+            (res.tag, _Query(self, res))
             for res in resource.all_resources()
-        }
+        ])
+        tag_attrs = {**tag_res, **{
+            'keys': lambda self: list(tag_res.keys()),
+            'all': lambda self: list(tag_res.values()),
+        }}
         self._Tags = type('_Tags', (), tag_attrs)
         self.tags = self._Tags()
 

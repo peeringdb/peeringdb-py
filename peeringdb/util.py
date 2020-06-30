@@ -1,5 +1,8 @@
 import logging, re
 from functools import reduce
+import json
+
+from django.core import serializers
 
 from peeringdb import resource, get_backend
 
@@ -93,3 +96,27 @@ def limit_mem(limit=(4 * 1024**3)):
 
     _log = logging.getLogger(__name__)
     _log.debug('Set soft memory limit: %s => %s', soft, softnew)
+
+
+def client_dump(client, path):
+    "Serialize all objects into JSON files in directory"
+    assert path.is_dir(), path
+    for q in client.tags.all():
+        ser = serializers.serialize('json', q.all())
+        outpath = path / "{}.json".format(q.res.tag)
+        # breakpoint()
+        with open(outpath, 'w') as out:
+            print("Writing {}".format(outpath))
+            j = json.loads(ser)
+            json.dump(j, out, indent=4, sort_keys=True)
+            # out.write(ser)
+
+
+def client_load(client, path):
+    "Deserialize from JSON files under directory"
+    for q in client.tags.all():
+        respath = path / "{}.json".format(q.res.tag)
+        with open(str(respath), 'r') as fin:
+            des = serializers.deserialize('json', fin)
+            for obj in des:
+                obj.save()
