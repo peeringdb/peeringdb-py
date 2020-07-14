@@ -28,6 +28,7 @@ def test_full(client_empty):
     client = get_client()
     rs = all_resources()
     client.update_all(rs)
+    assert client.get(Network, FIRST_NET)
 
 # Ensure fetching is not order-dependent
 def test_reversed(client_empty):
