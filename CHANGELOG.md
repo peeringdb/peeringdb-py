@@ -5,6 +5,10 @@
 ### Added
 - add py3.7 to tox and travis tests
 ### Fixed
+- fixed sync issues with django-peeringdb and django3 (peeringdb/django-peeringdb#37)
+- fixed sync issues with django-peeringdb and mysql (#41)
+- better data for tests (#40)
+
 ### Changed
 ### Deprecated
 ### Removed
