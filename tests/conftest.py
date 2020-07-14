@@ -16,7 +16,7 @@ peeringdb._config_logs(logging.DEBUG)
 
 @pytest.fixture
 def config0_dir():
-    return _path.join(helper.data_path(), 'config0')
+    return str(helper.data_path()/'config0')
 
 client_empty = helper.client_fixture(None)
 

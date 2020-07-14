@@ -7,13 +7,12 @@ from peeringdb import cli as _cli
 
 CMD = 'peeringdb_test'
 
-helper.set_data_path(__file__, 'data')
-client = helper.client_fixture('insert_full.sql')
+client = helper.client_fixture('full')
 
 # Run with config dir
 class RunCli:
     def __init__(self, c):
-        self.config_dir = c
+        self.config_dir = str(c)
     def __call__(self, *args):
         fullargs = [CMD]
         fullargs.extend(['-C', self.config_dir])

@@ -22,7 +22,7 @@ def get_pclient():
     c._updater._ContextClass = _PartialEnabledContext
     return c
 
-client_dup = helper.client_fixture('insert_nonunique.sql')
+client_dup = helper.client_fixture('full_nonunique')
 
 def test_full(client_empty):
     client = get_client()

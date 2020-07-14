@@ -1,7 +1,10 @@
-import os.path as _path
+from pathlib import Path
 import pytest
 
 import peeringdb
+from peeringdb.util import client_load
+
+SQL_COUNT_ROWS="select count(*) from peeringdb_facility"
 
 CONFIG = {
     'orm': {
@@ -28,46 +31,44 @@ CONFIG = {
 }
 
 _DATA_PATH = None
-def set_data_path(fpath, *parts):
-    # path = Path(fpath).absolute().parent / Path(*parts)
-    path = _path.join(_path.dirname(_path.abspath(fpath)), *parts)
-    # assert path.exists(), path
-    assert _path.exists(path), path
+def set_data_path(path, *parts):
+    if not isinstance(path, Path):
+        path = Path(path)
+    assert path.exists(), path
 
+    path = path.resolve()
+    if not path.is_dir():
+        path = path.parent
+    path = path.resolve() / Path(*parts)
     global _DATA_PATH
-    # _DATA_PATH = path.absolute()
-    _DATA_PATH = _path.abspath(path)
+    _DATA_PATH = path.absolute()
+
+set_data_path(__file__, '../data')
 
 def data_path():
     if _DATA_PATH is None:
         raise RuntimeError('data path not set')
     return _DATA_PATH
 
-def reset_data(filename=None):
-    client = peeringdb.client.Client(CONFIG)
+def reset_data(dumppath=None):
+    from django.db import connection # FIXME django-specific
     # Make sure db is empty
-    B = peeringdb.get_backend()
-    B.delete_all()
+    client = peeringdb.client.Client(CONFIG)
+    client.backend.delete_all()
 
-    if filename is None:
+    if dumppath is None:
         print("Resetting database to empty")
         return
 
-    print("Resetting database from", filename)
-    # Insert our stuff
-    # FIXME django-specific
-    from django.db import connection
-    path = _path.join(data_path(), filename)
-    sql = open(path).read()
-    with connection.cursor() as c:
-        c.executescript(sql)
+    path = data_path() / dumppath
+    assert path.is_dir(), path
+    print("Resetting database from", path)
 
-def client_for_data(filename):
-    reset_data(filename)
-    return peeringdb.client.Client(CONFIG)
+    client_load(client, path)
 
 # Fixture factory
 def client_fixture(filename, scope='function'):
     def func():
-        return client_for_data(filename)
+        reset_data(filename)
+        return peeringdb.client.Client(CONFIG)
     return pytest.fixture(scope=scope)(func)

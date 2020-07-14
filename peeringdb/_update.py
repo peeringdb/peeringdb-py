@@ -57,7 +57,7 @@ class Updater(object):
 
     def update_all(self, rs=None, since=None):
         "Sync all objects for the relations rs (if None, sync all resources)"
-        self._log.info("Updating resources: %s", ' '.join(r.tag for r in rs))
+        self._log.info("Updating resources: %s", ' '.join(r.tag for r in (rs or [])))
 
         if rs is None:
             rs = resource.all_resources()

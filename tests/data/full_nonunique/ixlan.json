@@ -1,0 +1,74 @@
+[
+    {
+        "fields": {
+            "arp_sponge": null,
+            "created": "2018-12-20T23:12:57.093",
+            "descr": "Arbitrary description",
+            "dot1q_support": true,
+            "ix": 7,
+            "mtu": 1500,
+            "name": "ixlan ee527617",
+            "rs_asn": 63313,
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.093",
+            "version": 0,
+            "vlan": null
+        },
+        "model": "django_peeringdb.ixlan",
+        "pk": 7
+    },
+    {
+        "fields": {
+            "arp_sponge": null,
+            "created": "2018-12-20T23:12:57.200",
+            "descr": "Arbitrary description",
+            "dot1q_support": true,
+            "ix": 8,
+            "mtu": 1500,
+            "name": "ixlan e3bf0d0c",
+            "rs_asn": 63317,
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.200",
+            "version": 0,
+            "vlan": null
+        },
+        "model": "django_peeringdb.ixlan",
+        "pk": 8
+    },
+    {
+        "fields": {
+            "arp_sponge": null,
+            "created": "2018-12-20T23:12:57.308",
+            "descr": "Arbitrary description",
+            "dot1q_support": true,
+            "ix": 9,
+            "mtu": 1500,
+            "name": "ixlan d5971d63",
+            "rs_asn": 63321,
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.308",
+            "version": 0,
+            "vlan": null
+        },
+        "model": "django_peeringdb.ixlan",
+        "pk": 9
+    },
+    {
+        "fields": {
+            "arp_sponge": null,
+            "created": "2018-12-20T23:12:57.416",
+            "descr": "Arbitrary description",
+            "dot1q_support": true,
+            "ix": 10,
+            "mtu": 1500,
+            "name": "ixlan 3824c086",
+            "rs_asn": 63325,
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.416",
+            "version": 0,
+            "vlan": null
+        },
+        "model": "django_peeringdb.ixlan",
+        "pk": 10
+    }
+]

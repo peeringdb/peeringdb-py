@@ -1,0 +1,70 @@
+[
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.129",
+            "email": "test@peeringdb.com",
+            "name": "poc 59693514",
+            "net": 7,
+            "phone": "+1 206 555 0199",
+            "role": "Policy",
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.129",
+            "url": "https://www.peeringdb.com/url",
+            "version": 0,
+            "visible": "Public"
+        },
+        "model": "django_peeringdb.networkcontact",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.235",
+            "email": "test@peeringdb.com",
+            "name": "poc ceb4bbd4",
+            "net": 8,
+            "phone": "+1 206 555 0199",
+            "role": "Policy",
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.236",
+            "url": "https://www.peeringdb.com/url",
+            "version": 0,
+            "visible": "Public"
+        },
+        "model": "django_peeringdb.networkcontact",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.342",
+            "email": "test@peeringdb.com",
+            "name": "poc 805376b9",
+            "net": 9,
+            "phone": "+1 206 555 0199",
+            "role": "Policy",
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.342",
+            "url": "https://www.peeringdb.com/url",
+            "version": 0,
+            "visible": "Public"
+        },
+        "model": "django_peeringdb.networkcontact",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.450",
+            "email": "test@peeringdb.com",
+            "name": "poc 14cd8efc",
+            "net": 10,
+            "phone": "+1 206 555 0199",
+            "role": "Policy",
+            "status": "ok",
+            "updated": "2020-01-07T20:52:01.985",
+            "url": "https://www.peeringdb.com/url",
+            "version": 0,
+            "visible": "Public"
+        },
+        "model": "django_peeringdb.networkcontact",
+        "pk": 4
+    }
+]
