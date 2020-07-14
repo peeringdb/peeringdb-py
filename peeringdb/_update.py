@@ -148,7 +148,7 @@ class UpdateContext(object):
                         'new task' if not had else 'dup')
         return job
 
-    def pending_tasks(self, res):
+    def pending_jobs(self, res):
         "Synchronized access to tasks"
         jobs, lock = self._jobs
         with lock:
@@ -171,33 +171,28 @@ class UpdateContext(object):
             self._log.info('Fetched no data for %s-%s', res.tag, pk)
             data, e = self.fetcher.fetch_deleted(res, pk, 0)
             if not data:
-                self._log.info(
-                    'Fetched no deleted objects for %s-%s, aborting', res.tag,
-                    pk)
+                self._log.info('Fetched no deleted objects for %s-%s, aborting',
+                               res.tag, pk)
                 return
             row = data[0]
         yield self.sync_row(res, row, depth)
 
     @_tasks.wrap_generator
     def sync_row(self, res, row, depth):
-        self._log.debug("sync_row(%s, %s, %s)", res, row['id'], depth)
-        if self.disable_partial and depth > 0:
-            raise ValueError('depth > 0 sync is disabled')
-
         B = get_backend()
-        init = (_sync.initialize_object)
-        obj, fetched, dangling = init(B, res, row)
-
-        # self._log.debug(' fetched: %s', fetched)
-        # self._log.debug(' dangling: %s', dangling)
-
         def _have(R, pks):
             have = B.get_objects(B.get_concrete(R), pks)
             return set(have.values_list('id', flat=True))
 
+        self._log.debug("sync_row(%s, %s, %s)", res.tag, row['id'], depth)
+        if self.disable_partial and depth > 0:
+            raise ValueError('depth > 0 sync is disabled')
+
         # Before attempting to set the related-object fields, ensure they are synced
         # Skip all ref'd objects that we already have, or have scheduled to update
+        fetched, dangling = _sync.extract_relations(B, res, row)
         sync_jobs = []
+
         for R, sub in fetched.items():
             have = _have(R, set(sub.keys()))
             sync_jobs.extend(
@@ -206,7 +201,7 @@ class UpdateContext(object):
 
         for R, pks in dangling.items():
             pks = pks.difference(_have(R, pks))
-            pending = self.pending_tasks(R)
+            pending = self.pending_jobs(R)
             needpks = []
             for pk in pks:
                 if pk in pending:
@@ -216,52 +211,37 @@ class UpdateContext(object):
             if not needpks:
                 continue
 
-            def fetch(_R=R, _pks=needpks):
-                return self.fetcher.fetch_all_latest(_R, 0, dict(id__in=_pks))
-
+            def fetch_dangling(_R=R, _pks=needpks):
+                return self.fetcher.fetch_all(_R, 0, dict(id__in=_pks))
             fetch_job = _tasks.UpdateTask(
-                self.fetch_and_index(fetch), (R, None))
-
+                self.fetch_and_index(fetch_dangling), (R, None))
             sync_jobs.extend(
                 self.set_job((R, pk), self.update_after,
                              (R, pk, depth - 1, fetch_job)) for pk in pks)
 
+        obj = _sync.initialize_object(B, res, row)
+        _sync.set_scalars(B, res, obj, row)
+
+        # Resolve refs and then save full object
+        self._log.debug(' waiting for: %s', sync_jobs)
+        yield _tasks.gather(sync_jobs)
+        self._log.debug("sync_row(%s, %s, %s) (resumed)", res.tag, row['id'], depth)
+
+        _sync.set_single_relations(B, res, obj, row)
         # Detect integrity gaps
         dup_fields, missing = _sync.clean_helper(B, obj, B.clean)
 
         if dup_fields:
-            # For non-uniques, try to update conflicting object
-            field = dup_fields[0]
-            value = getattr(obj, field)
-            try:
-                dup = B.get_object_by(B.get_concrete(res), field, value)
-                dup_id = dup.id
-                dup.delete(hard=True)
-            except B.object_missing_error(B.get_concrete(res)):  # shouldn't happen
-                raise Exception('internal error')
-
-            self._log.debug('dup: %s = %s', field, value)
-
-            def fetch():
-                data, err = self.fetcher.fetch_latest(res, dup_id, 0)
-                if isinstance(err, _fetch.NotFoundException):
-                    # case where the local duplicate has been deleted
-                    return {}, None
-                return data, err
-
-            fetch_job = _tasks.UpdateTask(self.fetch_and_index(fetch), (res, dup_id))
-            job = self.set_job((res, dup_id), self.update_after, (res, dup_id, 0, fetch_job))
+            job = self._handle_duplicate(res, obj, dup_fields)
             sync_jobs.append(job)
 
-        if missing:
-            # ignore expected missing refs
-            for R, pks in missing.items():
-                for pk in pks:
-                    if pk not in dangling[R]:  # shouldn't happen
-                        raise RuntimeError("Unexpected missing relation",
-                                           (R, pk))
+        # ignore expected missing refs
+        for R, pks in missing.items():
+            for pk in pks:
+                if pk not in dangling[R]:  # shouldn't happen
+                    raise RuntimeError("Unexpected missing relation",
+                                       (R, pk))
 
-        # Preliminary save so this object exists for its dependencies
         _sync.patch_object(B, res, obj, self.updater.strip_tz)
 
         # Ignore new objects for consistency - TODO: test
@@ -270,19 +250,52 @@ class UpdateContext(object):
                            res.tag, row['id'])
             return
 
+        # Preliminary save so this object exists for its dependents
+        # XXX Doesn't work in MySQL, single-refs must exist
         if not self.updater.dry_run:
             B.save(obj)
+            # B.get_objects(res, pk=row['id']).update()
 
-        # Now, resolve refs and then save full object
-        self._log.debug(' waiting for (%s-%s): %s', res.tag, row['id'],
-                        sync_jobs)
+        def finish():
+            _sync.set_single_relations(B, res, obj, row)
+            _sync.set_many_relations(B, res, obj, row)
+
+            if self.updater.dry_run: return
+            B.clean(obj)
+            B.save(obj)
+        self.set_job((res, row['id']), self.sync_row_finish,
+                     (res, row['id'], finish, sync_jobs))
+
+
+    @_tasks.wrap_generator
+    def sync_row_finish(self, res, pk, func, sync_jobs):
+        # Resolve refs and then save full object
+        self._log.debug(' waiting for: %s', sync_jobs)
         yield _tasks.gather(sync_jobs)
-        self._log.debug("sync_row(%s, %s, %s) (resumed)", res.tag, row['id'],
-                        depth)
+        self._log.debug("sync_row(%s, %s) (finish)", res.tag, pk)
+        func()
 
-        if self.updater.dry_run:
-            return
 
-        _sync.set_object_relations(B, res, obj, row)
-        B.clean(obj)
-        B.save(obj)
+    def _handle_duplicate(self, res, obj, dup_fields):
+        B = get_backend()
+        # Try to update conflicting object
+        field = dup_fields[0]
+        value = getattr(obj, field)
+        try:
+            dup = B.get_object_by(B.get_concrete(res), field, value)
+            dup_id = dup.id
+            dup.delete(hard=True)
+        except B.object_missing_error(B.get_concrete(res)):  # shouldn't happen
+            raise Exception('internal error')
+
+        self._log.debug('dup: %s = %s', field, value)
+
+        def fetch_dup():
+            data, err = self.fetcher.fetch_latest(res, dup_id, 0)
+            if isinstance(err, _fetch.NotFoundException):
+                # case where the local duplicate has been deleted
+                return {}, None
+            return data, err
+
+        fetch_job = _tasks.UpdateTask(self.fetch_and_index(fetch_dup), (res, dup_id))
+        return self.set_job((res, dup_id), self.update_after, (res, dup_id, 0, fetch_job))

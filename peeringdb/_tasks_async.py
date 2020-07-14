@@ -19,7 +19,7 @@ class UpdateTask(asyncio.Task):
 
     def __repr__(self):
         res, pk = self._desc
-        return "<UpdateTask for ({}, {})>".format(res.tag, pk)
+        return "<UpdateTask: ({}, {})>".format(res.tag, pk)
 
 
 def gather(jobs):
