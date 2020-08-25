@@ -2,4 +2,3 @@ munge>=0.1.5
 PyYAML>=3.11
 twentyc.rpc>=0.3.4
 cfu>=0.5.1
-Django==2.2.13
