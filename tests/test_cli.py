@@ -7,13 +7,12 @@ from peeringdb import cli as _cli
 
 CMD = 'peeringdb_test'
 
-helper.set_data_path(__file__, 'data')
-client = helper.client_fixture('insert_full.sql')
+client = helper.client_fixture('full')
 
 # Run with config dir
 class RunCli:
     def __init__(self, c):
-        self.config_dir = c
+        self.config_dir = str(c)
     def __call__(self, *args):
         fullargs = [CMD]
         fullargs.extend(['-C', self.config_dir])
@@ -69,7 +68,7 @@ def test_droptables(runcli, client, monkeypatch):
     # not empty before drop?
     assert client.tags.net.all()
     # pass in "yes" confirmation
-    monkeypatch.setattr('sys.stdin', io.StringIO(u'yes'))
+    monkeypatch.setattr('sys.stdin', io.StringIO('yes'))
     assert runcli('drop-tables') == 0
     # empty after drop?
     assert not client.tags.net.all()

@@ -1,17 +1,17 @@
 import yaml
 from peeringdb import get_backend
-from peeringdb.util import FieldGroups
+from peeringdb.util import group_fields
 
 # from peeringdb.debug import try_or_debug
 
 
 # Wrap orm object into node for graph traversal
-class YamlWrap(FieldGroups):
+class YamlWrap:
     def __init__(self, o, depth):
         self.tag = 'tag:yaml.org,2002:map'
         self.object = o
         self.depth = depth
-        self.fields = FieldGroups(o.__class__)
+        self.fields = group_fields(o.__class__)
 
     @staticmethod
     def _resolve_one(name, value, depth):
@@ -30,7 +30,7 @@ class YamlWrap(FieldGroups):
     def resolve(self, group, name, value):
         if group == 'scalars':
             return value
-        elif group == 'one_refs':
+        elif group == 'single_refs':
             return YamlWrap._resolve_one(name, value, self.depth)
         elif group == 'many_refs':
             return YamlWrap._resolve_many(name, value, self.depth)
@@ -38,7 +38,7 @@ class YamlWrap(FieldGroups):
             raise ValueError(group)
 
     def field_values(self):
-        for group in self.fields.GROUPS:
+        for group in self.fields:
             if self.depth == 0 and group == 'many_refs':
                 continue
             for name in self.fields[group]:
@@ -55,11 +55,7 @@ def represent_wrapped(dumper, wrap):
 
 
 def default_representer(dumper, data):
-    # Py2 workaround
-    rep_func = getattr(dumper, 'represent_unicode', None)
-    if rep_func is None:
-        rep_func = dumper.represent_str
-    return rep_func(str(data))
+    return dumper.represent_str(str(data))
 
 
 def _init():

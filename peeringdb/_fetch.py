@@ -64,8 +64,7 @@ class Fetcher(RestClient):
         if since:
             since = since+1
         params = {
-            k: ','.join(map(str, v)) if isinstance(v,
-                                                   (list, tuple)) else v
+            k: ','.join(map(str, v)) if isinstance(v, (list, tuple)) else v
             for k, v in params.items()
         }
         return self._req(

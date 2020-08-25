@@ -1,12 +1,10 @@
 import logging, re
 from functools import reduce
+import json
+
+from django.core import serializers
 
 from peeringdb import resource, get_backend
-
-try:
-    input = raw_input
-except NameError:
-    pass
 
 
 def split_ref(string):
@@ -50,37 +48,26 @@ def prompt(msg, default=None):
     return s
 
 
-class FieldGroups:
+def group_fields(concrete):
     "Partition a concrete's fields into groups based on type"
-    GROUPS = ('scalars', 'one_refs', 'many_refs')
+    GROUPS = ('scalars', 'single_refs', 'many_refs')
+    B = get_backend()
+    ret = {kind: {} for kind in GROUPS}
+    fields = B.get_fields(concrete)
+    for field in fields:
+        name = field.name
+        related, multiple = B.is_field_related(concrete, name)
 
-    def __init__(self, concrete):
-        backend = get_backend()
-        kinds = {kind: {} for kind in FieldGroups.GROUPS}
-        fields = backend.get_fields(concrete)
-        for field in fields:
-            name = field.name
-            related, multiple = backend.is_field_related(concrete, name)
-
-            if related:
-                if multiple:
-                    group = kinds['many_refs']
-                else:
-                    group = kinds['one_refs']
+        if related:
+            if multiple:
+                group = ret['many_refs']
             else:
-                group = kinds['scalars']
+                group = ret['single_refs']
+        else:
+            group = ret['scalars']
 
-            group[name] = field
-        self._fields = kinds
-
-        for kind, fs in kinds.items():
-            setattr(self, kind, lambda _fs=fs: _fs.items())
-
-    def __getitem__(self, k):
-        return self._fields[k]
-
-    def __contains__(self, k):
-        return k in self._fields
+        group[name] = field
+    return ret
 
 
 def limit_mem(limit=(4 * 1024**3)):
@@ -93,3 +80,26 @@ def limit_mem(limit=(4 * 1024**3)):
 
     _log = logging.getLogger(__name__)
     _log.debug('Set soft memory limit: %s => %s', soft, softnew)
+
+
+def client_dump(client, path):
+    "Serialize all objects into JSON files in directory"
+    assert path.is_dir(), path
+    for q in client.tags.all():
+        ser = serializers.serialize('json', q.all())
+        outpath = path / "{}.json".format(q.res.tag)
+        with open(outpath, 'w') as out:
+            print("Writing {}".format(outpath))
+            j = json.loads(ser)
+            json.dump(j, out, indent=4, sort_keys=True)
+            # out.write(ser)
+
+
+def client_load(client, path):
+    "Deserialize from JSON files under directory"
+    for q in client.tags.all():
+        respath = path / "{}.json".format(q.res.tag)
+        with open(str(respath), 'r') as fin:
+            des = serializers.deserialize('json', fin)
+            for obj in des:
+                obj.save()

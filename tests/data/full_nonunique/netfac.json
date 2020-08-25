@@ -1,0 +1,66 @@
+[
+    {
+        "fields": {
+            "avail_atm": false,
+            "avail_ethernet": false,
+            "avail_sonet": false,
+            "created": "2018-12-20T23:12:57.123",
+            "fac": 7,
+            "local_asn": 63315,
+            "net": 7,
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.123",
+            "version": 0
+        },
+        "model": "django_peeringdb.networkfacility",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "avail_atm": false,
+            "avail_ethernet": false,
+            "avail_sonet": false,
+            "created": "2018-12-20T23:12:57.231",
+            "fac": 8,
+            "local_asn": 63319,
+            "net": 8,
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.231",
+            "version": 0
+        },
+        "model": "django_peeringdb.networkfacility",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "avail_atm": false,
+            "avail_ethernet": false,
+            "avail_sonet": false,
+            "created": "2018-12-20T23:12:57.337",
+            "fac": 9,
+            "local_asn": 63323,
+            "net": 9,
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.337",
+            "version": 0
+        },
+        "model": "django_peeringdb.networkfacility",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "avail_atm": false,
+            "avail_ethernet": false,
+            "avail_sonet": false,
+            "created": "2018-12-20T23:12:57.445",
+            "fac": 10,
+            "local_asn": 63327,
+            "net": 10,
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.445",
+            "version": 0
+        },
+        "model": "django_peeringdb.networkfacility",
+        "pk": 4
+    }
+]

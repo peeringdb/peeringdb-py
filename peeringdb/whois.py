@@ -151,7 +151,7 @@ class WhoisFormat(object):
 
     def _print(self, *args):
         """ internal print to self.fobj """
-        string = u" ".join(args) + '\n'
+        string = " ".join(args) + '\n'
         self.fobj.write(string)
 
     def print(self, typ, data):

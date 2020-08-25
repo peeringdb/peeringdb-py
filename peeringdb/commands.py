@@ -197,9 +197,11 @@ class Sync:
         #                     help="Limit objects retrieved, retrieve all if 0 (default)")
         parser.add_argument('--init', action='store_true', default=False,
                             help='Only initialize the database; do not sync')
+        parser.add_argument('--since', action='store', default=-1, type=int,
+                            help='Only fetch updates since when (<0 for since last sync)')
 
     @_handler
-    def handle(config, verbose, quiet, init, **kwargs):
+    def handle(config, verbose, quiet, init, since, **kwargs):
         rs = resource.all_resources()
         # if only: rs = [resource.get_resource(tag) for tag in only]
 
@@ -216,7 +218,8 @@ class Sync:
         if loglvl >= 0:
             print("Syncing to", config['sync']['url'])
 
-        client.update_all(rs)
+        if since < 0: since = None
+        client.update_all(rs, since)
 
 
 class DropTables:

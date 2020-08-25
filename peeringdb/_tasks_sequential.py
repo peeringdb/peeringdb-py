@@ -20,7 +20,7 @@ class UpdateTask:
 
     def __repr__(self):
         res, pk = self._desc
-        return "<UpdateTask for ({}, {})>".format(res.tag, pk)
+        return "<UpdateTask: ({}, {})>".format(res.tag, pk)
 
     def cancel(self):
         pass
@@ -44,8 +44,11 @@ def wrap_generator(func):
     return func
 
 
-def is_task(x):
-    return isinstance(x, (GeneratorType, UpdateTask))
+def _consume_task_or_generator(item):
+    if isinstance(item, (GeneratorType, UpdateTask)):
+        return _consume_task(item)
+    else:
+        return item
 
 
 def _consume_task(gen):
@@ -55,10 +58,7 @@ def _consume_task(gen):
             item = gen.send(r)
         except StopIteration:
             break
-        if is_task(item):
-            r = _consume_task(item)
-        else:
-            r = item
+        r = _consume_task_or_generator(item)
         ret.append(r)
 
     if len(ret) == 1:

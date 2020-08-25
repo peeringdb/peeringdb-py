@@ -3,10 +3,17 @@
 
 ## [Unreleased]
 ### Added
+- add py3.7 to tox and travis tests
 ### Fixed
+- fixed sync issues with django-peeringdb and django3 (peeringdb/django-peeringdb#37)
+- fixed sync issues with django-peeringdb and mysql (#41)
+- better data for tests (#40)
+
 ### Changed
 ### Deprecated
 ### Removed
+- remove py2.7 support (#37)
+- remove py3.4 tests (py3.4 EOL reached)
 ### Security
 
 

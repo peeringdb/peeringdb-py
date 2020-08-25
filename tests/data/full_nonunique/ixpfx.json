@@ -1,0 +1,114 @@
+[
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.098",
+            "ixlan": 7,
+            "notes": "",
+            "prefix": "206.223.116.0/23",
+            "protocol": "IPv4",
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.098",
+            "version": 0
+        },
+        "model": "django_peeringdb.ixlanprefix",
+        "pk": 13
+    },
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.103",
+            "ixlan": 7,
+            "notes": "",
+            "prefix": "2001:504:0:1::/64",
+            "protocol": "IPv6",
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.103",
+            "version": 0
+        },
+        "model": "django_peeringdb.ixlanprefix",
+        "pk": 14
+    },
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.206",
+            "ixlan": 8,
+            "notes": "",
+            "prefix": "206.223.123.0/24",
+            "protocol": "IPv4",
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.206",
+            "version": 0
+        },
+        "model": "django_peeringdb.ixlanprefix",
+        "pk": 15
+    },
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.211",
+            "ixlan": 8,
+            "notes": "",
+            "prefix": "2001:504:0:3::/64",
+            "protocol": "IPv6",
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.211",
+            "version": 0
+        },
+        "model": "django_peeringdb.ixlanprefix",
+        "pk": 16
+    },
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.312",
+            "ixlan": 9,
+            "notes": "",
+            "prefix": "206.223.118.0/24",
+            "protocol": "IPv4",
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.312",
+            "version": 0
+        },
+        "model": "django_peeringdb.ixlanprefix",
+        "pk": 17
+    },
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.318",
+            "ixlan": 9,
+            "notes": "",
+            "prefix": "2001:504:0:5::/64",
+            "protocol": "IPv6",
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.318",
+            "version": 0
+        },
+        "model": "django_peeringdb.ixlanprefix",
+        "pk": 18
+    },
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.422",
+            "ixlan": 10,
+            "notes": "",
+            "prefix": "208.115.136.0/23",
+            "protocol": "IPv4",
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.422",
+            "version": 0
+        },
+        "model": "django_peeringdb.ixlanprefix",
+        "pk": 19
+    },
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.427",
+            "ixlan": 10,
+            "notes": "",
+            "prefix": "2001:504:0:4::/64",
+            "protocol": "IPv6",
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.427",
+            "version": 0
+        },
+        "model": "django_peeringdb.ixlanprefix",
+        "pk": 20
+    }
+]
