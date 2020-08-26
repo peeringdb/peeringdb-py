@@ -10,7 +10,7 @@ from peeringdb.resource import get_resource, Network
 from peeringdb.sync import Updater, Fetcher
 
 
-class _Query():
+class _Query:
     "Wrapper to access a specific resource"
 
     def __init__(self, client, res):
@@ -40,12 +40,12 @@ class Client:
         if cfg is None:
             cfg = config.load_config()
         self.config = cfg
-        orm_config = cfg['orm']
-        orm_name = orm_config['backend']
+        orm_config = cfg["orm"]
+        orm_name = orm_config["backend"]
         if not peeringdb.backend_initialized():
             peeringdb.initialize_backend(orm_name, **orm_config)
 
-        sync_config = cfg['sync']
+        sync_config = cfg["sync"]
         # override config with kwargs
         munge.util.recursive_update(sync_config, kwargs)
 
@@ -56,27 +56,31 @@ class Client:
         self.update = self._updater.update
         self.update_where = self._updater.update_where
 
-        tag_res = OrderedDict([
-            (res.tag, _Query(self, res))
-            for res in resource.all_resources()
-        ])
-        tag_attrs = {**tag_res, **{
-            'keys': lambda self: list(tag_res.keys()),
-            'all': lambda self: list(tag_res.values()),
-        }}
-        self._Tags = type('_Tags', (), tag_attrs)
+        tag_res = OrderedDict(
+            [(res.tag, _Query(self, res)) for res in resource.all_resources()]
+        )
+        tag_attrs = {
+            **tag_res,
+            **{
+                "keys": lambda self: list(tag_res.keys()),
+                "all": lambda self: list(tag_res.values()),
+            },
+        }
+        self._Tags = type("_Tags", (), tag_attrs)
         self.tags = self._Tags()
 
     def fetch(self, R, pk, depth=1):
         "Request object from API"
         d, e = self._fetcher.fetch(R, pk, depth)
-        if e: raise e
+        if e:
+            raise e
         return d
 
     def fetch_all(self, R, depth=1, **kwargs):
         "Request multiple objects from API"
         d, e = self._fetcher.fetch_all(R, depth, kwargs)
-        if e: raise e
+        if e:
+            raise e
         return d
 
     def get(self, res, pk):

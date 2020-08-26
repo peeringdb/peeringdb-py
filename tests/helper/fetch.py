@@ -9,11 +9,8 @@ from . import _data
 # try: from peeringdb import _debug_http
 # except: pass
 
-__data = {
-    Network: {
-        20: _data.twentyc
-    }
-}
+__data = {Network: {20: _data.twentyc}}
+
 
 class Fetcher(RestClient):
     def __init__(self, **kwargs):

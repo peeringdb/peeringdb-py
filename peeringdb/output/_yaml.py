@@ -8,7 +8,7 @@ from peeringdb.util import group_fields
 # Wrap orm object into node for graph traversal
 class YamlWrap:
     def __init__(self, o, depth):
-        self.tag = 'tag:yaml.org,2002:map'
+        self.tag = "tag:yaml.org,2002:map"
         self.object = o
         self.depth = depth
         self.fields = group_fields(o.__class__)
@@ -25,21 +25,21 @@ class YamlWrap:
         if depth > 1:
             return [YamlWrap(o, depth - 1) for o in value.all()]
         elif depth == 1:
-            return list(value.values_list('id', flat=True))
+            return list(value.values_list("id", flat=True))
 
     def resolve(self, group, name, value):
-        if group == 'scalars':
+        if group == "scalars":
             return value
-        elif group == 'single_refs':
+        elif group == "single_refs":
             return YamlWrap._resolve_one(name, value, self.depth)
-        elif group == 'many_refs':
+        elif group == "many_refs":
             return YamlWrap._resolve_many(name, value, self.depth)
         else:
             raise ValueError(group)
 
     def field_values(self):
         for group in self.fields:
-            if self.depth == 0 and group == 'many_refs':
+            if self.depth == 0 and group == "many_refs":
                 continue
             for name in self.fields[group]:
                 value = self.resolve(group, name, getattr(self.object, name))

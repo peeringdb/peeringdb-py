@@ -35,8 +35,7 @@ class UpdateTask:
 def gather(jobs):
     "Aggregate and collect jobs"
     for job in jobs:
-        for r in job:
-            yield r
+        yield from job
 
 
 def wrap_generator(func):

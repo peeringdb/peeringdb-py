@@ -5,15 +5,18 @@ import peeringdb
 from peeringdb import config, commands
 
 COMMANDS = {
-    'get': commands.Get,
-    'whois': commands.Whois,
-    'sync': commands.Sync,
-    'config': commands.CommandGroup({
-        'set': commands.PromptConfig,
-        'show': commands.DumpConfig,
-        'list-codecs': commands.ListCodecs,
-    }, help="Configuration management"),
-    'drop-tables': commands.DropTables,
+    "get": commands.Get,
+    "whois": commands.Whois,
+    "sync": commands.Sync,
+    "config": commands.CommandGroup(
+        {
+            "set": commands.PromptConfig,
+            "show": commands.DumpConfig,
+            "list-codecs": commands.ListCodecs,
+        },
+        help="Configuration management",
+    ),
+    "drop-tables": commands.DropTables,
 }
 
 
@@ -40,12 +43,15 @@ def main(args=sys.argv):
     peeringdb._config_logs()
 
     parser = ArgumentParser()
-    parser.add_argument('--version', action='version',
-                        version='%(prog)s ' + peeringdb.__version__)
     parser.add_argument(
-        '-C', '--config-dir', default=os.environ.get(
-            'PEERINGDB_HOME', config.DEFAULT_CONFIG_DIR),
-        help="Directory containing configuration files")
+        "--version", action="version", version="%(prog)s " + peeringdb.__version__
+    )
+    parser.add_argument(
+        "-C",
+        "--config-dir",
+        default=os.environ.get("PEERINGDB_HOME", config.DEFAULT_CONFIG_DIR),
+        help="Directory containing configuration files",
+    )
 
     cmd = commands.CommandGroup(COMMANDS)
     cmd.add_arguments(parser)
@@ -56,7 +62,7 @@ def main(args=sys.argv):
         return e.code
     cfg = check_load_config(options.config_dir)
 
-    handler = getattr(options, 'handler', options.usage_handler)
+    handler = getattr(options, "handler", options.usage_handler)
     try:
         return handler(config=cfg, **vars(options))
     except peeringdb._fetch.CompatibilityError as e:

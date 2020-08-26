@@ -3,6 +3,7 @@ import inspect
 
 from peeringdb.resource import RESOURCES_BY_TAG
 
+
 def reftag_to_cls(fn):
     """
     decorator that checks function arguments for `concrete` and `resource`
@@ -11,6 +12,7 @@ def reftag_to_cls(fn):
     """
     spec = inspect.getfullargspec(fn)
     names, values = spec.args, spec.defaults
+
     @wraps(fn)
     def wrapped(*args, **kwargs):
         i = 0
@@ -23,9 +25,11 @@ def reftag_to_cls(fn):
                 args[i] = backend.REFTAG_RESOURCE[value]
             i += 1
         return fn(*args, **kwargs)
+
     return wrapped
 
-class Field(object):
+
+class Field:
     """
     We use this to provide field instances to backends that
     don't use classes to describe their fields
@@ -35,7 +39,8 @@ class Field(object):
         self.name = name
         self.column = column
 
-class EmptyContext(object):
+
+class EmptyContext:
 
     """
     We use this to provide a dummy context wherever it's optional
@@ -43,11 +48,12 @@ class EmptyContext(object):
 
     def __enter__(self):
         pass
+
     def __exit__(self, *args):
         pass
 
 
-class Base(object):
+class Base:
 
     """
     Backend base class.
@@ -63,7 +69,8 @@ class Base(object):
     def CONCRETE_MAP(self):
         if not hasattr(self, "_CONCRETE_MAP"):
             self._CONCRETE_MAP = {
-                concrete: res for (res, concrete) in self.RESOURCE_MAP.items()}
+                concrete: res for (res, concrete) in self.RESOURCE_MAP.items()
+            }
         return self._CONCRETE_MAP
 
     def get_concrete(self, res):
@@ -113,7 +120,6 @@ class Interface(Base):
     # should go in here
     REFTAG_CONCRETE = {}
 
-
     @classmethod
     def validation_error(cls, concrete=None):
         """
@@ -132,7 +138,6 @@ class Interface(Base):
         """
         return Exception
 
-
     @classmethod
     def object_missing_error(cls, concrete=None):
         """
@@ -150,7 +155,6 @@ class Interface(Base):
             - Exception class
         """
         return Exception
-
 
     @classmethod
     def atomic_transaction(cls):
@@ -173,7 +177,6 @@ class Interface(Base):
         to prepare usage for the backend
         """
         pass
-
 
     # INTERFACE (REQUIRED)
     # The following methods are required to be overwritten in
@@ -198,14 +201,12 @@ class Interface(Base):
         """
         raise NotImplementedError()
 
-
-    #TODO:
+    # TODO:
     def delete_all(self):
         """
         Delete all objects, essentially empty the database
         """
         raise NotImplementedError()
-
 
     def detect_missing_relations(self, obj, exc):
         """
@@ -222,7 +223,6 @@ class Interface(Base):
             - dict: {Resource : [ids]}
         """
         raise NotImplementedError()
-
 
     def detect_uniqueness_error(self, exc):
         """
@@ -242,7 +242,6 @@ class Interface(Base):
         """
         raise NotImplementedError()
 
-
     @reftag_to_cls
     def get_field_names(self, concrete):
         """
@@ -257,7 +256,6 @@ class Interface(Base):
             - list: [<str>,...]
         """
         raise NotImplementedError()
-
 
     @reftag_to_cls
     def get_field_concrete(self, concrete, field_name):
@@ -274,7 +272,6 @@ class Interface(Base):
             - concrete class
         """
         raise NotImplementedError()
-
 
     @reftag_to_cls
     def get_object(self, concrete, id):
@@ -364,7 +361,6 @@ class Interface(Base):
         """
         raise NotImplementedError()
 
-
     @reftag_to_cls
     def last_change(self, concrete):
         """
@@ -453,7 +449,6 @@ class Interface(Base):
         """
         return [Field(name) for name in self.field_names(concrete)]
 
-
     def clean(self, obj):
         """
         Should take an object instance and validate / clean it
@@ -500,5 +495,3 @@ class Interface(Base):
             - bool
         """
         return True
-
-

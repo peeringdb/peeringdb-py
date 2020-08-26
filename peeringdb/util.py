@@ -9,23 +9,23 @@ from peeringdb import resource, get_backend
 
 def split_ref(string):
     """ splits a string into (tag, id) """
-    re_tag = re.compile('^(?P<tag>[a-zA-Z]+)[\s-]*(?P<pk>\d+)$')
+    re_tag = re.compile(r"^(?P<tag>[a-zA-Z]+)[\s-]*(?P<pk>\d+)$")
     m = re_tag.search(string)
     if not m:
-        raise ValueError("unable to split string '%s'" % (string, ))
+        raise ValueError("unable to split string '{}'".format(string))
 
-    return (m.group('tag').lower(), int(m.group('pk')))
+    return (m.group("tag").lower(), int(m.group("pk")))
 
 
 def pretty_speed(value):
     if not value:
-        return ''
+        return ""
     try:
         value = int(value)
         if value >= 1000000:
-            return "%dT" % (value / 10**6)
+            return "%dT" % (value / 10 ** 6)
         elif value >= 1000:
-            return "%dG" % (value / 10**3)
+            return "%dG" % (value / 10 ** 3)
         else:
             return "%dM" % value
     except ValueError:
@@ -35,14 +35,14 @@ def pretty_speed(value):
 def prompt(msg, default=None):
     "Prompt for input"
     if default is not None:
-        msg = '{} ({})'.format(msg, repr(default))
-    msg = '{}: '.format(msg)
+        msg = "{} ({})".format(msg, repr(default))
+    msg = "{}: ".format(msg)
     try:
         s = input(msg)
     except KeyboardInterrupt:
         exit(1)
     except EOFError:
-        s = ''
+        s = ""
     if not s:
         s = default
     return s
@@ -50,7 +50,7 @@ def prompt(msg, default=None):
 
 def group_fields(concrete):
     "Partition a concrete's fields into groups based on type"
-    GROUPS = ('scalars', 'single_refs', 'many_refs')
+    GROUPS = ("scalars", "single_refs", "many_refs")
     B = get_backend()
     ret = {kind: {} for kind in GROUPS}
     fields = B.get_fields(concrete)
@@ -60,17 +60,17 @@ def group_fields(concrete):
 
         if related:
             if multiple:
-                group = ret['many_refs']
+                group = ret["many_refs"]
             else:
-                group = ret['single_refs']
+                group = ret["single_refs"]
         else:
-            group = ret['scalars']
+            group = ret["scalars"]
 
         group[name] = field
     return ret
 
 
-def limit_mem(limit=(4 * 1024**3)):
+def limit_mem(limit=(4 * 1024 ** 3)):
     "Set soft memory limit"
     rsrc = resource.RLIMIT_DATA
     soft, hard = resource.getrlimit(rsrc)
@@ -79,16 +79,16 @@ def limit_mem(limit=(4 * 1024**3)):
     assert softnew == limit
 
     _log = logging.getLogger(__name__)
-    _log.debug('Set soft memory limit: %s => %s', soft, softnew)
+    _log.debug("Set soft memory limit: %s => %s", soft, softnew)
 
 
 def client_dump(client, path):
     "Serialize all objects into JSON files in directory"
     assert path.is_dir(), path
     for q in client.tags.all():
-        ser = serializers.serialize('json', q.all())
+        ser = serializers.serialize("json", q.all())
         outpath = path / "{}.json".format(q.res.tag)
-        with open(outpath, 'w') as out:
+        with open(outpath, "w") as out:
             print("Writing {}".format(outpath))
             j = json.loads(ser)
             json.dump(j, out, indent=4, sort_keys=True)
@@ -99,7 +99,7 @@ def client_load(client, path):
     "Deserialize from JSON files under directory"
     for q in client.tags.all():
         respath = path / "{}.json".format(q.res.tag)
-        with open(str(respath), 'r') as fin:
-            des = serializers.deserialize('json', fin)
+        with open(str(respath)) as fin:
+            des = serializers.deserialize("json", fin)
             for obj in des:
                 obj.save()

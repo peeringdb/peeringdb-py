@@ -6,22 +6,24 @@ import sys
 from collections import defaultdict
 
 from peeringdb import _tasks_sequential
+
 TASKS_MODS = [_tasks_sequential]
 # pre-async compat. import
 if sys.version_info >= (3, 5):
     from peeringdb import _tasks_async
+
     TASKS_MODS.append(_tasks_async)
 
 # dummy resources for task objects
 class ResOne:
-    tag = 'one'
-class ResTwo:
-    tag = 'two'
+    tag = "one"
 
-DATA_EXPECTED = {
-    ResOne: [1,2],
-    ResTwo: [1,2]
-}
+
+class ResTwo:
+    tag = "two"
+
+
+DATA_EXPECTED = {ResOne: [1, 2], ResTwo: [1, 2]}
 
 # dummy context classes parameterized on tasks module
 def make_context(tasks):
@@ -51,9 +53,11 @@ def make_context(tasks):
             if res is ResOne:
                 yield self.set_job(ResTwo, k)
             d.append(k)
+
     return Context
 
-@pytest.mark.parametrize('tasks_mod', TASKS_MODS)
+
+@pytest.mark.parametrize("tasks_mod", TASKS_MODS)
 def test_basic(tasks_mod):
     # generate class
     Context = make_context(tasks_mod)

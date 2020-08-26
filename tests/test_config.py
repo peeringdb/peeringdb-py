@@ -1,15 +1,18 @@
 import pytest
 import tempfile, contextlib
 from confu.exceptions import ValidationError
+
 try:
     from tempfile import TemporaryDirectory
 except ImportError:
     import shutil
+
     @contextlib.contextmanager
     def TemporaryDirectory():
         path = tempfile.mkdtemp()
         yield path
         shutil.rmtree(path)
+
 
 import helper
 
@@ -23,75 +26,73 @@ def test_default_config():
         cfg = config.load_config(path)
     assert DEFAULT == cfg
 
+
 def test_load_config(config0_dir):
     with pytest.raises(IOError):
-        config.load_config('nonexistent')
+        config.load_config("nonexistent")
 
     c = config.load_config(config0_dir)
     DEFAULT = config.default_config()
-    assert c['sync'] != DEFAULT['sync']
-    assert c['sync']['timeout'] == 60
-    assert c['sync']['strip_tz'] == DEFAULT['sync']['strip_tz']
-    assert c['sync']['url'] != DEFAULT['sync']['url']
+    assert c["sync"] != DEFAULT["sync"]
+    assert c["sync"]["timeout"] == 60
+    assert c["sync"]["strip_tz"] == DEFAULT["sync"]["strip_tz"]
+    assert c["sync"]["url"] != DEFAULT["sync"]["url"]
+
 
 def test_write():
     with TemporaryDirectory() as td:
         DEFAULT = config.default_config()
         config.write_config(DEFAULT, td)
 
+
 def test_schema_migration():
     "Test that old config files are successfully detected and converted to new schema"
 
     old_data = {
-        'peeringdb': {
-            'url': 'https://test.peeringdb.com/api',
-            'user': 'dude',
-            'password': '12345',
-            'timeout': 5,
+        "peeringdb": {
+            "url": "https://test.peeringdb.com/api",
+            "user": "dude",
+            "password": "12345",
+            "timeout": 5,
         },
-        'database': {
-            'engine': 'sqlite3',
-            'name': 'peeringdb.sqlite3',
-            'host': '',
-            'port': 9000,
-            'user': 'guy',
-            'password': 'abc',
-        }
+        "database": {
+            "engine": "sqlite3",
+            "name": "peeringdb.sqlite3",
+            "host": "",
+            "port": 9000,
+            "user": "guy",
+            "password": "abc",
+        },
     }
     new_data = {
-        'sync': {
-            'url': 'https://test.peeringdb.com/api',
-            'user': 'dude',
-            'password': '12345',
-            'timeout': 5,
-            'only': [],
-            'strip_tz': 1,
+        "sync": {
+            "url": "https://test.peeringdb.com/api",
+            "user": "dude",
+            "password": "12345",
+            "timeout": 5,
+            "only": [],
+            "strip_tz": 1,
         },
-        'orm': {
-            'backend': 'django_peeringdb',
-            'secret_key': '',
-            'migrate': True,
-            'database': {
-                'engine': 'sqlite3',
-                'name': 'peeringdb.sqlite3',
-                'host': '',
-                'port': 9000,
-                'user': 'guy',
-                'password': 'abc',
-            }
-        }
+        "orm": {
+            "backend": "django_peeringdb",
+            "secret_key": "",
+            "migrate": True,
+            "database": {
+                "engine": "sqlite3",
+                "name": "peeringdb.sqlite3",
+                "host": "",
+                "port": 9000,
+                "user": "guy",
+                "password": "abc",
+            },
+        },
     }
 
     # Test detection
     assert config.detect_old(old_data)
     assert not config.detect_old(new_data)
     # Try partial data
-    old_part = {
-        'peeringdb': {
-            'url': 'https://test.peeringdb.com/api',
-            'timeout': 10,
-        }
-    }
+    old_part = {"peeringdb": {"url": "https://test.peeringdb.com/api", "timeout": 10,}}
     assert config.detect_old(old_part)
     # empty case
     assert not config.detect_old({})
@@ -105,12 +106,15 @@ def test_schema_migration():
     conv_part = config.convert_old(old_part)
     assert config.CLIENT_SCHEMA.validate(conv_part)
 
+
 @contextlib.contextmanager
 def _patch_input(mp, inputs):
     def _input(_):
         return inputs.pop()
+
     with mp.context() as m:
-        m.setattr('builtins.input', _input)
+        m.setattr("builtins.input", _input)
         yield
+
 
 # TODO test_prompt_config

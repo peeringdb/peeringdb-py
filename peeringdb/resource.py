@@ -4,18 +4,20 @@ PeeringDB resource definitions
 from collections import OrderedDict
 
 # Generate classes
-_NAMES = OrderedDict([
-    ('org', 'Organization'),
-    ('fac', 'Facility'),
-    ('net', 'Network'),
-    ('ix', 'InternetExchange'),
-    ('ixfac', 'InternetExchangeFacility'),
-    ('ixlan', 'InternetExchangeLan'),
-    ('ixpfx', 'InternetExchangeLanPrefix'),
-    ('netfac', 'NetworkFacility'),
-    ('netixlan', 'NetworkIXLan'),
-    ('poc', 'NetworkContact'),
-])
+_NAMES = OrderedDict(
+    [
+        ("org", "Organization"),
+        ("fac", "Facility"),
+        ("net", "Network"),
+        ("ix", "InternetExchange"),
+        ("ixfac", "InternetExchangeFacility"),
+        ("ixlan", "InternetExchangeLan"),
+        ("ixpfx", "InternetExchangeLanPrefix"),
+        ("netfac", "NetworkFacility"),
+        ("netixlan", "NetworkIXLan"),
+        ("poc", "NetworkContact"),
+    ]
+)
 
 RESOURCES_BY_TAG = OrderedDict()
 
@@ -25,7 +27,7 @@ for tag, name in _NAMES.items():
         def __repr__(cls, _name=name):
             return _name
 
-    Class = Meta(name, (), {'tag': tag})
+    Class = Meta(name, (), {"tag": tag})
 
     RESOURCES_BY_TAG[tag] = Class
     locals()[name] = Class

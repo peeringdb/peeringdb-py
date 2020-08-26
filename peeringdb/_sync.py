@@ -43,7 +43,7 @@ def initialize_object(B, res, row):
     field_groups = group_fields(B.get_concrete(res))
 
     try:
-        obj = B.get_object(B.get_concrete(res), row['id'])
+        obj = B.get_object(B.get_concrete(res), row["id"])
     except B.object_missing_error(B.get_concrete(res)):
         tbl = B.get_concrete(res)
         obj = tbl()
@@ -53,7 +53,7 @@ def initialize_object(B, res, row):
 def set_scalars(B, res, obj, row):
     field_groups = group_fields(B.get_concrete(res))
     # Set attributes, refs
-    for fname, field in field_groups['scalars'].items():
+    for fname, field in field_groups["scalars"].items():
         value = row.get(fname, getattr(obj, fname, None))
         value = B.convert_field(obj.__class__, fname, value)
         setattr(obj, fname, value)
@@ -77,19 +77,19 @@ def extract_relations(B, res, row):
     # Handle subrows that might be shallow (id) or deep (dict)
     def _handle_subrow(R, subrow):
         if isinstance(subrow, dict):
-            pk = subrow['id']
+            pk = subrow["id"]
             fetched[R][pk] = subrow
         else:
             pk = subrow
             dangling[R].add(pk)
         return pk
 
-    for fname, field in field_groups['single_refs'].items():
+    for fname, field in field_groups["single_refs"].items():
         fieldres = _field_resource(B, B.get_concrete(res), fname)
         _, subrow = _get_subrow(row, fname, field)
         pk = _handle_subrow(fieldres, subrow)
 
-    for fname, field in field_groups['many_refs'].items():
+    for fname, field in field_groups["many_refs"].items():
         fieldres = _field_resource(B, B.get_concrete(res), fname)
         for subrow in row.get(fname, []):
             _handle_subrow(fieldres, subrow)
@@ -99,17 +99,18 @@ def extract_relations(B, res, row):
 
 def set_single_relations(B, res, obj, row):
     field_groups = group_fields(B.get_concrete(res))
-    for fname, field in field_groups['single_refs'].items():
+    for fname, field in field_groups["single_refs"].items():
         key, subrow = _get_subrow(row, fname, field)
         if isinstance(subrow, dict):
-            pk = subrow['id']
+            pk = subrow["id"]
         else:
             pk = subrow
         setattr(obj, key, pk)
 
+
 def set_many_relations(B, res, obj, row):
     field_groups = group_fields(B.get_concrete(res))
-    for fname, field in field_groups['many_refs'].items():
+    for fname, field in field_groups["many_refs"].items():
         fieldres = _field_resource(B, B.get_concrete(res), fname)
         pks = row.get(fname, [])
         objs = [B.get_object(B.get_concrete(fieldres), pk) for pk in pks]
@@ -119,7 +120,7 @@ def set_many_relations(B, res, obj, row):
 def patch_object(B, res, obj, strip_tz):
     field_groups = group_fields(B.get_concrete(res))
 
-    for fname in field_groups['scalars']:
+    for fname in field_groups["scalars"]:
         value = getattr(obj, fname)
         if strip_tz and isinstance(value, datetime.datetime):
             value = value.replace(tzinfo=None)
