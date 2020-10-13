@@ -7,19 +7,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   
-  
-  <title>API - PeeringDB</title>
-  
-
   <link rel="shortcut icon" href="../img/favicon.ico">
-
-  
+  <title>API - PeeringDB</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="../css/highlight.css">
-
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
   
   <script>
     // Current page data
@@ -28,11 +22,10 @@
     var mkdocs_page_url = "/api/";
   </script>
   
-  <script src="../js/jquery-2.1.1.min.js"></script>
-  <script src="../js/modernizr-2.8.3.min.js"></script>
-  <script type="text/javascript" src="../js/highlight.pack.js"></script>
-  <script src="../js/theme.js"></script> 
-
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
   
 </head>
 
@@ -46,47 +39,45 @@
         <a href=".." class="icon icon-home"> PeeringDB</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-        <ul class="current">
+	<ul class="current">
+	  
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="..">Home</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../cli/">CLI</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../cli/">CLI</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 current">
-        <a class="current" href="./">API</a>
-        
-            <ul>
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">API</a>
+    <ul class="subnav">
             
-                <li class="toctree-l3"><a href="#application-program-interface">Application Program Interface</a></li>
-                
-                    <li><a class="toctree-l4" href="#instantiate">Instantiate</a></li>
-                
-                    <li><a class="toctree-l4" href="#calls">Calls</a></li>
-                
-                    <li><a class="toctree-l4" href="#full-example">Full Example</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l2"><a href="#application-programming-interface">Application Programming Interface</a></li>
+    
+        <ul>
         
-    </li>
-<li>
+            <li><a class="toctree-l3" href="#instantiate">Instantiate</a></li>
+        
+            <li><a class="toctree-l3" href="#calls">Calls</a></li>
+        
+            <li><a class="toctree-l3" href="#full-example">Full Example</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
           
         </ul>
       </div>
@@ -113,9 +104,8 @@
     <li>API</li>
     <li class="wy-breadcrumbs-aside">
       
-        
-          <a href="https://github.com/peeringdb/peeringdb-py" class="icon icon-github"> Edit on GitHub</a>
-        
+        <a href="https://github.com/peeringdb/peeringdb-py/edit/master/docs/api.md"
+          class="icon icon-github"> Edit on GitHub</a>
       
     </li>
   </ul>
@@ -124,54 +114,43 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="application-program-interface">Application Program Interface</h1>
+                <h1 id="application-programming-interface">Application Programming Interface</h1>
 <h2 id="instantiate">Instantiate</h2>
 <pre><code>from peeringdb import PeeringDB
-
 pdb = PeeringDB()
 </code></pre>
 <h2 id="calls">Calls</h2>
-<h3 id="all">all</h3>
-<pre><code>def all(self, typ, **kwargs):
-</code></pre>
+<p>Methods on <code>Client</code> correspond directly to PeeringDB REST API calls.</p>
+<h3 id="getself-res-id"><code>get(self, res, id)</code></h3>
+<p>Gets a single object of specified type and id.</p>
+<h3 id="allself-res-kwargs"><code>all(self, res, **kwargs)</code></h3>
 <p>Gets all objects of specified type, matching query from kwargs, valid kwargs are available <a href="http://docs.peeringdb.com/api_specs/#operations">here</a>.</p>
-<h3 id="get">get</h3>
-<pre><code>def get(self, typ, id, **kwargs):
-</code></pre>
-<p>Gets a single object of specified type and id, matching query from kwargs, valid kwargs are available <a href="http://docs.peeringdb.com/api_specs/#operations">here</a>.</p>
-<h3 id="create">create</h3>
-<pre><code>def create(self, typ, data, return_response=False):
-</code></pre>
-<p>Create an object of specified type from data.</p>
-<h3 id="update">update</h3>
-<pre><code>def update(self, typ, id, **kwargs):
-</code></pre>
+<h3 id="queryself-res"><code>query(self, res)</code></h3>
+<p>Returns a wrapper object that directly performs operations on data of the specified resource type.</p>
+<h3 id="updateself-res-id-kwargs"><code>update(self, res, id, **kwargs)</code></h3>
 <p>Update an object of specified type from kwargs.</p>
-<h3 id="save">save</h3>
-<pre><code>def save(self, typ, data):
-</code></pre>
-<p>Saves object of specified type from data.</p>
-<h3 id="rm">rm</h3>
-<pre><code>def rm(self, typ, id):
-</code></pre>
-<p>Removes specified object.</p>
-<h3 id="type_wrap">type_wrap</h3>
-<pre><code>def type_wrap(self, typ):
-</code></pre>
-<p>Returns an object that directly does operations on the specified type.</p>
 <h2 id="full-example">Full Example</h2>
-<pre><code># unauthenticated to default URL (unless ~/.peeringdb/config.yaml exists)
-from peeringdb import PeeringDB
+<pre><code>from peeringdb import PeeringDB, config, resource
 
+# same as PeeringDB(config.load_config())
 pdb = PeeringDB()
 
+# sync database with remote data
+# unauthenticated to default URL unless configured
+pdb.update_all()
+
 # get a single record
-net = pdb.type_wrap('net')
+n1 = pdb.get(resource.Network, 1)
+
+# equivalently:
+net = pdb.tags.net              # type wrap - new method
+# net = pdb.type_wrap('net')      # old method
+
 # both are equal
-assert net.get(1) == pdb.get('net', 1)
+assert net.get(1) == n1
 
 # query by parameter
-pdb.all('net', asn=2906)
+pdb.all(resource.Network, asn=2906)
 # or
 net.all(asn=2906)
 </code></pre>
@@ -197,7 +176,7 @@ net.all(asn=2906)
 
   Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
-	  
+      
         </div>
       </div>
 
@@ -205,10 +184,10 @@ net.all(asn=2906)
 
   </div>
 
-<div class="rst-versions" role="note" style="cursor: pointer">
+  <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/peeringdb/peeringdb-py" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/peeringdb/peeringdb-py/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../cli/" style="color: #fcfcfc;">&laquo; Previous</a></span>
@@ -216,6 +195,9 @@ net.all(asn=2906)
       
     </span>
 </div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
 
 </body>
 </html>

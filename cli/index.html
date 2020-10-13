@@ -7,19 +7,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   
-  
-  <title>CLI - PeeringDB</title>
-  
-
   <link rel="shortcut icon" href="../img/favicon.ico">
-
-  
+  <title>CLI - PeeringDB</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="../css/highlight.css">
-
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
   
   <script>
     // Current page data
@@ -28,11 +22,10 @@
     var mkdocs_page_url = "/cli/";
   </script>
   
-  <script src="../js/jquery-2.1.1.min.js"></script>
-  <script src="../js/modernizr-2.8.3.min.js"></script>
-  <script type="text/javascript" src="../js/highlight.pack.js"></script>
-  <script src="../js/theme.js"></script> 
-
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
   
 </head>
 
@@ -46,59 +39,52 @@
         <a href=".." class="icon icon-home"> PeeringDB</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-        <ul class="current">
+	<ul class="current">
+	  
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="..">Home</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 current">
-        <a class="current" href="./">CLI</a>
-        
-            <ul>
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">CLI</a>
+    <ul class="subnav">
             
-                <li class="toctree-l3"><a href="#command-line-interface">Command Line Interface</a></li>
-                
-                    <li><a class="toctree-l4" href="#commands">Commands</a></li>
-                
-                    <li><a class="toctree-l4" href="#conf_dump">conf_dump</a></li>
-                
-                    <li><a class="toctree-l4" href="#conf_write">conf_write</a></li>
-                
-                    <li><a class="toctree-l4" href="#configure">configure</a></li>
-                
-                    <li><a class="toctree-l4" href="#depcheck">depcheck</a></li>
-                
-                    <li><a class="toctree-l4" href="#drop_tables">drop_tables</a></li>
-                
-                    <li><a class="toctree-l4" href="#get-objid">get &lt;obj&gt;&lt;id&gt;</a></li>
-                
-                    <li><a class="toctree-l4" href="#whois-objid">whois &lt;obj&gt;&lt;id&gt;</a></li>
-                
-                    <li><a class="toctree-l4" href="#sync">sync</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l2"><a href="#command-line-interface">Command Line Interface</a></li>
+    
+
+    <li class="toctree-l2"><a href="#commands">Commands</a></li>
+    
+        <ul>
         
-    </li>
-<li>
+            <li><a class="toctree-l3" href="#configuration">Configuration</a></li>
+        
+            <li><a class="toctree-l3" href="#get-ltobjgtltidgt">get &lt;obj&gt;&lt;id&gt;</a></li>
+        
+            <li><a class="toctree-l3" href="#whois-ltobjgtltidgt">whois &lt;obj&gt;&lt;id&gt;</a></li>
+        
+            <li><a class="toctree-l3" href="#drop-tables">drop-tables</a></li>
+        
+            <li><a class="toctree-l3" href="#sync">sync</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../api/">API</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../api/">API</a>
+	    </li>
           
         </ul>
       </div>
@@ -125,9 +111,8 @@
     <li>CLI</li>
     <li class="wy-breadcrumbs-aside">
       
-        
-          <a href="https://github.com/peeringdb/peeringdb-py" class="icon icon-github"> Edit on GitHub</a>
-        
+        <a href="https://github.com/peeringdb/peeringdb-py/edit/master/docs/cli.md"
+          class="icon icon-github"> Edit on GitHub</a>
       
     </li>
   </ul>
@@ -137,88 +122,69 @@
             <div class="section">
               
                 <h1 id="command-line-interface">Command Line Interface</h1>
-<pre><code>Usage: peeringdb [OPTIONS] COMMAND [ARGS]...
+<pre><code>$ peeringdb -h
+usage: peeringdb [-h] [--version] [-C CONFIG_DIR] {sync,get,whois,config} ...
 
-  PeeringDB
+positional arguments:
+  {sync,get,whois,config}
+    sync                Synchronize local tables to PeeringDB
+    get                 Get a resource
+    whois               Simulate a whois lookup supports as&lt;ASN&gt; : query by AS
+                        ixlans&lt;net id&gt; : query networks on an IX
+    config              Configuration management
 
-Options:
-  --version      Show the version and exit.
-  --list-codecs  list available codecs
-  --help         Show this message and exit.
-
-Commands:
-  conf_dump   output current config
-  conf_write  write config file with defaults
-
-  get         get an object from peeringdb
-  whois       simulate a whois lookup
-
-  # local database management commands
-  configure    configure peeringdb
-  depcheck     check for dependencies, install if necessary
-  drop_tables  drop all peeringdb tables
-  sync         synchronize to a local database
+optional arguments:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  -C CONFIG_DIR, --config-dir CONFIG_DIR
+                        Directory containing configuration files
 </code></pre>
-<h2 id="commands">Commands</h2>
-<h2 id="conf_dump">conf_dump</h2>
-<p>Outputs current config</p>
-<h2 id="conf_write">conf_write</h2>
-<p>Writes a config file with all options and defaults to the config directory (changable with -c)</p>
-<h2 id="configure">configure</h2>
-<p>Prompts user for input to configure local database</p>
-<h2 id="depcheck">depcheck</h2>
-<p>Checks for dependencies and installs any needed packages</p>
-<h2 id="drop_tables">drop_tables</h2>
-<div class="admonition error">
-<p class="admonition-title">Warning</p>
-<p>This will delete data</p>
-</div>
-<p>Drop all peeringdb tables</p>
-<h2 id="get-objid">get <code>&lt;obj&gt;&lt;id&gt;</code></h2>
-<p>Fetches a specific object and outputs to stdout</p>
+<h1 id="commands">Commands</h1>
+<h2 id="configuration">Configuration</h2>
+<h3 id="config-show">config show</h3>
+<p>Outputs current config.</p>
+<h3 id="config-set">config set</h3>
+<p>Prompts user for input to configure local database.</p>
+<p>With -n, writes a config file with all options and defaults to the config directory (changable with -C).</p>
+<p>Example:<br />
+    $ peeringdb -C ~/.new-config/ config set -n</p>
+<h3 id="config-list-codecs">config list-codecs</h3>
+<p>Lists available config codec formats.</p>
+<h2 id="get-ltobjgtltidgt">get <code>&lt;obj&gt;&lt;id&gt;</code></h2>
+<p>Fetches a specific object and outputs to stdout.</p>
 <p>You may use the CLI to dump any object in the database with <object tag><id>, for example:</p>
 <pre><code>peeringdb get net1
+</code></pre>
+<p>By default, this produces a shallow output (depth = 0). Set the depth with <code>--depth</code>/<code>-D</code>:</p>
+<pre><code>peeringdb get net1 -D2
 </code></pre>
 <p>You may also change the output format to anything munge supports, so to get json, it would be:</p>
 <pre><code>peeringdb -O json get net1
 </code></pre>
-<h2 id="whois-objid">whois <code>&lt;obj&gt;&lt;id&gt;</code></h2>
+<h2 id="whois-ltobjgtltidgt">whois <code>&lt;obj&gt;&lt;id&gt;</code></h2>
 <p>Fetches a specific object and outputs to stdout, supports everything that <code>get</code> does, as well as:</p>
-<pre><code>  as&lt;ASN&gt; : query by AS
-
-  ixlans&lt;net id&gt; : query networks on an IX
-</code></pre>
-<p>If you provide authentication in your config file, it will include contacts much like version 1 did.</p>
-<h2 id="sync">sync</h2>
-<p>Synchronizes PeeringDB to a local database</p>
-<p>After doing a full sync, it only updates objects that have changed, so it's safe / efficient to run it as often as you want.</p>
-<p>By default, peeringdb will sync to a file in the config dir called peeringdb.sqlite3 - to change that, see <a href="..#configuration">configuration</a></p>
-<p>Then edit the file it created (default <code>~/peeringdb/config.yaml</code>). Currently, it directly uses django, so any database backend django supports will work, for example, to sync to MySQL, you could use the following database config:</p>
-<pre><code>database:
-  engine: mysql
-  host: localhost
-  name: peeringdb
-  user: peeringdb
-  password: supers3cr3t
-</code></pre>
-<div class="admonition tip">
-<p class="admonition-title">MySQL</p>
-<p>You need to use utf8 and a utf8 collation before doing the initial sync.</p>
-<p>New database:</p>
-<pre><code>CREATE DATABASE peeringdb DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-</code></pre>
-<p>or existing database:</p>
-<pre><code>ALTER DATABASE peeringdb DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-</code></pre>
+<ul>
+<li><code>as&lt;ASN&gt;</code> : query by AS</li>
+<li><code>ixlans&lt;net id&gt;</code> : query networks on an IX</li>
+</ul>
+<h2 id="drop-tables">drop-tables</h2>
+<div class="admonition error">
+<p class="admonition-title">Warning</p>
+<p>This will delete data.</p>
 </div>
+<p>Drops all peeringdb tables.</p>
+<h2 id="sync">sync</h2>
+<p>Synchronizes PeeringDB to a local database.</p>
+<p>After doing a full sync, it only updates objects that have changed.</p>
+<p>By default, peeringdb will sync to a file in the config dir called <code>peeringdb.sqlite3</code> - to change that, see <a href="..#configuration">configuration</a></p>
 <p>Once the database is configured how you'd like it, you can do an initial sync of the database with</p>
 <pre><code>peeringdb sync
 </code></pre>
-<p>Then add a cron job to keep it in sync, for example, once a day at between midnight and midnight plus 10 minutes, with random sleep delay to prevent thundering hurd</p>
-<pre><code>crontab -l | { cat; echo "`expr $RANDOM % 60` 0 * * * `which peeringdb` sync &gt; /dev/null 2&gt;&amp;1"; } | crontab -
+<p>Then add a cron job to keep it in sync, for example, once a day at between midnight and midnight plus 10 minutes, with random sleep delay to prevent thundering herd:</p>
+<pre><code>crontab -l | { cat; echo "$(expr $RANDOM % 60) 0 * * * $(which peeringdb) sync &gt; /dev/null 2&gt;&amp;1"; } | crontab -
 </code></pre>
 <p>Or, if your cron supports random:</p>
-<pre><code>crontab -l | { cat; echo "0 0 * * * sleep \$[RANDOM\%600] ; `which peeringdb` sync &gt; /dev/null 2&gt;&amp;1"; } | crontab -
+<pre><code>crontab -l | { cat; echo "0 0 * * * sleep \$[RANDOM\%600] ; $(which peeringdb) sync &gt; /dev/null 2&gt;&amp;1"; } | crontab -
 </code></pre>
               
             </div>
@@ -244,7 +210,7 @@ Commands:
 
   Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
-	  
+      
         </div>
       </div>
 
@@ -252,10 +218,10 @@ Commands:
 
   </div>
 
-<div class="rst-versions" role="note" style="cursor: pointer">
+  <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/peeringdb/peeringdb-py" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/peeringdb/peeringdb-py/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
@@ -265,6 +231,9 @@ Commands:
       
     </span>
 </div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
 
 </body>
 </html>
