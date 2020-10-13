@@ -64,7 +64,7 @@ Drops all peeringdb tables.
 ## sync
 Synchronizes PeeringDB to a local database.
 
-After doing a full sync, it only updates objects that have changed, so it's safe / efficient to run it as often as you want.
+After doing a full sync, it only updates objects that have changed.
 
 By default, peeringdb will sync to a file in the config dir called `peeringdb.sqlite3` - to change that, see [configuration](index.md#configuration)
 
