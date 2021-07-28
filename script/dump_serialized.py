@@ -25,11 +25,14 @@ def main(filepath):
     path = Path(filepath)
     assert path.is_dir(), path
 
-    for q in client.tags.all():
+    for _ in client.tags.all():
+        # FIXME: what's happenig here?
         with open(path / f"{res}.json", "w") as out:
             out.write()
     with open(filepath, "w") as f:
         json.dump(dump, f)
+
+    return 0
 
 
 if __name__ == "__main__":

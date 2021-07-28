@@ -2,8 +2,13 @@ from collections import OrderedDict
 
 import munge.util
 
-import peeringdb
-from peeringdb import config, get_backend, resource
+from peeringdb import (
+    config,
+    get_backend,
+    resource,
+    backend_initialized,
+    initialize_backend,
+)
 from peeringdb.sync import Fetcher, Updater
 
 
@@ -39,8 +44,8 @@ class Client:
         self.config = cfg
         orm_config = cfg["orm"]
         orm_name = orm_config["backend"]
-        if not peeringdb.backend_initialized():
-            peeringdb.initialize_backend(orm_name, **orm_config)
+        if not backend_initialized():
+            initialize_backend(orm_name, **orm_config)
 
         sync_config = cfg["sync"]
         # override config with kwargs

@@ -30,7 +30,7 @@ for tag, name in _NAMES.items():
     Class = Meta(name, (), {"tag": tag})
 
     RESOURCES_BY_TAG[tag] = Class
-    locals()[name] = Class
+    globals()[name] = Class
 
 is_resource_tag = RESOURCES_BY_TAG.__contains__
 
