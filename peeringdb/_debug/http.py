@@ -1,5 +1,5 @@
-import logging
 import http.client
+import logging
 
 http.client.HTTPConnection.debuglevel = 1
 

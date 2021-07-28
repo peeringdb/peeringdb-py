@@ -1,15 +1,14 @@
-import sys
-import calendar
 import logging
-from argparse import ArgumentParser
+import sys
 
 import munge
+
 import peeringdb
-from peeringdb import resource, util, config as cfg
+from peeringdb import config as cfg
+from peeringdb import resource, util
 from peeringdb.client import Client
-from peeringdb.whois import WhoisFormat
 from peeringdb.output._yaml import dump
-from peeringdb.config import prompt_config, write_config
+from peeringdb.whois import WhoisFormat
 
 
 def _handler(func):
@@ -92,7 +91,7 @@ class Get:
             B = peeringdb.get_backend()
             try:
                 obj = client.get(res, pk)
-            except B.object_missing_error(B.get_concrete(res)) as e:
+            except B.object_missing_error(B.get_concrete(res)):
                 if remote:
                     obj = client.fetch(res, pk, depth)[0]
                 else:
@@ -113,9 +112,9 @@ def _lookup_tag(tag, key, getfunc):
 
 class Whois:
     """Simulate a whois lookup;
-       supports
-            as<ASN> : query by AS;
-            ixnets<net ID> : query networks on an IX
+    supports
+         as<ASN> : query by AS;
+         ixnets<net ID> : query networks on an IX
     """
 
     @staticmethod
@@ -255,6 +254,6 @@ class DropTables:
 
     @_handler
     def handle(config, **_):
-        client = Client(config)
+        Client(config)
         B = peeringdb.get_backend()
         B.delete_all()

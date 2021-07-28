@@ -1,8 +1,10 @@
 """
 PeeringDB API
 """
-import logging, sys
+import logging
+import sys
 from importlib import import_module
+
 import pkg_resources
 
 __version__ = pkg_resources.require("peeringdb")[0].version
@@ -92,6 +94,3 @@ def initialize_backend(name, **kwargs):
 # def is_valid_backend(backend): ...
 
 # namespace imports
-from peeringdb.client import Client as PeeringDB
-from peeringdb.config import load_config
-from peeringdb.resource import get_resource

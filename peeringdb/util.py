@@ -1,10 +1,10 @@
-import logging, re
-from functools import reduce
 import json
+import logging
+import re
 
 from django.core import serializers
 
-from peeringdb import resource, get_backend
+from peeringdb import get_backend, resource
 
 
 def split_ref(string):

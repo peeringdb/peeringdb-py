@@ -1,13 +1,10 @@
 from collections import OrderedDict
 
 import munge.util
-from twentyc.rpc import RestClient
 
 import peeringdb
-from peeringdb import config
-from peeringdb import get_backend, resource
-from peeringdb.resource import get_resource, Network
-from peeringdb.sync import Updater, Fetcher
+from peeringdb import config, get_backend, resource
+from peeringdb.sync import Fetcher, Updater
 
 
 class _Query:

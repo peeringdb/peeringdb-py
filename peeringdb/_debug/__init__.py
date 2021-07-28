@@ -10,13 +10,13 @@ def log_validation_errors(B, e, obj, k):
         field = B.get_field(obj, k)
         try:
             log.debug("{}: {}, dict: {}".format(k, getattr(obj, k), field.__dict__))
-        except self.backend.object_missing_error():
+        except B.object_missing_error():
             log.debug("{}: Missing Object, dict: {}".format(k, field.__dict__))
 
 
 def try_or_debug(f):
     try:
         return f()
-    except Exception as e:
-        pdb.set_trace()
+    except Exception:
+        # pdb.set_trace() ???
         raise

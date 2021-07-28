@@ -1,5 +1,5 @@
-from functools import wraps
 import inspect
+from functools import wraps
 
 from peeringdb.resource import RESOURCES_BY_TAG
 
@@ -11,7 +11,7 @@ def reftag_to_cls(fn):
     passed as the value
     """
     spec = inspect.getfullargspec(fn)
-    names, values = spec.args, spec.defaults
+    names, _ = spec.args, spec.defaults
 
     @wraps(fn)
     def wrapped(*args, **kwargs):
@@ -37,7 +37,7 @@ class Field:
 
     def __init__(self, name):
         self.name = name
-        self.column = column
+        self.column = None  # ???
 
 
 class EmptyContext:
@@ -176,7 +176,6 @@ class Interface(Base):
         operations that need to be done ONCE during runtime
         to prepare usage for the backend
         """
-        pass
 
     # INTERFACE (REQUIRED)
     # The following methods are required to be overwritten in
@@ -457,7 +456,6 @@ class Interface(Base):
 
             - obj: concrete object instance
         """
-        pass
 
     @reftag_to_cls
     def convert_field(self, concrete, field_name, value):
@@ -473,7 +471,6 @@ class Interface(Base):
             - field_name
             - value
         """
-        pass
 
     def migrate_database(self, verbosity=0):
         """
@@ -484,7 +481,6 @@ class Interface(Base):
             - verbosity <int>: arbitrary verbosity setting, 0 = be silent,
                 1 = show some info about migrations.
         """
-        pass
 
     def is_database_migrated(self, **kwargs):
         """

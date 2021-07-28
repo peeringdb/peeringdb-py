@@ -3,22 +3,18 @@ Module defining main interface classes for sync
 """
 import logging
 import threading
-from itertools import chain
-from datetime import datetime
 from contextlib import contextmanager
+from datetime import datetime
 
-from peeringdb import resource, get_backend
-from peeringdb import _sync, _fetch, _config_logs
-from peeringdb.resource import all_resources
-
+from peeringdb import _config_logs, _fetch, _sync
 from peeringdb import _tasks_sequential as _tasks
+from peeringdb import get_backend, resource
 
 wrap_generator = _tasks.wrap_generator
 
 
 class _CancelSave(Exception):
     "Token exception to cancel transaction"
-    pass
 
 
 class Updater:
@@ -48,12 +44,18 @@ class Updater:
         where a referenced object is not found, attempt to fetch said
         object from the REST api
         """
-        fetch = lambda: self._fetcher.fetch_latest(res, pk, 1, since=since)
+
+        def fetch():
+            return self._fetcher.fetch_latest(res, pk, 1, since=since)
+
         self._update(res, fetch, depth)
 
     def update_where(self, res, depth=0, since=None, **kwargs):
         "Like update() but uses WHERE-style args"
-        fetch = lambda: self._fetcher.fetch_all_latest(res, 0, kwargs, since=since)
+
+        def fetch():
+            return self._fetcher.fetch_all_latest(res, 0, kwargs, since=since)
+
         self._update(res, fetch, depth)
 
     def update_all(self, rs=None, since=None):
@@ -86,7 +88,6 @@ class Updater:
                 self._log.debug("Committing transaction")
         except _CancelSave:
             self._log.info("Transaction commit was cancelled (dry run)")
-            pass
 
 
 # Holds the state relevant to a single sync

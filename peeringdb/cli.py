@@ -1,8 +1,9 @@
-import os, sys
+import os
+import sys
 from argparse import ArgumentParser
 
 import peeringdb
-from peeringdb import config, commands
+from peeringdb import commands, config
 
 COMMANDS = {
     "get": commands.Get,

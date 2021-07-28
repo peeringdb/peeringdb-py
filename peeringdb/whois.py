@@ -1,5 +1,6 @@
 import collections
 import sys
+
 from peeringdb.util import pretty_speed
 
 
