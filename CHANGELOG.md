@@ -3,10 +3,13 @@
 
 ## [Unreleased]
 ### Added
+- python3.9 support
 ### Fixed
+- linting pass
 ### Changed
 ### Deprecated
 ### Removed
+- python3.5 support
 ### Security
 
 
