@@ -2,12 +2,13 @@
 RPC / REST client implementation module
 """
 import re
+
 import requests
 from twentyc.rpc import RestClient
 from twentyc.rpc.client import (
+    InvalidRequestException,
     NotFoundException,
     PermissionDeniedException,
-    InvalidRequestException,
 )
 
 import peeringdb

@@ -1,11 +1,9 @@
 """
 Sync implementation module
 """
-import logging
 import datetime
 from collections import defaultdict
-from peeringdb.resource import get_resource
-from peeringdb import get_backend
+
 from peeringdb.util import group_fields
 
 
@@ -40,7 +38,7 @@ def initialize_object(B, res, row):
     Arguments:
         - row<dict>: dict of data like depth=1, i.e. many_refs are only ids
     """
-    field_groups = group_fields(B.get_concrete(res))
+    group_fields(B.get_concrete(res))
 
     try:
         obj = B.get_object(B.get_concrete(res), row["id"])
@@ -87,7 +85,7 @@ def extract_relations(B, res, row):
     for fname, field in field_groups["single_refs"].items():
         fieldres = _field_resource(B, B.get_concrete(res), fname)
         _, subrow = _get_subrow(row, fname, field)
-        pk = _handle_subrow(fieldres, subrow)
+        _handle_subrow(fieldres, subrow)
 
     for fname, field in field_groups["many_refs"].items():
         fieldres = _field_resource(B, B.get_concrete(res), fname)

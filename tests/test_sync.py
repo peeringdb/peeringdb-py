@@ -2,6 +2,7 @@ import pytest
 
 import helper
 import peeringdb
+from peeringdb.client import Client
 from peeringdb.resource import all_resources, Network, Organization
 
 # first net id
@@ -15,12 +16,12 @@ class _PartialEnabledContext(peeringdb.sync.UpdateContext):
 
 
 def get_client():
-    return peeringdb.PeeringDB(helper.CONFIG)
+    return Client(helper.CONFIG)
 
 
 # test single-object, aka. partial sync (disabled in release)
 def get_pclient():
-    c = peeringdb.PeeringDB(helper.CONFIG)
+    c = Client(helper.CONFIG)
     c._updater._ContextClass = _PartialEnabledContext
     return c
 
@@ -112,7 +113,7 @@ def test_nonunique_single(client_dup):
 # dry_run=True attribute gets set on ALL clients. wtf?
 @pytest.mark.sync
 def test_dry_run(client_empty):
-    client = peeringdb.PeeringDB(helper.CONFIG, dry_run=True)
+    client = Client(helper.CONFIG, dry_run=True)
     rs = all_resources()
     client.update_all(rs)
     # still empty?

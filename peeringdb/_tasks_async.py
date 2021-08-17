@@ -1,7 +1,8 @@
 """
 Wrapper module for asynchronous task handling.
 """
-import asyncio, inspect
+import asyncio
+import inspect
 
 
 class UpdateTask(asyncio.Task):

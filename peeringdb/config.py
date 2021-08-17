@@ -3,13 +3,12 @@ PeeringDB configuration module.
 
 This defines config schemas and related I/O.
 """
-import logging
 import os
 
 import munge
+from confu import generator
+from confu import schema as _schema
 from munge.util import recursive_update
-
-from confu import schema as _schema, generator
 
 from peeringdb.util import prompt
 
