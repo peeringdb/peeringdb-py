@@ -49,11 +49,13 @@
   - linting pass
   removed:
   - python3.5 support
+1.2.1:
+  fixed:
+  - fix peeringdb command not found error
 Unreleased:
   added: []
   changed: []
   deprecated: []
-  fixed:
-  - fix peeringdb command not found error
+  fixed: []
   removed: []
   security: []
