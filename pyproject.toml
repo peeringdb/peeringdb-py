@@ -19,6 +19,9 @@ from = "src"
 profile = "black"
 multi_line_output = 3
 
+[tool.poetry.scripts]
+peeringdb = "peeringdb.cli:main"
+
 [tool.poetry.dependencies]
 python = "^3.6.2"
 confu = "^1"

@@ -2,6 +2,8 @@
 
 
 ## Unreleased
+### Fixed
+- fix peeringdb command not found error
 
 
 ## 1.2.0
