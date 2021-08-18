@@ -1,5 +1,0 @@
-include LICENSE.txt
-recursive-include peeringdb *.py
-recursive-exclude peeringdb/_debug *.py
-recursive-include facsimile *.txt
-include facsimile/VERSION

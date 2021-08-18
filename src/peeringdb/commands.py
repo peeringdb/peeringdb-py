@@ -145,7 +145,7 @@ class Whois:
 
 
 class DumpConfig:
-    """ Output current config """
+    """Output current config"""
 
     @staticmethod
     def add_arguments(parser):
@@ -160,7 +160,7 @@ class DumpConfig:
 
 
 class PromptConfig:
-    """ Prompt for configuration values and save to a file """
+    """Prompt for configuration values and save to a file"""
 
     @staticmethod
     def add_arguments(parser):

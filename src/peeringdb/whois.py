@@ -16,7 +16,7 @@ class WhoisFormat:
         return "%-" + "s %-".join(map(str, widths)) + "s"
 
     def mk_set_headers(self, data, columns):
-        """ figure out sizes and create header fmt """
+        """figure out sizes and create header fmt"""
         columns = tuple(columns)
         lens = []
 
@@ -29,18 +29,18 @@ class WhoisFormat:
         return fmt
 
     def _get_name(self, key):
-        """ get display name for a key, or mangle for display """
+        """get display name for a key, or mangle for display"""
         if key in self.display_names:
             return self.display_names[key]
 
         return key.capitalize()
 
     def _get_val(self, data, key):
-        """ get value from a dict, format if necessary """
+        """get value from a dict, format if necessary"""
         return data.get(key, "")
 
     def _get_columns(self, data):
-        """ get columns from a dict """
+        """get columns from a dict"""
         return data.keys()
 
     def display_section(self, name):
@@ -53,7 +53,7 @@ class WhoisFormat:
         self._print(fmt % tuple("-" * len(x) for x in headers))
 
     def display_set(self, typ, data, columns):
-        """ display a list of dicts """
+        """display a list of dicts"""
         self.display_section("%s (%d)" % (self._get_name(typ), len(data)))
         headers = tuple(map(self._get_name, columns))
         fmt = self.mk_set_headers(data, columns)
@@ -173,16 +173,16 @@ class WhoisFormat:
         self._print("\n")
 
     def _print(self, *args):
-        """ internal print to self.fobj """
+        """internal print to self.fobj"""
         string = " ".join(args) + "\n"
         self.fobj.write(string)
 
     def print(self, typ, data):
-        """ *deprecated* - use display() """
+        """*deprecated* - use display()"""
         return self.display(typ, data)
 
     def display(self, typ, data):
-        """ display section of typ with data """
+        """display section of typ with data"""
         if hasattr(self, "print_" + typ):
             getattr(self, "print_" + typ)(data)
 

@@ -8,7 +8,7 @@ from peeringdb import get_backend, resource
 
 
 def split_ref(string):
-    """ splits a string into (tag, id) """
+    """splits a string into (tag, id)"""
     re_tag = re.compile(r"^(?P<tag>[a-zA-Z]+)[\s-]*(?P<pk>\d+)$")
     m = re_tag.search(string)
     if not m:
