@@ -92,7 +92,12 @@ def test_schema_migration():
     assert config.detect_old(old_data)
     assert not config.detect_old(new_data)
     # Try partial data
-    old_part = {"peeringdb": {"url": "https://test.peeringdb.com/api", "timeout": 10,}}
+    old_part = {
+        "peeringdb": {
+            "url": "https://test.peeringdb.com/api",
+            "timeout": 10,
+        }
+    }
     assert config.detect_old(old_part)
     # empty case
     assert not config.detect_old({})
