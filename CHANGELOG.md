@@ -2,6 +2,9 @@
 
 
 ## Unreleased
+
+
+## 1.2
 ### Added
 - poetry package management
 - python3.9 support

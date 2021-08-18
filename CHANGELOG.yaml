@@ -41,14 +41,18 @@
   removed:
   - remove py2.7 support (#37)
   - remove py3.4 tests (py3.4 EOL reached)
-Unreleased:
+'1.2':
   added:
   - poetry package management
   - python3.9 support
-  changed: []
-  deprecated: []
   fixed:
   - linting pass
   removed:
   - python3.5 support
+Unreleased:
+  added: []
+  changed: []
+  deprecated: []
+  fixed: []
+  removed: []
   security: []
