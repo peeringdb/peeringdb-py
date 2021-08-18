@@ -76,7 +76,7 @@ jobs:
       - name: Run tests
         run: |
           source .venv/bin/activate
-          pytest -vv --cov-report=term-missing --cov=${{ github.event.repository.name }} --cov-report=xml tests/
+          pytest -vv --cov-report=term-missing --cov=peeringdb --cov-report=xml tests/
           coverage report
       # upload coverage stats
       - name: Upload coverage
