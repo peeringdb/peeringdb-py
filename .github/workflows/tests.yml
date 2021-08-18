@@ -71,7 +71,7 @@ jobs:
           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
       # install dependencies if cache does not exist
       - name: Check cache and install dependencies
-        run: poetry install --dev
+        run: poetry install
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       - name: Run tests
         run: |
