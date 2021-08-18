@@ -41,7 +41,7 @@
   removed:
   - remove py2.7 support (#37)
   - remove py3.4 tests (py3.4 EOL reached)
-'1.2':
+1.2.0:
   added:
   - poetry package management
   - python3.9 support
