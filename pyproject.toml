@@ -34,6 +34,7 @@ munge = "^1"
 "twentyc.rpc" = "^1"
 
 [tool.poetry.dev-dependencies]
+django = "~3.2"
 django_peeringdb = "^2.8"
 
 # testing
