@@ -53,6 +53,7 @@ Unreleased:
   added: []
   changed: []
   deprecated: []
-  fixed: []
+  fixed:
+  - fix peeringdb command not found error
   removed: []
   security: []
