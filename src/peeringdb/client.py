@@ -3,11 +3,11 @@ from collections import OrderedDict
 import munge.util
 
 from peeringdb import (
+    backend_initialized,
     config,
     get_backend,
-    resource,
-    backend_initialized,
     initialize_backend,
+    resource,
 )
 from peeringdb.sync import Fetcher, Updater
 
