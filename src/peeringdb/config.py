@@ -27,6 +27,7 @@ class ClientSchema(_schema.Schema):
         strip_tz = _schema.Int("strip_tz", default=1)  # FIXME no boolean?
         only = _schema.List("only", item=_schema.Str(), default=[])
         timeout = _schema.Int("timeout", default=0)
+        api_key = _schema.Str("api_key", blank=True, default="")
 
     class OrmSchema(_schema.Schema):
         class OrmDbSchema(_schema.Schema):

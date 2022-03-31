@@ -25,6 +25,7 @@ class Fetcher(RestClient):
 
     def __init__(self, **kwargs):
         # self.return_error = True
+        self.api_key = kwargs.get("api_key", "")
         super().__init__(**kwargs)
 
     def _req(self, func):
@@ -96,6 +97,7 @@ class Fetcher(RestClient):
         user_agent = "PeeringDB/{} {}/{}".format(
             peeringdb.__version__, backend, backend_version
         )
+
         headers = {
             "Accept": "application/json",
             "User-Agent": user_agent,
@@ -110,6 +112,39 @@ class Fetcher(RestClient):
             else:
                 url = "{}/{}".format(self.url, typ)
 
-        return requests.request(
-            method, url, params=params, data=data, auth=auth, headers=headers
-        )
+        if auth and self.api_key:
+            raise ValueError("Cannot use both API key and basic auth")
+
+        if auth:
+            response = requests.request(
+                method, url, params=params, data=data, auth=auth, headers=headers
+            )
+
+            if response.status_code != 200:
+                raise ValueError(
+                    "Authentication failed: {}".format(
+                        response.json().get("meta", {}).get("error", "")
+                    )
+                )
+            return response
+            
+        if self.api_key:
+            headers["Authorization"] = "Api-Key {}".format(self.api_key)
+            response = requests.request(
+                method, url, params=params, data=data, headers=headers
+            )
+            if response.status_code != 200:
+                raise ValueError(
+                    "Authentication failed: {}".format(
+                        response.json().get("meta", {}).get("error", "")
+                    )
+                )
+            return response
+
+
+        if not auth or not self.api_key:
+            response = requests.request(
+                method, url, params=params, data=data, headers=headers
+            )
+
+            return response     

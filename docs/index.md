@@ -53,6 +53,23 @@ If you provide authentication in your config file, it will include contacts much
 <!-- After everything is configured, check your setup and install any new dependencies with: -->
 <!--     peeringdb depcheck -->
 
+## Authentication
+To sync with peeringdb API servers, you need to provide authentication. Basic authentication is supported, but you can also use your API keys. To sync with PeeringDB, you can add the following config:
+
+
+    sync:
+        api_key: 'YOUR_API_KEY_HERE'
+        user: 'username'
+        password: 'password'
+        only: []
+        strip_tz: 1
+        timeout: 0
+        url: https://peeringdb.com/api
+
+This will also be prompted during the configuration wizard.  
+
+Please take note that only one authentication method is supported, either basic or API key.
+
 ## Tips
 ### MySQL
 You need to use utf8 and a utf8 collation before doing the initial sync.
