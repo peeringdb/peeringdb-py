@@ -66,6 +66,7 @@ def test_schema_migration():
     }
     new_data = {
         "sync": {
+            "api_key": "",
             "url": "https://test.peeringdb.com/api",
             "user": "dude",
             "password": "12345",

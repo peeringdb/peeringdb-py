@@ -5,6 +5,8 @@
 .coverage
 .pytest_cache/
 .tox
+*.sqlite3
 coverage.xml
 dist/
 site/
+venv/

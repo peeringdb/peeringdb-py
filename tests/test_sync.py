@@ -121,6 +121,20 @@ def test_dry_run(client_empty):
         client.get(Network, FIRST_NET)
 
 
+@pytest.mark.sync
+def test_auth(client_empty):
+
+    with pytest.raises(ValueError):
+        config = helper.CONFIG
+        config["sync"]["user"] = "test"
+        config["sync"]["password"] = "test"
+        config["sync"]["api_key"] = "test"
+        client = Client(config, dry_run=True)
+        rs = all_resources()
+        client.update_all(rs)
+        client.get(Network, FIRST_NET)
+
+
 # TODO:
 
 # data integrity (needs mocking?)
