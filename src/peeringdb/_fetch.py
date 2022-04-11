@@ -120,7 +120,7 @@ class Fetcher(RestClient):
                 method, url, params=params, data=data, auth=auth, headers=headers
             )
 
-            if response.status_code != 200:
+            if response.status_code == 401:
                 raise ValueError(
                     "Authentication failed: {}".format(
                         response.json().get("meta", {}).get("error", "")
@@ -133,7 +133,7 @@ class Fetcher(RestClient):
             response = requests.request(
                 method, url, params=params, data=data, headers=headers
             )
-            if response.status_code != 200:
+            if response.status_code == 401:
                 raise ValueError(
                     "Authentication failed: {}".format(
                         response.json().get("meta", {}).get("error", "")
