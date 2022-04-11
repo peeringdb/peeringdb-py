@@ -1,9 +1,10 @@
 # Units tests to directly cover both task wrapper modules -
 # not possible with pytest parametrization
 
-import pytest
 import sys
 from collections import defaultdict
+
+import pytest
 
 from peeringdb import _tasks_sequential
 

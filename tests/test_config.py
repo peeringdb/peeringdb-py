@@ -1,5 +1,7 @@
+import contextlib
+import tempfile
+
 import pytest
-import tempfile, contextlib
 from confu.exceptions import ValidationError
 
 try:
@@ -18,6 +20,7 @@ import helper
 
 import peeringdb
 from peeringdb import config
+
 
 # Check round-tripping of config
 def test_default_config():

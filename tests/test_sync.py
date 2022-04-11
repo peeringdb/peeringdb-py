@@ -1,9 +1,9 @@
+import helper
 import pytest
 
-import helper
 import peeringdb
 from peeringdb.client import Client
-from peeringdb.resource import all_resources, Network, Organization
+from peeringdb.resource import Network, Organization, all_resources
 
 # first net id
 FIRST_NET = 7

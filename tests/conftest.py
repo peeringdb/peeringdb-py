@@ -1,15 +1,18 @@
-import pytest
 import logging
-import sys, os, tempfile
+import os
 import os.path as _path
 import sqlite3
+import sys
+import tempfile
 from contextlib import contextmanager
+
+import pytest
 
 sys.path.append(_path.join(_path.dirname(__file__)))
 
 import helper
-import peeringdb
 
+import peeringdb
 from peeringdb.client import Client
 
 peeringdb._config_logs(logging.DEBUG)

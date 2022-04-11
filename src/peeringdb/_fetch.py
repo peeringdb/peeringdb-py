@@ -127,7 +127,7 @@ class Fetcher(RestClient):
                     )
                 )
             return response
-            
+
         if self.api_key:
             headers["Authorization"] = "Api-Key {}".format(self.api_key)
             response = requests.request(
@@ -141,10 +141,9 @@ class Fetcher(RestClient):
                 )
             return response
 
-
         if not auth or not self.api_key:
             response = requests.request(
                 method, url, params=params, data=data, headers=headers
             )
 
-            return response     
+            return response

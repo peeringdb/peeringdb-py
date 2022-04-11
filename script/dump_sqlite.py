@@ -2,9 +2,9 @@
 #
 # Like sqlite .dump, but add explicit column names to INSERT statements
 
-import sys
 import re
 import sqlite3
+import sys
 
 RE_INSERT_INTO = re.compile(r'INSERT INTO "(\w+)"')
 

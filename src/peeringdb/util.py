@@ -23,9 +23,9 @@ def pretty_speed(value):
     try:
         value = int(value)
         if value >= 1000000:
-            return "%dT" % (value / 10 ** 6)
+            return "%dT" % (value / 10**6)
         elif value >= 1000:
-            return "%dG" % (value / 10 ** 3)
+            return "%dG" % (value / 10**3)
         else:
             return "%dM" % value
     except ValueError:
@@ -70,7 +70,7 @@ def group_fields(concrete):
     return ret
 
 
-def limit_mem(limit=(4 * 1024 ** 3)):
+def limit_mem(limit=(4 * 1024**3)):
     "Set soft memory limit"
     rsrc = resource.RLIMIT_DATA
     soft, hard = resource.getrlimit(rsrc)
