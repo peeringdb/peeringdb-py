@@ -66,7 +66,7 @@ To sync with peeringdb API servers, you need to provide authentication. Basic au
         timeout: 0
         url: https://peeringdb.com/api
 
-This will also be prompted during the configuration wizard.  
+This will also be prompted during the configuration wizard.
 
 Please take note that only one authentication method is supported, either basic or API key.
 

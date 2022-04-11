@@ -14,7 +14,7 @@ __data = {Network: {20: _data.twentyc}}
 
 class Fetcher(RestClient):
     def __init__(self, **kwargs):
-        super(Fetcher, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def fetch(self, R, pk, depth):
         return __data[R][pk]

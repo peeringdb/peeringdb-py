@@ -108,9 +108,9 @@ class Fetcher(RestClient):
             auth = (self.user, self.password)
         if not url:
             if id:
-                url = "{}/{}/{}".format(self.url, typ, id)
+                url = f"{self.url}/{typ}/{id}"
             else:
-                url = "{}/{}".format(self.url, typ)
+                url = f"{self.url}/{typ}"
 
         if auth and self.api_key:
             raise ValueError("Cannot use both API key and basic auth")
@@ -129,7 +129,7 @@ class Fetcher(RestClient):
             return response
 
         if self.api_key:
-            headers["Authorization"] = "Api-Key {}".format(self.api_key)
+            headers["Authorization"] = f"Api-Key {self.api_key}"
             response = requests.request(
                 method, url, params=params, data=data, headers=headers
             )

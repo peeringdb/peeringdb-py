@@ -63,7 +63,7 @@ def read_config(conf_dir=DEFAULT_CONFIG_DIR):
     if not os.path.exists(conf_path):
         # only throw if not default
         if conf_dir != DEFAULT_CONFIG_DIR:
-            raise OSError("Config directory not found at {}".format(conf_path))
+            raise OSError(f"Config directory not found at {conf_path}")
 
     return munge.load_datafile("config", conf_path, default=None)
 
@@ -158,7 +158,7 @@ def prompt_config(sch, defaults=None, path=None):
     for name, attr in sch.attributes():
         fullpath = name
         if path:
-            fullpath = "{}.{}".format(path, name)
+            fullpath = f"{path}.{name}"
         if defaults is None:
             defaults = {}
         default = defaults.get(name)

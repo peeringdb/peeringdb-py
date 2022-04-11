@@ -187,7 +187,7 @@ class WhoisFormat:
             getattr(self, "print_" + typ)(data)
 
         elif not data:
-            self._print("{}: {}".format(typ, data))
+            self._print(f"{typ}: {data}")
 
         elif isinstance(data, collections.Mapping):
             self._print("\n", typ)
@@ -202,6 +202,6 @@ class WhoisFormat:
                 for each in data:
                     self.print(typ, each)
         else:
-            self._print("{}: {}".format(typ, data))
+            self._print(f"{typ}: {data}")
 
         self.fobj.flush()

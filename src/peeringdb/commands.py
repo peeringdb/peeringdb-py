@@ -95,7 +95,7 @@ class Get:
                 if remote:
                     obj = client.fetch(res, pk, depth)[0]
                 else:
-                    print("Not found: {}-{}".format(tag, pk), file=sys.stderr)
+                    print(f"Not found: {tag}-{pk}", file=sys.stderr)
                     return 1
 
             dump(obj, depth, sys.stdout)
@@ -139,7 +139,7 @@ class Whois:
             try:
                 data = _lookup_tag(tag, key, get)
             except peeringdb.sync.NotFoundException:
-                print("Not found: resource for {}={}".format(tag, key), file=sys.stderr)
+                print(f"Not found: resource for {tag}={key}", file=sys.stderr)
                 return 1
             fmt.display(tag, data[0])
 

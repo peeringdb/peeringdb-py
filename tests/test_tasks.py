@@ -10,10 +10,9 @@ from peeringdb import _tasks_sequential
 
 TASKS_MODS = [_tasks_sequential]
 # pre-async compat. import
-if sys.version_info >= (3, 5):
-    from peeringdb import _tasks_async
+from peeringdb import _tasks_async
 
-    TASKS_MODS.append(_tasks_async)
+TASKS_MODS.append(_tasks_async)
 
 # dummy resources for task objects
 class ResOne:

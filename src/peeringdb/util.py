@@ -12,7 +12,7 @@ def split_ref(string):
     re_tag = re.compile(r"^(?P<tag>[a-zA-Z]+)[\s-]*(?P<pk>\d+)$")
     m = re_tag.search(string)
     if not m:
-        raise ValueError("unable to split string '{}'".format(string))
+        raise ValueError(f"unable to split string '{string}'")
 
     return (m.group("tag").lower(), int(m.group("pk")))
 
@@ -35,8 +35,8 @@ def pretty_speed(value):
 def prompt(msg, default=None):
     "Prompt for input"
     if default is not None:
-        msg = "{} ({})".format(msg, repr(default))
-    msg = "{}: ".format(msg)
+        msg = f"{msg} ({repr(default)})"
+    msg = f"{msg}: "
     try:
         s = input(msg)
     except KeyboardInterrupt:
@@ -87,9 +87,9 @@ def client_dump(client, path):
     assert path.is_dir(), path
     for q in client.tags.all():
         ser = serializers.serialize("json", q.all())
-        outpath = path / "{}.json".format(q.res.tag)
+        outpath = path / f"{q.res.tag}.json"
         with open(outpath, "w") as out:
-            print("Writing {}".format(outpath))
+            print(f"Writing {outpath}")
             j = json.loads(ser)
             json.dump(j, out, indent=4, sort_keys=True)
             # out.write(ser)
@@ -98,7 +98,7 @@ def client_dump(client, path):
 def client_load(client, path):
     "Deserialize from JSON files under directory"
     for q in client.tags.all():
-        respath = path / "{}.json".format(q.res.tag)
+        respath = path / f"{q.res.tag}.json"
         with open(str(respath)) as fin:
             des = serializers.deserialize("json", fin)
             for obj in des:
