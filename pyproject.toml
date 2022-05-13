@@ -42,7 +42,7 @@ tox = ">=3.24"
 black = ">=20"
 isort = "^5.7.0"
 flake8 = "^3.8.4"
-mypy = "^0.812"
+mypy = "^0.950"
 pre-commit = "^2.13"
 pyupgrade = "^2.19.4"
 
