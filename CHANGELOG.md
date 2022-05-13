@@ -2,8 +2,16 @@
 
 
 ## Unreleased
+
+
+## 1.3.0
 ### Added
 - api key support added (#62)
+- python 3.10
+### Fixed
+- pyyaml dependency missing (#57)
+### Removed
+- python 3.6
 
 
 ## 1.2.1

@@ -1,12 +1,9 @@
 Unreleased:
-  added:
-  - api key support added (#62)
-  - python 3.10
+  added: []
+  fixed: []
   changed: []
   deprecated: []
-  fixed: []
-  removed:
-  - python 3.6
+  removed: []
   security: []
 0.4.4:
   added:
@@ -62,3 +59,11 @@ Unreleased:
 1.2.1:
   fixed:
   - fix peeringdb command not found error
+1.3.0:
+  added:
+  - api key support added (#62)
+  - python 3.10
+  fixed:
+  - pyyaml dependency missing (#57)
+  removed:
+  - python 3.6
