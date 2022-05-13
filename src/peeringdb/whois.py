@@ -1,4 +1,4 @@
-import collections
+import collections.abc
 import sys
 
 from peeringdb.util import pretty_speed
@@ -189,14 +189,14 @@ class WhoisFormat:
         elif not data:
             self._print(f"{typ}: {data}")
 
-        elif isinstance(data, collections.Mapping):
+        elif isinstance(data, collections.abc.Mapping):
             self._print("\n", typ)
             for k, v in data.items():
                 self.print(k, v)
 
         elif isinstance(data, (list, tuple)):
             # tabular data layout for lists of dicts
-            if isinstance(data[0], collections.Mapping):
+            if isinstance(data[0], collections.abc.Mapping):
                 self.display_set(typ, data, self._get_columns(data[0]))
             else:
                 for each in data:
