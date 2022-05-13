@@ -44,6 +44,7 @@ def main(file, dumpfile=None):
     else:
         with open(dumpfile, "w") as f:
             write(f)
+    return 0
 
 
 if __name__ == "__main__":

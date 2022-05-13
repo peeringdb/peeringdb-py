@@ -14,6 +14,7 @@ from peeringdb import _tasks_async
 
 TASKS_MODS.append(_tasks_async)
 
+
 # dummy resources for task objects
 class ResOne:
     tag = "one"
