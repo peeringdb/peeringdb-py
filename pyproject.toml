@@ -25,7 +25,7 @@ peeringdb = "peeringdb.cli:main"
 [tool.poetry.dependencies]
 python = "^3.7"
 confu = "^1"
-munge = "^1"
+munge = { extras = ["tomlkit", "yaml"], version = "^1.2.0" }
 "twentyc.rpc" = "^1"
 
 [tool.poetry.dev-dependencies]
