@@ -33,7 +33,7 @@ jobs:
       - name: Run tests
         run: |
           poetry run pytest -vv --cov-report=term-missing --cov=peeringdb --cov-report=xml tests/
-          peotry run coverage report
+          poetry run coverage report
       # upload coverage stats
       - name: Upload coverage
         uses: codecov/codecov-action@v1
