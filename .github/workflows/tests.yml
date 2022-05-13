@@ -8,36 +8,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install requirements
-        run: sudo apt-get install rrdtool librrd-dev
-      - name: Install virtualenv from poetry
+      - uses: actions/setup-python@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip
+          restore-keys: ${{ runner.os }}-pip
+      - name: Install Poetry
         uses: 20c/workflows/poetry@v1
-      # poetry run pre-commit run --all-files
+        with:
+          python-version: ${{ matrix.python-version }}
+          install-options: -Eall
       - name: Run linters
         run: |
-            poetry run isort src/
-            poetry run black --check src/
-            #poetry run pre-commit run --all-files
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
-        with:
-          languages: python
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
-
+          poetry run isort src/
+          poetry run black --check src/
 
   test:
     needs: linting
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
-        os: [ "ubuntu-latest" ]
-        python-version: ["3.6", "3.7", "3.8", "3.9"]
+        os: [ "ubuntu-latest", "macos-latest" ]
+        python-version: [ "3.6", "3.7", "3.8", "3.9" ]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
-      - name: Install virtualenv from poetry
+      - name: Set up python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Poetry
         uses: 20c/workflows/poetry@v1
         with:
           python-version: ${{ matrix.python-version }}
@@ -45,7 +47,7 @@ jobs:
       - name: Run tests
         run: |
           poetry run pytest -vv --cov-report=term-missing --cov=peeringdb --cov-report=xml tests/
-          poetry run coverage report
+          peotry run coverage report
       # upload coverage stats
       - name: Upload coverage
         uses: codecov/codecov-action@v1
