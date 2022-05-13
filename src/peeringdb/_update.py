@@ -74,7 +74,7 @@ class Updater:
         data, e = fetch_func()
         if e:
             raise e
-        self._log.info("Updates to be processed: {}".format(len(data)))
+        self._log.info(f"Updates to be processed: {len(data)}")
         with self._transaction():
             ctx.sync_rows(res, data, depth + 1)
 

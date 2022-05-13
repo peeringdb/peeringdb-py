@@ -1,7 +1,10 @@
-import pytest
-import os, re, io
+import io
+import os
+import re
 
 import helper
+import pytest
+
 import peeringdb
 from peeringdb import cli as _cli
 

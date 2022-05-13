@@ -23,34 +23,39 @@ multi_line_output = 3
 peeringdb = "peeringdb.cli:main"
 
 [tool.poetry.dependencies]
-python = "^3.6.2"
+python = "^3.7"
 confu = "^1"
-munge = "^1"
+munge = { extras = ["tomlkit", "yaml"], version = "^1.2.0" }
 "twentyc.rpc" = "^1"
 
 [tool.poetry.dev-dependencies]
+
+# testing
 django = "~3.2"
 django_peeringdb = "^2.8"
 codecov = "*"
 pytest = "^6.0.1"
 pytest-cov = "*"
 tox = ">=3.24"
+
+# linting
+black = ">=20"
 isort = "^5.7.0"
 flake8 = "^3.8.4"
-mypy = "^0.812"
+mypy = "^0.950"
 pre-commit = "^2.13"
 pyupgrade = "^2.19.4"
+
+# docs
 markdown = "*"
 markdown-include = ">=0.5,<1"
-mkdocs = "^1"
+mkdocs = "^1.2.3"
+
+# ctl
 ctl = "^1"
-jinja2 = "^2.11.2"
+jinja2 = "^3"
 tmpl = "^1"
 twine = "^3.3.0"
-
-[tool.poetry.dev-dependencies.black]
-version = ">=20"
-allow-prereleases = true
 
 [tool.poetry.plugins."markdown.extensions"]
 pymdgen = "pymdgen.md:Extension"

@@ -1,8 +1,9 @@
-import sys
 import json
+import sys
+
+from django.core import serializers
 
 import peeringdb
-from django.core import serializers
 
 
 def client_dump(client):

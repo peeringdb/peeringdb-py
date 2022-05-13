@@ -1,6 +1,8 @@
-import pytest, os
+import os
 
 import helper
+import pytest
+
 import peeringdb
 from peeringdb import resource
 

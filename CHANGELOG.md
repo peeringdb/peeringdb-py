@@ -2,6 +2,8 @@
 
 
 ## Unreleased
+### Added
+- api key support added (#62)
 
 
 ## 1.2.1

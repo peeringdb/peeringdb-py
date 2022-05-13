@@ -80,7 +80,7 @@ def initialize_backend(name, **kwargs):
     try:
         modname = SUPPORTED_BACKENDS[name]
     except KeyError:
-        raise ValueError("Not a supported backend module: '{}'".format(name))
+        raise ValueError(f"Not a supported backend module: '{name}'")
     # Load internal module associated with the ORM module
     supportmod = import_module(modname)
     # Backend is any object returned from load_backend

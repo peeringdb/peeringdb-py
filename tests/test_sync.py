@@ -1,9 +1,9 @@
+import helper
 import pytest
 
-import helper
 import peeringdb
 from peeringdb.client import Client
-from peeringdb.resource import all_resources, Network, Organization
+from peeringdb.resource import Network, Organization, all_resources
 
 # first net id
 FIRST_NET = 7
@@ -118,6 +118,20 @@ def test_dry_run(client_empty):
     client.update_all(rs)
     # still empty?
     with pytest.raises(peeringdb.get_backend().object_missing_error()):
+        client.get(Network, FIRST_NET)
+
+
+@pytest.mark.sync
+def test_auth(client_empty):
+
+    with pytest.raises(ValueError):
+        config = helper.CONFIG
+        config["sync"]["user"] = "test"
+        config["sync"]["password"] = "test"
+        config["sync"]["api_key"] = "test"
+        client = Client(config, dry_run=True)
+        rs = all_resources()
+        client.update_all(rs)
         client.get(Network, FIRST_NET)
 
 
