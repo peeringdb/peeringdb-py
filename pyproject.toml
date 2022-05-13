@@ -23,7 +23,7 @@ multi_line_output = 3
 peeringdb = "peeringdb.cli:main"
 
 [tool.poetry.dependencies]
-python = "^3.6.2"
+python = "^3.7"
 confu = "^1"
 munge = "^1"
 "twentyc.rpc" = "^1"

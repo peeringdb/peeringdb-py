@@ -1,10 +1,12 @@
 Unreleased:
   added:
   - api key support added (#62)
+  - python 3.10
   changed: []
   deprecated: []
   fixed: []
-  removed: []
+  removed:
+  - python 3.6
   security: []
 0.4.4:
   added:
