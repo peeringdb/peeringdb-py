@@ -1,5 +1,5 @@
 # PeeringDB Python Client
-This is the first release of our client package, it's fairly new, but we're releasing early to get feedback as soon as possible.
+This is an early release of our client package, it's fairly new, but we're releasing early to get feedback as soon as possible.
 
 This release represents a redesign and refactor of the Python client.
 

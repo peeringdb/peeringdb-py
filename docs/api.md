@@ -1,8 +1,8 @@
 # Application Programming Interface
 ## Instantiate
 
-    from peeringdb import PeeringDB
-    pdb = PeeringDB()
+    from peeringdb import Client
+    pdb = Client()
 
 ## Calls
 Methods on `Client` correspond directly to PeeringDB REST API calls.
@@ -21,10 +21,9 @@ Update an object of specified type from kwargs.
 
 ## Full Example
 
-    from peeringdb import PeeringDB, config, resource
+    from peeringdb import Client, config, resource
 
-    # same as PeeringDB(config.load_config())
-    pdb = PeeringDB()
+    pdb = Client()
 
     # sync database with remote data
     # unauthenticated to default URL unless configured
@@ -33,14 +32,12 @@ Update an object of specified type from kwargs.
     # get a single record
     n1 = pdb.get(resource.Network, 1)
 
-    # equivalently:
-    net = pdb.tags.net              # type wrap - new method
-    # net = pdb.type_wrap('net')      # old method
+    net = pdb.tags.net              # type wrap
 
     # both are equal
     assert net.get(1) == n1
 
     # query by parameter
-    pdb.all(resource.Network, asn=2906)
+    pdb.all(resource.Network).filter(asn=2906)
     # or
-    net.all(asn=2906)
+    net.all().filter(asn=2906)
