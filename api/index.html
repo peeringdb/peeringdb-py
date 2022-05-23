@@ -116,8 +116,8 @@
               
                 <h1 id="application-programming-interface">Application Programming Interface</h1>
 <h2 id="instantiate">Instantiate</h2>
-<pre><code>from peeringdb import PeeringDB
-pdb = PeeringDB()
+<pre><code>from peeringdb import Client
+pdb = Client()
 </code></pre>
 <h2 id="calls">Calls</h2>
 <p>Methods on <code>Client</code> correspond directly to PeeringDB REST API calls.</p>
@@ -130,10 +130,9 @@ pdb = PeeringDB()
 <h3 id="updateself-res-id-kwargs"><code>update(self, res, id, **kwargs)</code></h3>
 <p>Update an object of specified type from kwargs.</p>
 <h2 id="full-example">Full Example</h2>
-<pre><code>from peeringdb import PeeringDB, config, resource
+<pre><code>from peeringdb import Client, config, resource
 
-# same as PeeringDB(config.load_config())
-pdb = PeeringDB()
+pdb = Client()
 
 # sync database with remote data
 # unauthenticated to default URL unless configured
@@ -142,17 +141,15 @@ pdb.update_all()
 # get a single record
 n1 = pdb.get(resource.Network, 1)
 
-# equivalently:
-net = pdb.tags.net              # type wrap - new method
-# net = pdb.type_wrap('net')      # old method
+net = pdb.tags.net              # type wrap
 
 # both are equal
 assert net.get(1) == n1
 
 # query by parameter
-pdb.all(resource.Network, asn=2906)
+pdb.all(resource.Network).filter(asn=2906)
 # or
-net.all(asn=2906)
+net.all().filter(asn=2906)
 </code></pre>
               
             </div>

@@ -65,6 +65,8 @@
         
             <li><a class="toctree-l3" href="#configuration">Configuration</a></li>
         
+            <li><a class="toctree-l3" href="#authentication">Authentication</a></li>
+        
             <li><a class="toctree-l3" href="#tips">Tips</a></li>
         
         </ul>
@@ -119,7 +121,7 @@
             <div class="section">
               
                 <h1 id="peeringdb-python-client">PeeringDB Python Client</h1>
-<p>This is the first release of our client package, it's fairly new, but we're releasing early to get feedback as soon as possible.</p>
+<p>This is an early release of our client package, it's fairly new, but we're releasing early to get feedback as soon as possible.</p>
 <p>This release represents a redesign and refactor of the Python client.</p>
 <h2 id="whats-included">What's included?</h2>
 <p>By installing the package, you get both a <a href="api/">client library</a> and a <a href="cli/">command line utility</a>.</p>
@@ -160,6 +162,19 @@
 
 <!--     peeringdb depcheck -->
 
+<h2 id="authentication">Authentication</h2>
+<p>To sync with peeringdb API servers, you need to provide authentication. Basic authentication is supported, but you can also use your API keys. To sync with PeeringDB, you can add the following config:</p>
+<pre><code>sync:
+    api_key: 'YOUR_API_KEY_HERE'
+    user: 'username'
+    password: 'password'
+    only: []
+    strip_tz: 1
+    timeout: 0
+    url: https://peeringdb.com/api
+</code></pre>
+<p>This will also be prompted during the configuration wizard.</p>
+<p>Please take note that only one authentication method is supported, either basic or API key.</p>
 <h2 id="tips">Tips</h2>
 <h3 id="mysql">MySQL</h3>
 <p>You need to use utf8 and a utf8 collation before doing the initial sync.</p>
@@ -229,5 +244,5 @@ pip install -U setuptools
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2020-10-13 19:41:33
+Build Date UTC : 2022-05-23 16:02:20
 -->
