@@ -73,6 +73,8 @@
         
             <li><a class="toctree-l3" href="#full-example">Full Example</a></li>
         
+            <li><a class="toctree-l3" href="#tip-custom-config-file-location">Tip - Custom config file location</a></li>
+        
         </ul>
     
 
@@ -116,7 +118,9 @@
               
                 <h1 id="application-programming-interface">Application Programming Interface</h1>
 <h2 id="instantiate">Instantiate</h2>
-<pre><code>from peeringdb import Client
+<pre><code>from peeringdb import config, resource
+from peeringdb.client import Client
+
 pdb = Client()
 </code></pre>
 <h2 id="calls">Calls</h2>
@@ -130,12 +134,14 @@ pdb = Client()
 <h3 id="updateself-res-id-kwargs"><code>update(self, res, id, **kwargs)</code></h3>
 <p>Update an object of specified type from kwargs.</p>
 <h2 id="full-example">Full Example</h2>
-<pre><code>from peeringdb import Client, config, resource
+<pre><code>from peeringdb import config, resource
+from peeringdb.client import Client
 
 pdb = Client()
 
 # sync database with remote data
 # unauthenticated to default URL unless configured
+# since this is relatively slow, normally this would be done from cron - see CLI doc for example
 pdb.update_all()
 
 # get a single record
@@ -146,10 +152,24 @@ net = pdb.tags.net              # type wrap
 # both are equal
 assert net.get(1) == n1
 
+print(n1)
+
 # query by parameter
-pdb.all(resource.Network).filter(asn=2906)
+print(pdb.all(resource.Network).filter(asn=2906))
 # or
-net.all().filter(asn=2906)
+print(net.all().filter(asn=2906))
+</code></pre>
+<h2 id="tip-custom-config-file-location">Tip - Custom config file location</h2>
+<pre><code>import yaml
+from peeringdb import config, resource
+from peeringdb.client import Client
+
+with open("../example.yaml") as file:
+        cfg = yaml.load(file, Loader=yaml.FullLoader)
+
+pdb = Client(cfg=cfg)
+
+print(pdb.get(resource.Network, 1))
 </code></pre>
               
             </div>
