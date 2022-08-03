@@ -1,7 +1,9 @@
 # Application Programming Interface
 ## Instantiate
 
-    from peeringdb import Client
+    from peeringdb import config, resource
+    from peeringdb.client import Client
+
     pdb = Client()
 
 ## Calls
@@ -21,12 +23,14 @@ Update an object of specified type from kwargs.
 
 ## Full Example
 
-    from peeringdb import Client, config, resource
+    from peeringdb import config, resource
+    from peeringdb.client import Client
 
     pdb = Client()
 
     # sync database with remote data
     # unauthenticated to default URL unless configured
+    # since this is relatively slow, normally this would be done from cron - see CLI doc for example
     pdb.update_all()
 
     # get a single record
@@ -37,7 +41,22 @@ Update an object of specified type from kwargs.
     # both are equal
     assert net.get(1) == n1
 
+    print(n1)
+    
     # query by parameter
-    pdb.all(resource.Network).filter(asn=2906)
+    print(pdb.all(resource.Network).filter(asn=2906))
     # or
-    net.all().filter(asn=2906)
+    print(net.all().filter(asn=2906))
+
+## Tip - Custom config file location
+
+    import yaml
+    from peeringdb import config, resource
+    from peeringdb.client import Client
+
+    with open("../example.yaml") as file:
+            cfg = yaml.load(file, Loader=yaml.FullLoader)
+
+    pdb = Client(cfg=cfg)
+    
+    print(pdb.get(resource.Network, 1))
