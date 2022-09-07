@@ -8,4 +8,4 @@
 
 PeeringDB python client
 
-See http://peeringdb.github.io/peeringdb-py/ for docs
+See https://peeringdb.github.io/peeringdb-py/ for docs
