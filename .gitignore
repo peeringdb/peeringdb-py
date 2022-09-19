@@ -10,3 +10,4 @@ coverage.xml
 dist/
 site/
 venv/
+.DS_Store

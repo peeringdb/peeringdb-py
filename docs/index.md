@@ -96,4 +96,4 @@ If you have issues building the mysqlclient install the dev libraries:
     sudo apt install libmysqlclient-dev
 
 ### Sample Install & Upgrade Steps
-Example install & upgrade steps are [https://lists.peeringdb.com/pipermail/pdb-tech/2022-September/000444.html](https://lists.peeringdb.com/pipermail/pdb-tech/2022-September/000444.html).
+Example install & upgrade steps are at [https://lists.peeringdb.com/pipermail/pdb-tech/2022-September/000444.html](https://lists.peeringdb.com/pipermail/pdb-tech/2022-September/000444.html).
