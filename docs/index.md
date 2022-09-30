@@ -18,14 +18,15 @@ Old databases should be compatible with this version of `peeringdb` as long as t
 For those unfamiliar with python, you'll usually want to install to a separate [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/).
 
     virtualenv pdbvenv
-    . pdbvenv/bin/activate
+    source pdbvenv/bin/activate
 
 Install the peeringdb package with
 
     pip install peeringdb
 
-Install the Django backend with:
+Install Django and the Django backend with:
 
+    pip install django
     pip install django_peeringdb
 
 ## Configuration
@@ -39,7 +40,7 @@ To skip the wizard and write a config file with the defaults:
 
     peeringdb config set -n
 
-Then edit the file it created (default `~/peeringdb/config.yaml`). Currently, since only Django is supported, any database backend Django supports will work, for example, to sync to MySQL, you could use the following database config:
+Then edit the file it created (default `~/.peeringdb/config.yaml`). Currently, since only Django is supported, any database backend Django supports will work, for example, to sync to MySQL, you could use the following database config:
 
     database:
       engine: mysql
