@@ -15,19 +15,7 @@ Submissions and requests for new backend modules are welcome.
 Old databases should be compatible with this version of `peeringdb` as long as the version of the backend used is compatible. This version can be checked with `peeringdb.get_backend_info()[1]` after initializing the client.
 
 ## How to install
-For those unfamiliar with python, you'll usually want to install to a separate [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/).
-
-    virtualenv pdbvenv
-    source pdbvenv/bin/activate
-
-Install the peeringdb package with
-
-    pip install peeringdb
-
-Install Django and the Django backend with:
-
-    pip install django
-    pip install django_peeringdb
+We have an installation guide on our main [documentation site](https://docs.peeringdb.com/howto/peeringdb-py/).
 
 ## Configuration
 Both command line and library will try to use a common config file, by default located at `~/.peeringdb/config.yaml`
