@@ -1,0 +1,50 @@
+[
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.109",
+            "fac": 7,
+            "carrier": 7,
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.109",
+            "version": 0
+        },
+        "model": "django_peeringdb.carrierfacility",
+        "pk": 7
+    },
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.216",
+            "fac": 8,
+            "carrier": 8,
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.216",
+            "version": 0
+        },
+        "model": "django_peeringdb.carrierfacility",
+        "pk": 8
+    },
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.324",
+            "fac": 9,
+            "carrier": 9,
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.324",
+            "version": 0
+        },
+        "model": "django_peeringdb.carrierfacility",
+        "pk": 9
+    },
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.432",
+            "fac": 10,
+            "carrier": 10,
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.432",
+            "version": 0
+        },
+        "model": "django_peeringdb.carrierfacility",
+        "pk": 10
+    }
+]

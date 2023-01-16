@@ -10,6 +10,8 @@ _NAMES = OrderedDict(
         ("fac", "Facility"),
         ("net", "Network"),
         ("ix", "InternetExchange"),
+        ("carrier", "Carrier"),
+        ("carrierfac", "CarrierFacility"),
         ("ixfac", "InternetExchangeFacility"),
         ("ixlan", "InternetExchangeLan"),
         ("ixpfx", "InternetExchangeLanPrefix"),
