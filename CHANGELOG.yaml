@@ -1,5 +1,6 @@
 Unreleased:
-  added: []
+  added:
+  - support for Carrier and CarrierFacility
   fixed: []
   changed: []
   deprecated: []

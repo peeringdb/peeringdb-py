@@ -1,0 +1,72 @@
+[
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.086",
+            "name": "fac c8deada2",
+            "notes": "Some notes",
+            "org": 7,
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.086",
+            "version": 0,
+            "website": "https://www.peeringdb.com"
+        },
+        "model": "django_peeringdb.carrier",
+        "pk": 7
+    },
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.192",
+            "name": "fac 44f33fd1",
+            "notes": "Some notes",
+            "org": 8,
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.192",
+            "version": 0,
+            "website": "https://www.peeringdb.com"
+        },
+        "model": "django_peeringdb.carrier",
+        "pk": 8
+    },
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.301",
+            "name": "fac 19cae906",
+            "notes": "Some notes",
+            "org": 9,
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.301",
+            "version": 0,
+            "website": "https://www.peeringdb.com"
+        },
+        "model": "django_peeringdb.carrier",
+        "pk": 9
+    },
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.409",
+            "name": "fac 4d963fa5",
+            "notes": "Some notes",
+            "org": 10,
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.409",
+            "version": 0,
+            "website": "https://www.peeringdb.com"
+        },
+        "model": "django_peeringdb.carrier",
+        "pk": 10
+    },
+    {
+        "fields": {
+            "created": "2018-12-20T23:12:57.595",
+            "name": "fac 90e068bc",
+            "notes": "Some notes",
+            "org": 13,
+            "status": "ok",
+            "updated": "2018-12-20T23:12:57.595",
+            "version": 0,
+            "website": "https://www.peeringdb.com"
+        },
+        "model": "django_peeringdb.carrier",
+        "pk": 11
+    }
+]
