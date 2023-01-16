@@ -32,7 +32,11 @@ munge = { extras = ["tomlkit", "yaml"], version = "^1.2.0" }
 
 # testing
 django = "~3.2"
-django_peeringdb = "^2.8"
+# django_peeringdb = "^2.8"
+# django-peeringdb and peeringdb-py have a chicken-egg problem during testing
+# install from support branch until next release
+django-peeringdb =  { git = "https://github.com/peeringdb/django-peeringdb.git", branch="support_202211" }
+
 codecov = "*"
 pytest = "^6.0.1"
 pytest-cov = "*"

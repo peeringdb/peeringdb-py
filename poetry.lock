@@ -277,12 +277,19 @@ version = "2.14.1"
 description = "PeeringDB Django models"
 category = "dev"
 optional = false
-python-versions = ">=3.7,<4.0"
+python-versions = "^3.7"
+develop = false
 
 [package.dependencies]
 django_countries = ">1"
-django_handleref = ">=1,<2"
-django_inet = ">=1,<2"
+django_handleref = "^1"
+django_inet = "^1"
+
+[package.source]
+type = "git"
+url = "https://github.com/peeringdb/django-peeringdb.git"
+reference = "support_202211"
+resolved_reference = "14656aba70e8dd7601677010ce07a4d463b3ca31"
 
 [[package]]
 name = "docutils"
@@ -1166,7 +1173,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "c612279c50155263b119652d4d87227943e5162c95b6dc812147855724272f89"
+content-hash = "a85f680fb9aa09d30a54104c977256fc4eecc098884137ddc82eb92a2faf5832"
 
 [metadata.files]
 asgiref = [
@@ -1478,10 +1485,7 @@ django-inet = [
     {file = "django-inet-1.1.1.tar.gz", hash = "sha256:3df96eb1f9ce936122391123434d69520d773661bfcad7835a2ba276fd4bec3f"},
     {file = "django_inet-1.1.1-py3-none-any.whl", hash = "sha256:3ae9683a4a9ea9be635d2926904b54328230eac58a79a8f266d79f06dd4bed28"},
 ]
-django-peeringdb = [
-    {file = "django-peeringdb-2.14.1.tar.gz", hash = "sha256:73e004ac358e7be7a7addb3b8339678e0d028aac281188ba94eae56e1a7320bb"},
-    {file = "django_peeringdb-2.14.1-py3-none-any.whl", hash = "sha256:30d4a390d9483c25ff07ead0f72c67f4c0a26183aea8777de23dbdf1987d3b0c"},
-]
+django-peeringdb = []
 docutils = [
     {file = "docutils-0.19-py3-none-any.whl", hash = "sha256:5e1de4d849fee02c63b040a4a3fd567f4ab104defd8a5511fbbc24a8a017efbc"},
     {file = "docutils-0.19.tar.gz", hash = "sha256:33995a6753c30b7f577febfc2c50411fec6aac7f7ffeb7c4cfe5991072dcf9e6"},
