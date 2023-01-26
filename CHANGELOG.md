@@ -2,6 +2,8 @@
 
 
 ## Unreleased
+### Added
+- support for Carrier and CarrierFacility
 
 
 ## 1.3.0

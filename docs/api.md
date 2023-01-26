@@ -42,7 +42,7 @@ Update an object of specified type from kwargs.
     assert net.get(1) == n1
 
     print(n1)
-    
+
     # query by parameter
     print(pdb.all(resource.Network).filter(asn=2906))
     # or
@@ -58,5 +58,5 @@ Update an object of specified type from kwargs.
             cfg = yaml.load(file, Loader=yaml.FullLoader)
 
     pdb = Client(cfg=cfg)
-    
+
     print(pdb.get(resource.Network, 1))

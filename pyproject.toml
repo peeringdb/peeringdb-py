@@ -32,7 +32,8 @@ munge = { extras = ["tomlkit", "yaml"], version = "^1.2.0" }
 
 # testing
 django = "~3.2"
-django_peeringdb = "^2.8"
+django_peeringdb = "^2.15"
+
 codecov = "*"
 pytest = "^6.0.1"
 pytest-cov = "*"
