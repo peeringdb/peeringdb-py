@@ -32,10 +32,7 @@ munge = { extras = ["tomlkit", "yaml"], version = "^1.2.0" }
 
 # testing
 django = "~3.2"
-# django_peeringdb = "^2.8"
-# django-peeringdb with carrier object required for testing
-# install from support branch until release
-django-peeringdb =  { git = "https://github.com/peeringdb/django-peeringdb.git", branch="support_202211" }
+django_peeringdb = "^2.15"
 
 codecov = "*"
 pytest = "^6.0.1"
