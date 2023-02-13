@@ -1,6 +1,8 @@
 Unreleased:
-  added: []
-  fixed: []
+  added:
+  - support for campus object
+  fixed:
+  - sync issue when nullable model field does not exist on api output
   changed: []
   deprecated: []
   removed: []
