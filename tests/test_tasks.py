@@ -26,6 +26,7 @@ class ResTwo:
 
 DATA_EXPECTED = {ResOne: [1, 2], ResTwo: [1, 2]}
 
+
 # dummy context classes parameterized on tasks module
 def make_context(tasks):
     class Context:
