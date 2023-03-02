@@ -63,7 +63,10 @@ def _get_subrow(row, fname, field):
     subrow = row.get(key)
     if subrow is None:  # e.g. use "org" if "org_id" is missing
         key = fname
-        subrow = row[key]
+        try:
+            subrow = row[key]
+        except KeyError:
+            subrow = None
     return key, subrow
 
 
@@ -77,6 +80,8 @@ def extract_relations(B, res, row):
         if isinstance(subrow, dict):
             pk = subrow["id"]
             fetched[R][pk] = subrow
+        elif subrow is None:
+            return
         else:
             pk = subrow
             dangling[R].add(pk)

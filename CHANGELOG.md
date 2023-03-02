@@ -2,6 +2,10 @@
 
 
 ## Unreleased
+### Added
+- support for campus object
+### Fixed
+- sync issue when nullable model field does not exist on api output
 
 
 ## 1.4.0

@@ -18,6 +18,8 @@ class YamlWrap:
     def _resolve_one(name, value, depth):
         if depth > 0:
             return YamlWrap(value, depth - 1)
+        elif value is None:
+            return None
         else:
             return value.id
 

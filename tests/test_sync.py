@@ -8,6 +8,7 @@ from peeringdb.resource import Network, Organization, all_resources
 # first net id
 FIRST_NET = 7
 
+
 # allows incomplete (or partial) syncs
 class _PartialEnabledContext(peeringdb.sync.UpdateContext):
     def __init__(self, *args):
@@ -123,7 +124,6 @@ def test_dry_run(client_empty):
 
 @pytest.mark.sync
 def test_auth(client_empty):
-
     with pytest.raises(ValueError):
         config = helper.CONFIG
         config["sync"]["user"] = "test"
