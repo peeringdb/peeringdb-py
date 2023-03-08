@@ -1,12 +1,15 @@
 Unreleased:
-  added:
-  - support for campus object
-  fixed:
-  - sync issue when nullable model field does not exist on api output
+  added: []
+  fixed: []
   changed: []
   deprecated: []
   removed: []
   security: []
+1.5.0:
+  added:
+  - support for campus object
+  fixed:
+  - sync issue when nullable model field does not exist on api output
 1.4.0:
   added:
   - support for Carrier and CarrierFacility
