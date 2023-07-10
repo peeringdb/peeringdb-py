@@ -1,0 +1,23 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "name": "fac 6474d82a",
+            "carrier_id": 1,
+            "fac_id": 1,
+            "created": "2023-04-21T13:46:31.674252Z",
+            "updated": "2023-04-21T13:46:32.085917Z",
+            "status": "ok"
+        },
+        {
+            "id": 2,
+            "name": "fac d8e202c9",
+            "carrier_id": 2,
+            "fac_id": 2,
+            "created": "2023-04-21T13:46:31.793418Z",
+            "updated": "2023-04-21T13:46:32.182163Z",
+            "status": "ok"
+        }
+    ],
+    "meta": {}
+}

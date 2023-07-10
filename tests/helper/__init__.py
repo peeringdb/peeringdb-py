@@ -28,6 +28,36 @@ CONFIG = {
         "only": [],
         "strip_tz": 1,
         "timeout": 0,
+        # we dont want to use caching during normal tests
+        # caching will be tested specifically, so keep blank
+        "cache_url": "",
+    },
+}
+
+CONFIG_CACHING = {
+    "orm": {
+        "backend": "django_peeringdb",
+        "database": {
+            "engine": "sqlite3",
+            "host": "",
+            "name": ":memory:",
+            "password": "",
+            "port": 0,
+            "user": "",
+        },
+        "secret_key": "",
+        "migrate": True,
+    },
+    "sync": {
+        "url": "https://test.peeringdb.com/api",
+        "user": "",
+        "password": "",
+        "only": [],
+        "strip_tz": 1,
+        "timeout": 0,
+        # we dont want to use caching during normal tests
+        # caching will be tested specifically, so keep blank
+        "cache_url": "cache://localhost",
     },
 }
 

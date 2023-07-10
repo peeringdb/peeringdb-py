@@ -1,0 +1,28 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "org_id": 1,
+            "org_name": "org c1ab780b",
+            "status": "ok",
+            "created": "2023-04-21T13:46:31.660560Z",
+            "updated": "2023-04-21T16:02:46.336666Z",
+            "name": "campus 41c40b88",
+            "name_long": "campus 505fd8c1",
+            "notes": "Some notes",
+            "aka": "campus 34d1fb8d",
+            "website": "https://www.peeringdb.com",
+            "social_media": [
+                {
+                    "service": "website",
+                    "identifier": "https://www.peeringdb.com"
+                }
+            ],
+            "country": "US",
+            "city": "Chicago",
+            "zipcode": "12345",
+            "state": "Illinois"
+        }
+    ],
+    "meta": {}
+}

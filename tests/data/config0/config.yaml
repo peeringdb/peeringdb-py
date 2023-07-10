@@ -1,5 +1,6 @@
 sync:
   url: https://test.peeringdb.com/api
+  cache_url: ''
   timeout: 60
 orm:
   database:

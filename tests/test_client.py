@@ -7,7 +7,7 @@ import peeringdb
 from peeringdb import resource
 
 client = helper.client_fixture("full")
-NET0 = 7
+NET0 = 1
 
 
 def test_nonexistent_config():
@@ -18,7 +18,7 @@ def test_nonexistent_config():
 def test_get(client):
     assert client.get(resource.Network, NET0)
     with pytest.raises(Exception):
-        client.get(resource.Network, 12)
+        client.get(resource.Network, 9999)
 
 
 def test_type_wrap(client):

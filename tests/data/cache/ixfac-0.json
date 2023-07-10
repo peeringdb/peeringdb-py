@@ -1,0 +1,27 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "name": "fac 6474d82a",
+            "city": "Chicago",
+            "country": "US",
+            "ix_id": 1,
+            "fac_id": 1,
+            "created": "2023-04-21T13:46:31.691524Z",
+            "updated": "2023-04-21T13:46:32.100245Z",
+            "status": "ok"
+        },
+        {
+            "id": 2,
+            "name": "fac d8e202c9",
+            "city": "Chicago",
+            "country": "US",
+            "ix_id": 2,
+            "fac_id": 2,
+            "created": "2023-04-21T13:46:31.806328Z",
+            "updated": "2023-04-21T13:46:32.199964Z",
+            "status": "ok"
+        }
+    ],
+    "meta": {}
+}

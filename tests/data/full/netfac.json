@@ -1,66 +1,26 @@
 [
     {
-        "fields": {
-            "avail_atm": false,
-            "avail_ethernet": false,
-            "avail_sonet": false,
-            "created": "2018-12-20T23:12:57.123",
-            "fac": 7,
-            "local_asn": 63315,
-            "net": 7,
-            "status": "ok",
-            "updated": "2018-12-20T23:12:57.123",
-            "version": 0
-        },
         "model": "django_peeringdb.networkfacility",
-        "pk": 1
+        "pk": 1,
+        "fields": {
+            "net_id": 1,
+            "fac_id": 1,
+            "local_asn": 63312,
+            "created": "2023-04-21T13:46:31.722434",
+            "updated": "2023-04-21T13:46:32.115758",
+            "status": "ok"
+        }
     },
     {
-        "fields": {
-            "avail_atm": false,
-            "avail_ethernet": false,
-            "avail_sonet": false,
-            "created": "2018-12-20T23:12:57.231",
-            "fac": 8,
-            "local_asn": 63319,
-            "net": 8,
-            "status": "ok",
-            "updated": "2018-12-20T23:12:57.231",
-            "version": 0
-        },
         "model": "django_peeringdb.networkfacility",
-        "pk": 2
-    },
-    {
+        "pk": 2,
         "fields": {
-            "avail_atm": false,
-            "avail_ethernet": false,
-            "avail_sonet": false,
-            "created": "2018-12-20T23:12:57.337",
-            "fac": 9,
-            "local_asn": 63323,
-            "net": 9,
-            "status": "ok",
-            "updated": "2018-12-20T23:12:57.337",
-            "version": 0
-        },
-        "model": "django_peeringdb.networkfacility",
-        "pk": 3
-    },
-    {
-        "fields": {
-            "avail_atm": false,
-            "avail_ethernet": false,
-            "avail_sonet": false,
-            "created": "2018-12-20T23:12:57.445",
-            "fac": 10,
-            "local_asn": 63327,
-            "net": 10,
-            "status": "ok",
-            "updated": "2018-12-20T23:12:57.445",
-            "version": 0
-        },
-        "model": "django_peeringdb.networkfacility",
-        "pk": 4
+            "net_id": 2,
+            "fac_id": 2,
+            "local_asn": 63313,
+            "created": "2023-04-21T13:46:31.833997",
+            "updated": "2023-04-21T13:46:32.218085",
+            "status": "ok"
+        }
     }
 ]

@@ -1,8 +1,7 @@
-[
-    {
-        "model": "django_peeringdb.ixlan",
-        "pk": 1,
-        "fields": {
+{
+    "data": [
+        {
+            "id": 1,
             "ix_id": 1,
             "name": "",
             "descr": "",
@@ -12,15 +11,12 @@
             "arp_sponge": null,
             "ixf_ixp_member_list_url": null,
             "ixf_ixp_member_list_url_visible": "Private",
-            "created": "2023-04-21T13:46:31.639502",
-            "updated": "2023-04-21T13:46:32.056605",
+            "created": "2023-04-21T13:46:31.639502Z",
+            "updated": "2023-04-21T13:46:32.056605Z",
             "status": "ok"
-        }
-    },
-    {
-        "model": "django_peeringdb.ixlan",
-        "pk": 2,
-        "fields": {
+        },
+        {
+            "id": 2,
             "ix_id": 2,
             "name": "",
             "descr": "",
@@ -29,15 +25,12 @@
             "rs_asn": 0,
             "arp_sponge": null,
             "ixf_ixp_member_list_url_visible": "Private",
-            "created": "2023-04-21T13:46:31.771609",
-            "updated": "2023-04-21T13:46:32.154982",
+            "created": "2023-04-21T13:46:31.771609Z",
+            "updated": "2023-04-21T13:46:32.154982Z",
             "status": "ok"
-        }
-    },
-    {
-        "model": "django_peeringdb.ixlan",
-        "pk": 3,
-        "fields": {
+        },
+        {
+            "id": 3,
             "ix_id": 3,
             "name": "",
             "descr": "",
@@ -46,9 +39,10 @@
             "rs_asn": 0,
             "arp_sponge": null,
             "ixf_ixp_member_list_url_visible": "Private",
-            "created": "2023-04-21T13:46:31.885988",
-            "updated": "2023-04-21T13:46:32.268069",
+            "created": "2023-04-21T13:46:31.885988Z",
+            "updated": "2023-04-21T13:46:32.268069Z",
             "status": "ok"
         }
-    }
-]
+    ],
+    "meta": {}
+}

@@ -1,0 +1,45 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "ixlan_id": 1,
+            "protocol": "IPv4",
+            "prefix": "206.223.116.0/23",
+            "in_dfz": true,
+            "created": "2023-04-21T13:46:31.682621Z",
+            "updated": "2023-04-21T13:46:32.090235Z",
+            "status": "ok"
+        },
+        {
+            "id": 2,
+            "ixlan_id": 1,
+            "protocol": "IPv6",
+            "prefix": "2001:504:0:1::/64",
+            "in_dfz": true,
+            "created": "2023-04-21T13:46:31.689241Z",
+            "updated": "2023-04-21T13:46:32.093210Z",
+            "status": "ok"
+        },
+        {
+            "id": 3,
+            "ixlan_id": 2,
+            "protocol": "IPv4",
+            "prefix": "206.223.123.0/24",
+            "in_dfz": true,
+            "created": "2023-04-21T13:46:31.799237Z",
+            "updated": "2023-04-21T13:46:32.186992Z",
+            "status": "ok"
+        },
+        {
+            "id": 4,
+            "ixlan_id": 2,
+            "protocol": "IPv6",
+            "prefix": "2001:504:0:3::/64",
+            "in_dfz": true,
+            "created": "2023-04-21T13:46:31.804216Z",
+            "updated": "2023-04-21T13:46:32.191110Z",
+            "status": "ok"
+        }
+    ],
+    "meta": {}
+}

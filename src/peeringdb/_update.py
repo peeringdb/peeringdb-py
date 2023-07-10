@@ -171,7 +171,11 @@ class UpdateContext:
     def update_after(self, res, pk, depth, fetch_job):
         data = yield fetch_job
         if data:
-            row = data[pk]
+            try:
+                row = data[pk]
+            except KeyError:
+                print("Data", data)
+                raise
         else:
             self._log.info("Fetched no data for %s-%s", res.tag, pk)
             data, e = self.fetcher.fetch_deleted(res, pk, 0)

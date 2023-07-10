@@ -1,13 +1,18 @@
-[
-    {
-        "model": "django_peeringdb.network",
-        "pk": 1,
-        "fields": {
+{
+    "data": [
+        {
+            "id": 1,
             "org_id": 1,
             "name": "net 25304adc",
             "aka": "net 518dea7d",
             "name_long": "net bb2f2036",
             "website": "https://www.peeringdb.com",
+            "social_media": [
+                {
+                    "service": "website",
+                    "identifier": "https://www.peeringdb.com"
+                }
+            ],
             "asn": 63312,
             "looking_glass": "https://www.peeringdb.com/looking-glass",
             "route_server": "https://www.peeringdb.com/route-server",
@@ -22,29 +27,38 @@
             "info_multicast": true,
             "info_ipv6": true,
             "info_never_via_route_servers": true,
+            "ix_count": 0,
+            "fac_count": 1,
             "notes": "Some notes",
+            "netixlan_updated": null,
+            "netfac_updated": "2023-04-21T13:46:32.333957Z",
+            "poc_updated": null,
             "policy_url": "https://www.peeringdb.com/policy_url",
             "policy_general": "Restrictive",
             "policy_locations": "Required - US",
             "policy_ratio": true,
             "policy_contracts": "Required",
+            "allow_ixp_update": true,
             "status_dashboard": null,
             "rir_status": "ok",
             "rir_status_updated": null,
-            "created": "2023-04-21T13:46:31.599666",
-            "updated": "2023-04-21T13:46:32.039630",
+            "created": "2023-04-21T13:46:31.599666Z",
+            "updated": "2023-04-21T13:46:32.039630Z",
             "status": "ok"
-        }
-    },
-    {
-        "model": "django_peeringdb.network",
-        "pk": 2,
-        "fields": {
+        },
+        {
+            "id": 2,
             "org_id": 2,
             "name": "net 4be39055",
             "aka": "net fafca815",
             "name_long": "net 275a8e66",
             "website": "https://www.peeringdb.com",
+            "social_media": [
+                {
+                    "service": "website",
+                    "identifier": "https://www.peeringdb.com"
+                }
+            ],
             "asn": 63313,
             "looking_glass": "https://www.peeringdb.com/looking-glass",
             "route_server": "https://www.peeringdb.com/route-server",
@@ -59,29 +73,38 @@
             "info_multicast": true,
             "info_ipv6": true,
             "info_never_via_route_servers": true,
+            "ix_count": 0,
+            "fac_count": 1,
             "notes": "Some notes",
+            "netixlan_updated": null,
+            "netfac_updated": "2023-04-21T13:46:32.357720Z",
+            "poc_updated": null,
             "policy_url": "https://www.peeringdb.com/policy_url",
             "policy_general": "Restrictive",
             "policy_locations": "Required - US",
             "policy_ratio": true,
             "policy_contracts": "Required",
+            "allow_ixp_update": true,
             "status_dashboard": null,
             "rir_status": "ok",
             "rir_status_updated": null,
-            "created": "2023-04-21T13:46:31.749549",
-            "updated": "2023-04-21T13:46:32.137057",
+            "created": "2023-04-21T13:46:31.749549Z",
+            "updated": "2023-04-21T13:46:32.137057Z",
             "status": "ok"
-        }
-    },
-    {
-        "model": "django_peeringdb.network",
-        "pk": 3,
-        "fields": {
+        },
+        {
+            "id": 3,
             "org_id": 3,
             "name": "net d58902ee",
             "aka": "net fdec4433",
             "name_long": "net 35ee1388",
             "website": "https://www.peeringdb.com",
+            "social_media": [
+                {
+                    "service": "website",
+                    "identifier": "https://www.peeringdb.com"
+                }
+            ],
             "asn": 63314,
             "looking_glass": "https://www.peeringdb.com/looking-glass",
             "route_server": "https://www.peeringdb.com/route-server",
@@ -96,18 +119,25 @@
             "info_multicast": true,
             "info_ipv6": true,
             "info_never_via_route_servers": true,
+            "ix_count": 0,
+            "fac_count": 0,
             "notes": "Some notes",
+            "netixlan_updated": null,
+            "netfac_updated": null,
+            "poc_updated": null,
             "policy_url": "https://www.peeringdb.com/policy_url",
             "policy_general": "Restrictive",
             "policy_locations": "Required - US",
             "policy_ratio": true,
             "policy_contracts": "Required",
+            "allow_ixp_update": true,
             "status_dashboard": null,
             "rir_status": "ok",
             "rir_status_updated": null,
-            "created": "2023-04-21T13:46:31.854501",
-            "updated": "2023-04-21T13:46:32.243221",
+            "created": "2023-04-21T13:46:31.854501Z",
+            "updated": "2023-04-21T13:46:32.243221Z",
             "status": "ok"
         }
-    }
-]
+    ],
+    "meta": {}
+}

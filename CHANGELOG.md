@@ -2,6 +2,9 @@
 
 
 ## Unreleased
+### Added
+- support for fetching data from peeringdb cache servers
+- support for quickly setting a local snapshot of peeringdb server via the `peeringdb server` commands
 
 
 ## 1.5.0

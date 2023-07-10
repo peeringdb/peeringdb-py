@@ -79,3 +79,36 @@ Then add a cron job to keep it in sync, for example, once a day at between midni
 Or, if your cron supports random:
 
     crontab -l | { cat; echo "0 0 * * * sleep \$[RANDOM\%600] ; $(which peeringdb) sync > /dev/null 2>&1"; } | crontab -
+
+
+## local server
+
+This document outlines the server related commands of the `peeringdb` CLI. These commands help the user to manage a local peeringdb server snapshot for `peeringdb`.
+
+### Setup server
+
+The following command will build and setup the PeeringDB server container.
+
+```sh
+$ peeringdb server --setup
+```
+
+### Start server
+
+The following command will start the PeeringDB server container.
+
+```sh
+$ peeringdb server --start
+```
+
+### Stop server
+
+The following command will stop the PeeringDB server container.
+
+```sh
+$ peeringdb server --stop
+```
+
+## Error Handling
+
+If you try to start or stop the server without running the setup first, you will see an error stating that the `peeringdb_server` directory was not found. If this happens, run the `--setup` command and then try again.

@@ -1,78 +1,38 @@
 [
     {
+        "model": "django_peeringdb.networkixlan",
+        "pk": 1,
         "fields": {
-            "asn": 63314,
-            "created": "2018-12-20T23:12:57.118",
+            "net_id": 1,
+            "ixlan_id": 1,
+            "notes": "Some notes",
+            "speed": 1000,
+            "asn": 63312,
             "ipaddr4": "206.223.116.101",
             "ipaddr6": "2001:504:0:1::65",
             "is_rs_peer": true,
-            "ixlan": 7,
-            "net": 7,
-            "notes": "Some notes",
             "operational": true,
-            "speed": 1000,
-            "status": "ok",
-            "updated": "2018-12-20T23:12:57.118",
-            "version": 0
-        },
-        "model": "django_peeringdb.networkixlan",
-        "pk": 1
+            "created": "2023-04-21T13:46:31.718816",
+            "updated": "2023-04-21T13:46:32.108511",
+            "status": "ok"
+        }
     },
     {
+        "model": "django_peeringdb.networkixlan",
+        "pk": 2,
         "fields": {
-            "asn": 63318,
-            "created": "2018-12-20T23:12:57.225",
+            "net_id": 2,
+            "ixlan_id": 2,
+            "notes": "Some notes",
+            "speed": 1000,
+            "asn": 63313,
             "ipaddr4": "206.223.123.101",
             "ipaddr6": "2001:504:0:3::65",
             "is_rs_peer": true,
-            "ixlan": 8,
-            "net": 8,
-            "notes": "Some notes",
             "operational": true,
-            "speed": 1000,
-            "status": "ok",
-            "updated": "2018-12-20T23:12:57.225",
-            "version": 0
-        },
-        "model": "django_peeringdb.networkixlan",
-        "pk": 2
-    },
-    {
-        "fields": {
-            "asn": 63322,
-            "created": "2018-12-20T23:12:57.332",
-            "ipaddr4": "206.223.118.101",
-            "ipaddr6": "2001:504:0:5::65",
-            "is_rs_peer": true,
-            "ixlan": 9,
-            "net": 9,
-            "notes": "Some notes",
-            "operational": true,
-            "speed": 1000,
-            "status": "ok",
-            "updated": "2018-12-20T23:12:57.332",
-            "version": 0
-        },
-        "model": "django_peeringdb.networkixlan",
-        "pk": 3
-    },
-    {
-        "fields": {
-            "asn": 63326,
-            "created": "2018-12-20T23:12:57.441",
-            "ipaddr4": "208.115.136.101",
-            "ipaddr6": "2001:504:0:4::65",
-            "is_rs_peer": true,
-            "ixlan": 10,
-            "net": 10,
-            "notes": "Some notes",
-            "operational": true,
-            "speed": 1000,
-            "status": "ok",
-            "updated": "2018-12-20T23:12:57.441",
-            "version": 0
-        },
-        "model": "django_peeringdb.networkixlan",
-        "pk": 4
+            "created": "2023-04-21T13:46:31.831132",
+            "updated": "2023-04-21T13:46:32.209023",
+            "status": "ok"
+        }
     }
 ]
