@@ -3,8 +3,14 @@
 
 ## Unreleased
 ### Added
+- django 4.2 support
+- python 3.11 support
 - support for fetching data from peeringdb cache servers
 - support for quickly setting a local snapshot of peeringdb server via the `peeringdb server` commands
+### Removed
+- python 3.7 support
+- django 2.2 support
+- django 3.0 support
 
 
 ## 1.5.0
