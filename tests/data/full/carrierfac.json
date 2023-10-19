@@ -1,50 +1,24 @@
 [
     {
-        "fields": {
-            "created": "2018-12-20T23:12:57.109",
-            "fac": 7,
-            "carrier": 7,
-            "status": "ok",
-            "updated": "2018-12-20T23:12:57.109",
-            "version": 0
-        },
         "model": "django_peeringdb.carrierfacility",
-        "pk": 7
+        "pk": 1,
+        "fields": {
+            "carrier_id": 1,
+            "fac_id": 1,
+            "created": "2023-04-21T13:46:31.674252",
+            "updated": "2023-04-21T13:46:32.085917",
+            "status": "ok"
+        }
     },
     {
-        "fields": {
-            "created": "2018-12-20T23:12:57.216",
-            "fac": 8,
-            "carrier": 8,
-            "status": "ok",
-            "updated": "2018-12-20T23:12:57.216",
-            "version": 0
-        },
         "model": "django_peeringdb.carrierfacility",
-        "pk": 8
-    },
-    {
+        "pk": 2,
         "fields": {
-            "created": "2018-12-20T23:12:57.324",
-            "fac": 9,
-            "carrier": 9,
-            "status": "ok",
-            "updated": "2018-12-20T23:12:57.324",
-            "version": 0
-        },
-        "model": "django_peeringdb.carrierfacility",
-        "pk": 9
-    },
-    {
-        "fields": {
-            "created": "2018-12-20T23:12:57.432",
-            "fac": 10,
-            "carrier": 10,
-            "status": "ok",
-            "updated": "2018-12-20T23:12:57.432",
-            "version": 0
-        },
-        "model": "django_peeringdb.carrierfacility",
-        "pk": 10
+            "carrier_id": 2,
+            "fac_id": 2,
+            "created": "2023-04-21T13:46:31.793418",
+            "updated": "2023-04-21T13:46:32.182163",
+            "status": "ok"
+        }
     }
 ]

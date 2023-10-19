@@ -1,8 +1,7 @@
-[
-    {
-        "model": "django_peeringdb.internetexchange",
-        "pk": 1,
-        "fields": {
+{
+    "data": [
+        {
+            "id": 1,
             "org_id": 1,
             "name": "ix b7b05aa8",
             "aka": "ix 11a3deb1",
@@ -16,6 +15,12 @@
             "proto_multicast": true,
             "proto_ipv6": true,
             "website": "https://www.peeringdb.com",
+            "social_media": [
+                {
+                    "service": "website",
+                    "identifier": "https://www.peeringdb.com"
+                }
+            ],
             "url_stats": "https://www.peeringdb.com/url_stats",
             "tech_email": "test@peeringdb.com",
             "tech_phone": "+12065550199",
@@ -23,20 +28,21 @@
             "policy_phone": "+12065550199",
             "sales_phone": "+12065550199",
             "sales_email": "test@peeringdb.com",
+            "net_count": 1,
+            "fac_count": 1,
             "ixf_net_count": 0,
             "ixf_last_import": null,
+            "ixf_import_request": null,
+            "ixf_import_request_status": "queued",
             "service_level": "Best Effort (no SLA)",
             "terms": "No Commercial Terms",
             "status_dashboard": null,
-            "created": "2023-04-21T13:46:31.620288",
-            "updated": "2023-04-21T13:46:32.047597",
+            "created": "2023-04-21T13:46:31.620288Z",
+            "updated": "2023-04-21T13:46:32.047597Z",
             "status": "ok"
-        }
-    },
-    {
-        "model": "django_peeringdb.internetexchange",
-        "pk": 2,
-        "fields": {
+        },
+        {
+            "id": 2,
             "org_id": 2,
             "name": "ix e7eccd56",
             "aka": "ix 465eded9",
@@ -50,6 +56,12 @@
             "proto_multicast": true,
             "proto_ipv6": true,
             "website": "https://www.peeringdb.com",
+            "social_media": [
+                {
+                    "service": "website",
+                    "identifier": "https://www.peeringdb.com"
+                }
+            ],
             "url_stats": "https://www.peeringdb.com/url_stats",
             "tech_email": "test@peeringdb.com",
             "tech_phone": "+12065550199",
@@ -57,20 +69,21 @@
             "policy_phone": "+12065550199",
             "sales_phone": "+12065550199",
             "sales_email": "test@peeringdb.com",
+            "net_count": 1,
+            "fac_count": 1,
             "ixf_net_count": 0,
             "ixf_last_import": null,
+            "ixf_import_request": null,
+            "ixf_import_request_status": "queued",
             "service_level": "Best Effort (no SLA)",
             "terms": "No Commercial Terms",
             "status_dashboard": null,
-            "created": "2023-04-21T13:46:31.755715",
-            "updated": "2023-04-21T13:46:32.146799",
+            "created": "2023-04-21T13:46:31.755715Z",
+            "updated": "2023-04-21T13:46:32.146799Z",
             "status": "ok"
-        }
-    },
-    {
-        "model": "django_peeringdb.internetexchange",
-        "pk": 3,
-        "fields": {
+        },
+        {
+            "id": 3,
             "org_id": 4,
             "name": "ix eae2706e",
             "aka": "ix 52ba899a",
@@ -84,6 +97,12 @@
             "proto_multicast": true,
             "proto_ipv6": false,
             "website": "https://www.peeringdb.com",
+            "social_media": [
+                {
+                    "service": "website",
+                    "identifier": "https://www.peeringdb.com"
+                }
+            ],
             "url_stats": "https://www.peeringdb.com/url_stats",
             "tech_email": "test@peeringdb.com",
             "tech_phone": "+12065550199",
@@ -91,14 +110,19 @@
             "policy_phone": "+12065550199",
             "sales_phone": "+12065550199",
             "sales_email": "test@peeringdb.com",
+            "net_count": 0,
+            "fac_count": 0,
             "ixf_net_count": 0,
             "ixf_last_import": null,
+            "ixf_import_request": null,
+            "ixf_import_request_status": "queued",
             "service_level": "Best Effort (no SLA)",
             "terms": "No Commercial Terms",
             "status_dashboard": null,
-            "created": "2023-04-21T13:46:31.876008",
-            "updated": "2023-04-21T13:46:32.259420",
+            "created": "2023-04-21T13:46:31.876008Z",
+            "updated": "2023-04-21T13:46:32.259420Z",
             "status": "ok"
         }
-    }
-]
+    ],
+    "meta": {}
+}

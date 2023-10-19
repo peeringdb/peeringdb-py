@@ -18,6 +18,7 @@ COMMANDS = {
         help="Configuration management",
     ),
     "drop-tables": commands.DropTables,
+    "server": commands.Server,
 }
 
 

@@ -10,7 +10,21 @@ readme = "README.md"
 repository = "https://github.com/peeringdb/peeringdb-py"
 authors = [ "PeeringDB <support@peeringdb.com>",]
 license = "Apache-2.0"
-classifiers = [ "Development Status :: 5 - Production/Stable", "Framework :: Django :: 2.2", "Framework :: Django :: 3.0", "Framework :: Django :: 3.1", "Framework :: Django :: 3.2", "Intended Audience :: Developers", "Intended Audience :: System Administrators", "Intended Audience :: Telecommunications Industry", "License :: OSI Approved :: Apache Software License", "Programming Language :: Python :: 3.6", "Programming Language :: Python :: 3.7", "Programming Language :: Python :: 3.8", "Programming Language :: Python :: 3.9", "Topic :: Software Development :: Libraries :: Python Modules", "Topic :: Internet",]
+classifiers = [ 
+    "Development Status :: 5 - Production/Stable",  
+    "Framework :: Django :: 3.2", 
+    "Framework :: Django :: 4.2", 
+    "Intended Audience :: Developers", 
+    "Intended Audience :: System Administrators", 
+    "Intended Audience :: Telecommunications Industry", 
+    "License :: OSI Approved :: Apache Software License", 
+    "Programming Language :: Python :: 3.8", 
+    "Programming Language :: Python :: 3.9", 
+    "Programming Language :: Python :: 3.10", 
+    "Programming Language :: Python :: 3.11", 
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Internet"
+]
 [[tool.poetry.packages]]
 include = "peeringdb"
 from = "src"
@@ -23,7 +37,7 @@ multi_line_output = 3
 peeringdb = "peeringdb.cli:main"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 confu = "^1"
 munge = { extras = ["tomlkit", "yaml"], version = "^1.2.0" }
 "twentyc.rpc" = "^1"
@@ -31,10 +45,9 @@ munge = { extras = ["tomlkit", "yaml"], version = "^1.2.0" }
 [tool.poetry.dev-dependencies]
 
 # testing
-django = "~3.2"
-django_peeringdb = "^2.16"
+django = "~4.2"
+django_peeringdb = "^3.0.0"
 
-codecov = "*"
 pytest = "^6.0.1"
 pytest-cov = "*"
 tox = ">=3.24"

@@ -1,0 +1,29 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "name": "fac 6474d82a",
+            "city": "Chicago",
+            "country": "US",
+            "net_id": 1,
+            "fac_id": 1,
+            "local_asn": 63312,
+            "created": "2023-04-21T13:46:31.722434Z",
+            "updated": "2023-04-21T13:46:32.115758Z",
+            "status": "ok"
+        },
+        {
+            "id": 2,
+            "name": "fac d8e202c9",
+            "city": "Chicago",
+            "country": "US",
+            "net_id": 2,
+            "fac_id": 2,
+            "local_asn": 63313,
+            "created": "2023-04-21T13:46:31.833997Z",
+            "updated": "2023-04-21T13:46:32.218085Z",
+            "status": "ok"
+        }
+    ],
+    "meta": {}
+}

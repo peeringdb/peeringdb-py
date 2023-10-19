@@ -22,6 +22,8 @@ class ClientSchema(_schema.Schema):
 
     class SyncSchema(_schema.Schema):
         url = _schema.Url("url", default="https://www.peeringdb.com/api")
+        cache_url = _schema.Url("url", default="https://cache.peeringdb.com/api")
+        cache_dir = _schema.Str("cache_dir", default="~/.cache/peeringdb")
         user = _schema.Str("user", blank=True, default="")
         password = _schema.Str("password", blank=True, default="")
         strip_tz = _schema.Int("strip_tz", default=1)  # FIXME no boolean?

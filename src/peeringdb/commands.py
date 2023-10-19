@@ -1,4 +1,6 @@
 import logging
+import os
+import subprocess
 import sys
 
 import munge
@@ -257,3 +259,66 @@ class DropTables:
         Client(config)
         B = peeringdb.get_backend()
         B.delete_all()
+
+
+class Server:
+    "Configure Peeringdb Server"
+
+    @staticmethod
+    def add_arguments(parser):
+        parser.add_argument(
+            "--setup",
+            action="store_true",
+            default=False,
+            help="Build and setup peeringdb server container",
+        )
+        parser.add_argument(
+            "--start",
+            action="store_true",
+            default=False,
+            help="Start peeringdb server container",
+        )
+        parser.add_argument(
+            "--stop",
+            action="store_true",
+            default=False,
+            help="Stop peeringdb server container",
+        )
+
+    @_handler
+    def handle(config, setup, start, stop, **_):
+        parent_directory = os.path.abspath(os.path.join(os.getcwd()))
+        clone_path = os.path.join(parent_directory, "peeringdb_server")
+
+        if setup:
+            # Clone the GitHub repository
+            # TODO: use latest release? (peeringdb server currently does no publish releases, just tags)
+            # TODO: use git module instead of subprocess?
+            print("Setup-----------")
+            subprocess.run(
+                [
+                    "git",
+                    "clone",
+                    "https://github.com/peeringdb/peeringdb.git",
+                    clone_path,
+                ]
+            )
+
+            # Run setup.sh inside the cloned repository
+            subprocess.run(["./Ctl/local/setup.sh"], cwd=clone_path)
+
+        if start:
+            try:
+                subprocess.run(["./Ctl/local/compose.sh", "up", "-d"], cwd=clone_path)
+            except FileNotFoundError:
+                print(
+                    f"{clone_path} directory not found, make sure that you already run 'peeringdb server --setup'"
+                )
+
+        if stop:
+            try:
+                subprocess.run(["./Ctl/local/compose.sh", "down"], cwd=clone_path)
+            except FileNotFoundError:
+                print(
+                    f"{clone_path} directory not found, make sure that you already run 'peeringdb server --setup'"
+                )

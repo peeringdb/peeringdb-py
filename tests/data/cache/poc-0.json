@@ -1,8 +1,7 @@
-[
-    {
-        "model": "django_peeringdb.networkcontact",
-        "pk": 1,
-        "fields": {
+{
+    "data": [
+        {
+            "id": 1,
             "net_id": 1,
             "role": "Abuse",
             "visible": "Public",
@@ -10,15 +9,12 @@
             "phone": "+12065550199",
             "email": "test@peeringdb.com",
             "url": "https://www.peeringdb.com/url",
-            "created": "2023-04-21T13:46:31.726706",
-            "updated": "2023-04-21T13:46:32.120715",
+            "created": "2023-04-21T13:46:31.726706Z",
+            "updated": "2023-04-21T13:46:32.120715Z",
             "status": "ok"
-        }
-    },
-    {
-        "model": "django_peeringdb.networkcontact",
-        "pk": 2,
-        "fields": {
+        },
+        {
+            "id": 2,
             "net_id": 2,
             "role": "Abuse",
             "visible": "Public",
@@ -26,9 +22,10 @@
             "phone": "+12065550199",
             "email": "test@peeringdb.com",
             "url": "https://www.peeringdb.com/url",
-            "created": "2023-04-21T13:46:31.835602",
-            "updated": "2023-04-21T13:46:32.223612",
+            "created": "2023-04-21T13:46:31.835602Z",
+            "updated": "2023-04-21T13:46:32.223612Z",
             "status": "ok"
         }
-    }
-]
+    ],
+    "meta": {}
+}

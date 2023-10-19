@@ -50,7 +50,7 @@ def test_config(runcli):
 # pass a config and check that it matches
 # config set
 
-NET0 = "net7"
+NET0 = "net1"
 
 
 def test_get(runcli, client):
@@ -74,7 +74,7 @@ def test_whois(runcli, client):
     assert runcli("whois", "as63312") == 0
     assert runcli("whois", "as00000") == 1
 
-    assert runcli("whois", "ixnets7") == 0
+    assert runcli("whois", "ixnets1") == 0
     assert runcli("whois", "ixnets0") == 1
 
 

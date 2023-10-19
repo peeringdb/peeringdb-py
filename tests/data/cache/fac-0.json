@@ -1,27 +1,36 @@
-[
-    {
-        "model": "django_peeringdb.facility",
-        "pk": 1,
-        "fields": {
+{
+    "data": [
+        {
+            "id": 1,
             "org_id": 1,
+            "org_name": "org c1ab780b",
             "name": "fac 6474d82a",
             "aka": "fac 548d62e1",
             "name_long": "fac 87ca4641",
             "website": "https://www.peeringdb.com",
+            "social_media": [
+                {
+                    "service": "website",
+                    "identifier": "https://www.peeringdb.com"
+                }
+            ],
             "clli": "61C849",
             "rencode": "",
             "npanxx": "123-456",
             "notes": "Some notes",
+            "net_count": 1,
+            "ix_count": 0,
             "sales_email": "test@peeringdb.com",
             "sales_phone": "+12065550199",
             "tech_email": "test@peeringdb.com",
             "tech_phone": "+12065550199",
+            "available_voltage_services": [],
             "diverse_serving_substations": true,
             "property": null,
             "region_continent": "North America",
             "status_dashboard": null,
-            "created": "2023-04-21T13:46:31.649864",
-            "updated": "2023-04-21T16:02:38.066691",
+            "created": "2023-04-21T13:46:31.649864Z",
+            "updated": "2023-04-21T16:02:38.066691Z",
             "status": "ok",
             "address1": "Address line 1",
             "address2": "Address line 2",
@@ -33,31 +42,38 @@
             "suite": "",
             "latitude": 21.33,
             "longitude": -157.917855
-        }
-    },
-    {
-        "model": "django_peeringdb.facility",
-        "pk": 2,
-        "fields": {
+        },
+        {
+            "id": 2,
             "org_id": 2,
+            "org_name": "org d1aa972c",
             "name": "fac d8e202c9",
             "aka": "fac baf0125d",
             "name_long": "fac 4823f9db",
             "website": "https://www.peeringdb.com",
+            "social_media": [
+                {
+                    "service": "website",
+                    "identifier": "https://www.peeringdb.com"
+                }
+            ],
             "clli": "B290C7",
             "rencode": "",
             "npanxx": "123-456",
             "notes": "Some notes",
+            "net_count": 1,
+            "ix_count": 0,
             "sales_email": "test@peeringdb.com",
             "sales_phone": "+12065550199",
             "tech_email": "test@peeringdb.com",
             "tech_phone": "+12065550199",
+            "available_voltage_services": [],
             "diverse_serving_substations": true,
             "property": null,
             "region_continent": "North America",
             "status_dashboard": null,
-            "created": "2023-04-21T13:46:31.777693",
-            "updated": "2023-04-21T13:46:32.163613",
+            "created": "2023-04-21T13:46:31.777693Z",
+            "updated": "2023-04-21T13:46:32.163613Z",
             "status": "ok",
             "address1": "Address line 1",
             "address2": "Address line 2",
@@ -69,31 +85,38 @@
             "suite": "",
             "latitude": 0.0,
             "longitude": 0.0
-        }
-    },
-    {
-        "model": "django_peeringdb.facility",
-        "pk": 3,
-        "fields": {
+        },
+        {
+            "id": 3,
             "org_id": 5,
+            "org_name": "org fd25f48c",
             "name": "fac d7d31fa7",
             "aka": "fac 11e46138",
             "name_long": "fac d70f90fa",
             "website": "https://www.peeringdb.com",
+            "social_media": [
+                {
+                    "service": "website",
+                    "identifier": "https://www.peeringdb.com"
+                }
+            ],
             "clli": "1E4396",
             "rencode": "",
             "npanxx": "123-456",
             "notes": "Some notes",
+            "net_count": 0,
+            "ix_count": 0,
             "sales_email": "test@peeringdb.com",
             "sales_phone": "+12065550199",
             "tech_email": "test@peeringdb.com",
             "tech_phone": "+12065550199",
+            "available_voltage_services": [],
             "diverse_serving_substations": true,
             "property": null,
             "region_continent": "North America",
             "status_dashboard": null,
-            "created": "2023-04-21T13:46:31.902223",
-            "updated": "2023-04-21T13:46:32.287846",
+            "created": "2023-04-21T13:46:31.902223Z",
+            "updated": "2023-04-21T13:46:32.287846Z",
             "status": "ok",
             "address1": "Address line 1",
             "address2": "Address line 2",
@@ -105,31 +128,38 @@
             "suite": "",
             "latitude": 0.0,
             "longitude": 0.0
-        }
-    },
-    {
-        "model": "django_peeringdb.facility",
-        "pk": 6,
-        "fields": {
+        },
+        {
+            "id": 6,
             "org_id": 1,
+            "org_name": "org c1ab780b",
             "name": "fac 6474d82b",
             "aka": "",
             "name_long": "",
             "website": "https://www.peeringdb.com",
+            "social_media": [
+                {
+                    "service": "website",
+                    "identifier": "https://www.peeringdb.com"
+                }
+            ],
             "clli": "",
             "rencode": "",
             "npanxx": "",
             "notes": "",
+            "net_count": 0,
+            "ix_count": 0,
             "sales_email": "",
             "sales_phone": "",
             "tech_email": "",
             "tech_phone": "",
+            "available_voltage_services": [],
             "diverse_serving_substations": null,
             "property": null,
             "region_continent": "North America",
             "status_dashboard": null,
-            "created": "2023-04-21T15:58:19.084386",
-            "updated": "2023-04-21T16:02:46.329462",
+            "created": "2023-04-21T15:58:19.084386Z",
+            "updated": "2023-04-21T16:02:46.329462Z",
             "status": "ok",
             "address1": "Address line 1",
             "address2": "",
@@ -142,5 +172,6 @@
             "latitude": 21.33,
             "longitude": -157.917855
         }
-    }
-]
+    ],
+    "meta": {}
+}

@@ -1,9 +1,10 @@
-[
-    {
-        "model": "django_peeringdb.networkixlan",
-        "pk": 1,
-        "fields": {
+{
+    "data": [
+        {
+            "id": 1,
             "net_id": 1,
+            "ix_id": 1,
+            "name": "ix b7b05aa8",
             "ixlan_id": 1,
             "notes": "Some notes",
             "speed": 1000,
@@ -12,16 +13,15 @@
             "ipaddr6": "2001:504:0:1::65",
             "is_rs_peer": true,
             "operational": true,
-            "created": "2023-04-21T13:46:31.718816",
-            "updated": "2023-04-21T13:46:32.108511",
+            "created": "2023-04-21T13:46:31.718816Z",
+            "updated": "2023-04-21T13:46:32.108511Z",
             "status": "ok"
-        }
-    },
-    {
-        "model": "django_peeringdb.networkixlan",
-        "pk": 2,
-        "fields": {
+        },
+        {
+            "id": 2,
             "net_id": 2,
+            "ix_id": 2,
+            "name": "ix e7eccd56",
             "ixlan_id": 2,
             "notes": "Some notes",
             "speed": 1000,
@@ -30,9 +30,10 @@
             "ipaddr6": "2001:504:0:3::65",
             "is_rs_peer": true,
             "operational": true,
-            "created": "2023-04-21T13:46:31.831132",
-            "updated": "2023-04-21T13:46:32.209023",
+            "created": "2023-04-21T13:46:31.831132Z",
+            "updated": "2023-04-21T13:46:32.209023Z",
             "status": "ok"
         }
-    }
-]
+    ],
+    "meta": {}
+}

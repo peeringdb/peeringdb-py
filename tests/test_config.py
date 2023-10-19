@@ -71,6 +71,8 @@ def test_schema_migration():
         "sync": {
             "api_key": "",
             "url": "https://test.peeringdb.com/api",
+            "cache_url": "https://cache.peeringdb.com/api",
+            "cache_dir": "~/.cache/peeringdb",
             "user": "dude",
             "password": "12345",
             "timeout": 5,

@@ -1,50 +1,24 @@
 [
     {
-        "fields": {
-            "created": "2018-12-20T23:12:57.109",
-            "fac": 7,
-            "ix": 7,
-            "status": "ok",
-            "updated": "2018-12-20T23:12:57.109",
-            "version": 0
-        },
         "model": "django_peeringdb.internetexchangefacility",
-        "pk": 7
+        "pk": 1,
+        "fields": {
+            "ix_id": 1,
+            "fac_id": 1,
+            "created": "2023-04-21T13:46:31.691524",
+            "updated": "2023-04-21T13:46:32.100245",
+            "status": "ok"
+        }
     },
     {
-        "fields": {
-            "created": "2018-12-20T23:12:57.216",
-            "fac": 8,
-            "ix": 8,
-            "status": "ok",
-            "updated": "2018-12-20T23:12:57.216",
-            "version": 0
-        },
         "model": "django_peeringdb.internetexchangefacility",
-        "pk": 8
-    },
-    {
+        "pk": 2,
         "fields": {
-            "created": "2018-12-20T23:12:57.324",
-            "fac": 9,
-            "ix": 9,
-            "status": "ok",
-            "updated": "2018-12-20T23:12:57.324",
-            "version": 0
-        },
-        "model": "django_peeringdb.internetexchangefacility",
-        "pk": 9
-    },
-    {
-        "fields": {
-            "created": "2018-12-20T23:12:57.432",
-            "fac": 10,
-            "ix": 10,
-            "status": "ok",
-            "updated": "2018-12-20T23:12:57.432",
-            "version": 0
-        },
-        "model": "django_peeringdb.internetexchangefacility",
-        "pk": 10
+            "ix_id": 2,
+            "fac_id": 2,
+            "created": "2023-04-21T13:46:31.806328",
+            "updated": "2023-04-21T13:46:32.199964",
+            "status": "ok"
+        }
     }
 ]
