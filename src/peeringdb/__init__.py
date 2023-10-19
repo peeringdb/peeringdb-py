@@ -19,7 +19,7 @@ def _config_logs(lvl=None, name=None):
     _config_logs(L) => change log level
     """
     # print('_config_log', 'from %s' %name if name else '')
-    FORMAT = "%(message)s"
+    logging_format = "%(message)s"
     # maybe better for log files
     # FORMAT='[%(levelname)s]:%(message)s',
 
@@ -31,7 +31,7 @@ def _config_logs(lvl=None, name=None):
     if lvl:
         _log_level = lvl
 
-    logging.basicConfig(level=_log_level, format=FORMAT, stream=sys.stdout)
+    logging.basicConfig(level=_log_level, format=logging_format, stream=sys.stdout)
     _log = logging.getLogger(__name__)
     _log.setLevel(_log_level)
 
@@ -84,10 +84,10 @@ def initialize_backend(name, **kwargs):
     # Load internal module associated with the ORM module
     supportmod = import_module(modname)
     # Backend is any object returned from load_backend
-    B = supportmod.load_backend(**kwargs)
+    backend = supportmod.load_backend(**kwargs)
 
-    B.Backend.setup()
-    __backend = (B.Backend(), (name, B.__version__))
+    backend.Backend.setup()
+    __backend = (backend.Backend(), (name, backend.__version__))
 
 
 # TODO

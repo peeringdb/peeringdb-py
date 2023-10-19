@@ -7,10 +7,10 @@ from collections import OrderedDict
 _NAMES = OrderedDict(
     [
         ("org", "Organization"),
+        ("campus", "Campus"),
         ("fac", "Facility"),
         ("net", "Network"),
         ("ix", "InternetExchange"),
-        ("campus", "Campus"),
         ("carrier", "Carrier"),
         ("carrierfac", "CarrierFacility"),
         ("ixfac", "InternetExchangeFacility"),

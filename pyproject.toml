@@ -10,18 +10,18 @@ readme = "README.md"
 repository = "https://github.com/peeringdb/peeringdb-py"
 authors = [ "PeeringDB <support@peeringdb.com>",]
 license = "Apache-2.0"
-classifiers = [ 
-    "Development Status :: 5 - Production/Stable",  
-    "Framework :: Django :: 3.2", 
-    "Framework :: Django :: 4.2", 
-    "Intended Audience :: Developers", 
-    "Intended Audience :: System Administrators", 
-    "Intended Audience :: Telecommunications Industry", 
-    "License :: OSI Approved :: Apache Software License", 
-    "Programming Language :: Python :: 3.8", 
-    "Programming Language :: Python :: 3.9", 
-    "Programming Language :: Python :: 3.10", 
-    "Programming Language :: Python :: 3.11", 
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.2",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Telecommunications Industry",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Internet"
 ]
@@ -41,12 +41,14 @@ python = "^3.8"
 confu = "^1"
 munge = { extras = ["tomlkit", "yaml"], version = "^1.2.0" }
 "twentyc.rpc" = "^1"
+pyyaml = "^6.0.1"
+httpx = ">=0.24.1"
 
 [tool.poetry.dev-dependencies]
 
 # testing
+django_peeringdb = "^3.1.0"
 django = "~4.2"
-django_peeringdb = "^3.0.0"
 
 pytest = "^6.0.1"
 pytest-cov = "*"

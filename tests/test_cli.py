@@ -1,11 +1,9 @@
 import io
-import os
 import re
 
 import helper
 import pytest
 
-import peeringdb
 from peeringdb import cli as _cli
 
 CMD = "peeringdb_test"
@@ -88,20 +86,6 @@ def test_droptables(runcli, client, monkeypatch):
     assert not client.tags.net.all()
 
 
-# Test client/server version errors; should fail with clean output
-def test_version_check(
-    runcli, client_empty, patch_version, patch_backend_version, capsys
-):
-    with patch_version:
-        assert runcli("get", NET0, "-R") != 0
-
-    out, err = capsys.readouterr()
-    assert err.count("\n") < 2
-
-    with patch_backend_version:
-        assert runcli("get", NET0, "-R") != 0
-
-
 # Make sure CLI output is piped to stdout
 @pytest.mark.output
 def test_output_piping(runcli, client, capsys):
@@ -110,7 +94,6 @@ def test_output_piping(runcli, client, capsys):
 
     assert err == ""
     assert re.search("Fetching", out)
-    assert re.search("Updates", out)
 
 
 @pytest.mark.output

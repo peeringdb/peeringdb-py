@@ -14,7 +14,7 @@ from peeringdb.whois import WhoisFormat
 
 
 def _handler(func):
-    "Decorate a command handler"
+    """Decorate a command handler"""
 
     def _wrapped(*a, **k):
         r = func(*a, **k)
@@ -26,7 +26,7 @@ def _handler(func):
 
 
 def add_subcommands(parser, commands):
-    "Add commands to a parser"
+    """Add commands to a parser"""
     subps = parser.add_subparsers()
     for cmd, cls in commands:
         subp = subps.add_parser(cmd, help=cls.__doc__)
@@ -61,7 +61,7 @@ class CommandGroup:
 
 
 class Get:
-    "Get a resource"
+    """Get a resource"""
 
     @staticmethod
     def add_arguments(parser):
@@ -90,26 +90,17 @@ class Get:
         for poid in poids:
             (tag, pk) = util.split_ref(poid)
             res = resource.get_resource(tag)
-            B = peeringdb.get_backend()
+            backend = peeringdb.get_backend()
             try:
                 obj = client.get(res, pk)
-            except B.object_missing_error(B.get_concrete(res)):
+            except backend.object_missing_error(backend.get_concrete(res)):
                 if remote:
-                    obj = client.fetch(res, pk, depth)[0]
+                    obj = client.fetcher.get(res.tag, pk, depth=depth)
                 else:
                     print(f"Not found: {tag}-{pk}", file=sys.stderr)
                     return 1
 
             dump(obj, depth, sys.stdout)
-
-
-def _lookup_tag(tag, key, getfunc):
-    if tag == "as":
-        return getfunc(resource.Network, asn=key)
-    elif tag == "ixnets":
-        return getfunc(resource.Network, ix_id__in=key)
-    else:
-        return getfunc(resource.get_resource(tag), id=key)
 
 
 class Whois:
@@ -128,22 +119,25 @@ class Whois:
     @_handler
     def handle(config, poids, **_):
         client = Client(config)
-
-        def get(res, **kwargs):
-            objs = client.fetch_all(res, depth=2, **kwargs)
-            if not objs:
-                raise peeringdb.sync.NotFoundException
-            return objs
-
         fmt = WhoisFormat()
+
         for poid in poids:
             (tag, key) = util.split_ref(poid)
             try:
-                data = _lookup_tag(tag, key, get)
-            except peeringdb.sync.NotFoundException:
-                print(f"Not found: resource for {tag}={key}", file=sys.stderr)
+                if tag == "as":
+                    objs = client.fetcher._get("net", asn=key, depth=2)
+                elif tag == "ixnets":
+                    objs = client.fetcher._get("net", ix_id__in=key, depth=2)
+                else:
+                    objs = client.fetcher._get(tag, pk=key, depth=2)
+            except Exception as e:
+                print(f"Not found: {tag}={key}: {e}", file=sys.stderr)
                 return 1
-            fmt.display(tag, data[0])
+            if len(objs) == 0:
+                print(f"Not found: {tag}={key}:", file=sys.stderr)
+                return 1
+
+            fmt.display(tag, objs[0])
 
 
 class DumpConfig:
@@ -189,7 +183,7 @@ class PromptConfig:
 
 
 class ListCodecs:
-    "List available codecs"
+    """List available codecs"""
 
     @_handler
     def handle(**_):
@@ -197,12 +191,18 @@ class ListCodecs:
 
 
 class Sync:
-    "Synchronize local tables to PeeringDB"
+    """Synchronize local tables to PeeringDB"""
 
     @staticmethod
     def add_arguments(parser):
         parser.add_argument("-v", "--verbose", action="count", help="Be more verbose")
         parser.add_argument("-q", "--quiet", action="count", help="Be more quiet")
+        parser.add_argument(
+            "--fetch-private",
+            action="store_true",
+            default=False,
+            help="Fetch private data (needs API key set)",
+        )
         parser.add_argument(
             "--dry-run",
             action="store_true",
@@ -248,21 +248,32 @@ class Sync:
 
         if since < 0:
             since = None
-        client.update_all(rs, since)
+
+        # if fetch-private and PDB_SYNC_API_KEY isn't set, warn
+        if kwargs["fetch_private"] and not config["sync"].get("api_key"):
+            print()
+            print(
+                "Warning: api key not set, private data will not be fetched. Set it either directly in the config or provide via the PDB_SYNC_API_KEY environment variable.",
+                file=sys.stderr,
+            )
+            print()
+            kwargs["fetch_private"] = False
+
+        client.updater.update_all(rs, since, fetch_private=kwargs["fetch_private"])
 
 
 class DropTables:
-    "Drop all database tables"
+    """Drop all database tables"""
 
     @_handler
     def handle(config, **_):
         Client(config)
-        B = peeringdb.get_backend()
-        B.delete_all()
+        backend = peeringdb.get_backend()
+        backend.delete_all()
 
 
 class Server:
-    "Configure Peeringdb Server"
+    """Configure Peeringdb Server"""
 
     @staticmethod
     def add_arguments(parser):

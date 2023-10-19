@@ -1,5 +1,3 @@
-import os
-
 import helper
 import pytest
 
@@ -24,13 +22,3 @@ def test_get(client):
 def test_type_wrap(client):
     assert client.tags.net.get(NET0)
     assert client.tags.net.all()
-
-
-def test_version_check(client_empty, patch_version, patch_backend_version):
-    with patch_version:
-        with pytest.raises(peeringdb.sync.CompatibilityError):
-            client_empty.fetch(resource.Network, NET0)
-
-    with patch_backend_version:
-        with pytest.raises(peeringdb.sync.CompatibilityError):
-            client_empty.fetch(resource.Network, NET0)

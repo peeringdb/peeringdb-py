@@ -21,27 +21,72 @@ class ClientSchema(_schema.Schema):
     """
 
     class SyncSchema(_schema.Schema):
-        url = _schema.Url("url", default="https://www.peeringdb.com/api")
-        cache_url = _schema.Url("url", default="https://cache.peeringdb.com/api")
-        cache_dir = _schema.Str("cache_dir", default="~/.cache/peeringdb")
-        user = _schema.Str("user", blank=True, default="")
-        password = _schema.Str("password", blank=True, default="")
-        strip_tz = _schema.Int("strip_tz", default=1)  # FIXME no boolean?
-        only = _schema.List("only", item=_schema.Str(), default=[])
-        timeout = _schema.Int("timeout", default=0)
-        api_key = _schema.Str("api_key", blank=True, default="")
+        url = _schema.Url(
+            "url",
+            default=os.environ.get("PDB_SYNC_URL", "https://www.peeringdb.com/api"),
+        )
+        cache_url = _schema.Url(
+            "url",
+            default=os.environ.get(
+                "PDB_SYNC_CACHE_URL", "https://public.peeringdb.com"
+            ),
+        )
+        cache_dir = _schema.Str(
+            "cache_dir",
+            default=os.environ.get("PDB_SYNC_CACHE_DIR", "~/.cache/peeringdb"),
+        )
+        user = _schema.Str(
+            "user", blank=True, default=os.environ.get("PDB_SYNC_USER", "")
+        )
+        password = _schema.Str(
+            "password", blank=True, default=os.environ.get("PDB_SYNC_PASSWORD", "")
+        )
+        strip_tz = _schema.Int(
+            "strip_tz", default=int(os.environ.get("PDB_SYNC_STRIP_TZ", "1"))
+        )
+        only = _schema.List(
+            "only",
+            item=_schema.Str(),
+            default=os.environ.get("PDB_SYNC_ONLY", "").split(",")
+            if os.environ.get("PDB_SYNC_ONLY")
+            else [],
+        )
+        timeout = _schema.Int(
+            "timeout", default=int(os.environ.get("PDB_SYNC_TIMEOUT", "0"))
+        )
+        api_key = _schema.Str(
+            "api_key", blank=True, default=os.environ.get("PDB_SYNC_API_KEY", "")
+        )
 
     class OrmSchema(_schema.Schema):
         class OrmDbSchema(_schema.Schema):
-            engine = _schema.Str("engine", default="sqlite3")
-            name = _schema.Str("name", default="peeringdb.sqlite3")
-            host = _schema.Str("host", blank=True, default="")
-            port = _schema.Int("port", default=0)
-            user = _schema.Str("user", blank=True, default="")
-            password = _schema.Str("password", blank=True, default="")
+            engine = _schema.Str(
+                "engine", default=os.environ.get("PDB_ORM_DB_ENGINE", "sqlite3")
+            )
+            name = _schema.Str(
+                "name", default=os.environ.get("PDB_ORM_DB_NAME", "peeringdb.sqlite3")
+            )
+            host = _schema.Str(
+                "host", blank=True, default=os.environ.get("PDB_ORM_DB_HOST", "")
+            )
+            port = _schema.Int(
+                "port", default=int(os.environ.get("PDB_ORM_DB_PORT", "0"))
+            )
+            user = _schema.Str(
+                "user", blank=True, default=os.environ.get("PDB_ORM_DB_USER", "")
+            )
+            password = _schema.Str(
+                "password",
+                blank=True,
+                default=os.environ.get("PDB_ORM_DB_PASSWORD", ""),
+            )
 
-        secret_key = _schema.Str("secret_key", blank=True, default="")
-        backend = _schema.Str("backend", default="django_peeringdb")
+        secret_key = _schema.Str(
+            "secret_key", blank=True, default=os.environ.get("PDB_ORM_SECRET_KEY", "")
+        )
+        backend = _schema.Str(
+            "backend", default=os.environ.get("PDB_ORM_BACKEND", "django_peeringdb")
+        )
         migrate = _schema.Bool("migrate", default=True)
         database = OrmDbSchema()
 

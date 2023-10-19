@@ -9,11 +9,12 @@ from peeringdb import (
     initialize_backend,
     resource,
 )
-from peeringdb.sync import Fetcher, Updater
+from peeringdb._update import Updater
+from peeringdb.fetch import Fetcher
 
 
 class _Query:
-    "Wrapper to access a specific resource"
+    """Wrapper to access a specific resource"""
 
     def __init__(self, client, res):
         self.client = client
@@ -27,7 +28,7 @@ class _Query:
 
 
 class Client:
-    "Main PeeringDB client."
+    """Main PeeringDB client."""
 
     def __init__(self, cfg=None, **kwargs):
         """
@@ -51,12 +52,8 @@ class Client:
         # override config with kwargs
         munge.util.recursive_update(sync_config, kwargs)
 
-        self._fetcher = Fetcher(**sync_config)
-        self._updater = Updater(self._fetcher, **sync_config)
-
-        self.update_all = self._updater.update_all
-        self.update = self._updater.update
-        self.update_where = self._updater.update_where
+        self.fetcher = Fetcher(**sync_config)
+        self.updater = Updater(self.fetcher)
 
         tag_res = OrderedDict(
             [(res.tag, _Query(self, res)) for res in resource.all_resources()]
@@ -71,29 +68,15 @@ class Client:
         self._Tags = type("_Tags", (), tag_attrs)
         self.tags = self._Tags()
 
-    def fetch(self, R, pk, depth=1):
-        "Request object from API"
-        d, e = self._fetcher.fetch(R, pk, depth)
-        if e:
-            raise e
-        return d
-
-    def fetch_all(self, R, depth=1, **kwargs):
-        "Request multiple objects from API"
-        d, e = self._fetcher.fetch_all(R, depth, kwargs)
-        if e:
-            raise e
-        return d
-
     def get(self, res, pk):
-        "Get a resource instance by primary key (id)"
-        B = get_backend()
-        return B.get_object(B.get_concrete(res), pk)
+        """Get a resource instance by primary key (id)"""
+        backend = get_backend()
+        return backend.get_object(backend.get_concrete(res), pk)
 
     def all(self, res):
-        "Get resources using a filter condition"
-        B = get_backend()
-        return B.get_objects(B.get_concrete(res))
+        """Get resources using a filter condition"""
+        backend = get_backend()
+        return backend.get_objects(backend.get_concrete(res))
 
     @property
     def backend(self):

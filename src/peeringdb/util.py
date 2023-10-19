@@ -4,7 +4,7 @@ import re
 
 from django.core import serializers
 
-from peeringdb import get_backend, resource
+from peeringdb import resource
 
 
 def split_ref(string):
@@ -48,11 +48,10 @@ def prompt(msg, default=None):
     return s
 
 
-def group_fields(concrete):
-    "Partition a concrete's fields into groups based on type"
-    GROUPS = ("scalars", "single_refs", "many_refs")
-    B = get_backend()
-    ret = {kind: {} for kind in GROUPS}
+def group_fields(B, concrete):
+    """Partition a concrete's fields into groups based on type"""
+    groups = ("scalars", "single_refs", "many_refs")
+    ret = {kind: {} for kind in groups}
     fields = B.get_fields(concrete)
     for field in fields:
         name = field.name
@@ -71,7 +70,7 @@ def group_fields(concrete):
 
 
 def limit_mem(limit=(4 * 1024**3)):
-    "Set soft memory limit"
+    """Set soft memory limit"""
     rsrc = resource.RLIMIT_DATA
     soft, hard = resource.getrlimit(rsrc)
     resource.setrlimit(rsrc, (limit, hard))  # 4GB
@@ -83,7 +82,7 @@ def limit_mem(limit=(4 * 1024**3)):
 
 
 def client_dump(client, path):
-    "Serialize all objects into JSON files in directory"
+    """Serialize all objects into JSON files in directory"""
     assert path.is_dir(), path
     for q in client.tags.all():
         ser = serializers.serialize("json", q.all())
@@ -96,7 +95,7 @@ def client_dump(client, path):
 
 
 def client_load(client, path):
-    "Deserialize from JSON files under directory"
+    """Deserialize from JSON files under directory"""
     for q in client.tags.all():
         respath = path / f"{q.res.tag}.json"
         with open(str(respath)) as fin:

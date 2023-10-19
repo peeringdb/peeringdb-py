@@ -12,7 +12,8 @@ class YamlWrap:
         self.tag = "tag:yaml.org,2002:map"
         self.object = o
         self.depth = depth
-        self.fields = group_fields(o.__class__)
+        backend = get_backend()
+        self.fields = group_fields(backend, o.__class__)
 
     @staticmethod
     def _resolve_one(name, value, depth):

@@ -8,11 +8,10 @@ import pytest
 import requests
 from helper import CONFIG_CACHING
 
-import peeringdb.resource as resource
-from peeringdb._fetch import Fetcher
 from peeringdb.client import Client
+from peeringdb.fetch import Fetcher
 from peeringdb.resource import _NAMES as objs
-from peeringdb.resource import RESOURCES_BY_TAG
+from peeringdb.resource import all_resources
 
 tags = objs.keys()
 
@@ -44,8 +43,9 @@ def test_fetch_cache(mock_get, fetcher, tag):
     with tempfile.TemporaryDirectory() as cache_dir:
         fetcher.cache_dir = cache_dir
         # Call the method and check the result
-        result = fetcher._fetch_cache(RESOURCES_BY_TAG[tag])
+        result = fetcher.entries(tag)
         assert result == test_data["data"]
+        assert fetcher.remote_cache_used
 
         cache_file = os.path.join(fetcher.cache_dir, f"{tag}-0.json")
 
@@ -58,26 +58,6 @@ def test_fetch_cache(mock_get, fetcher, tag):
         assert data == test_data
 
 
-@pytest.mark.parametrize("tag", tags)
-@patch("requests.get")
-def test_fetch_cache_error(mock_get, fetcher, tag):
-    """
-    Test the _fetch_cache method when the server returns an error
-    """
-    # Mock the response from the server
-    mock_response = requests.Response()
-    mock_response.status_code = 404
-    mock_get.return_value = mock_response
-
-    # Call the method and check the exception
-
-    with tempfile.TemporaryDirectory() as cache_dir:
-        fetcher.cache_dir = cache_dir
-        with pytest.raises(Exception) as e:
-            fetcher._fetch_cache(RESOURCES_BY_TAG[tag])
-        assert str(e.value) == f"Failed to download JSON file for {tag}"
-
-
 @patch("requests.get")
 def test_cache_used(mock_get, fetcher):
     """
@@ -86,8 +66,15 @@ def test_cache_used(mock_get, fetcher):
     """
 
     def side_effect(url, *args, **kwargs):
+        if "?since" in url:
+            mock_response = requests.Response()
+            mock_response.status_code = 200
+            mock_response._content = json.dumps({"data": []}).encode()
+            return mock_response
+
         # Extract the tag from the url
         file = url.split("/")[-1]
+
         print("URL", url, file)
 
         # Load the test data from a file
@@ -118,24 +105,18 @@ def test_cache_used(mock_get, fetcher):
         assert model.objects.all().count() == 0
 
         # update
-        client.update_all()
+        client.updater.update_all(all_resources())
 
         # objects in database
         assert model.objects.all().count()
 
-        # cache downloaded and used
-        # cache file NOT used
-        assert client._fetcher.cache_downloaded
-        assert not client._fetcher.cache_file_used
+        assert not client.fetcher.local_cache_used
 
         # update
         client = Client(config)
-        client.update_all()
+        client.updater.update_all(all_resources())
 
-        # cache not downloaded
-        # cache file not used
-        assert not client._fetcher.cache_downloaded
-        assert not client._fetcher.cache_file_used
+        assert not client.fetcher.local_cache_used
 
         client.backend.delete_all()
 
@@ -148,6 +129,12 @@ def test_cache_file_used(mock_get, fetcher):
     """
 
     def side_effect(url, *args, **kwargs):
+        if "?since" in url:
+            mock_response = requests.Response()
+            mock_response.status_code = 200
+            mock_response._content = json.dumps({"data": []}).encode()
+            return mock_response
+
         # Extract the tag from the url
         file = url.split("/")[-1]
         print("URL", url, file)
@@ -181,13 +168,7 @@ def test_cache_file_used(mock_get, fetcher):
 
         # update
 
-        client.update_all()
-
-        # cache downloaded
-        # cache file NOT used
-
-        assert client._fetcher.cache_downloaded
-        assert not client._fetcher.cache_file_used
+        client.updater.update_all(all_resources())
 
         # wipe database (cache files still exist)
 
@@ -196,13 +177,7 @@ def test_cache_file_used(mock_get, fetcher):
         # update
 
         client = Client(config)
-        client.update_all()
-
-        # cache NOT downloaded
-        # cache file used
-
-        assert not client._fetcher.cache_downloaded
-        assert client._fetcher.cache_file_used
+        client.updater.update_all(all_resources())
 
         assert model.objects.all().count()
 
