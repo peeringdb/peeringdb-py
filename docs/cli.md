@@ -111,8 +111,4 @@ $ peeringdb server --stop
 
 ## Error Handling
 
-<<<<<<< HEAD
 If you try to start or stop the server without running the setup first, you will see an error stating that the `peeringdb_server` directory was not found. If this happens, run the `--setup` command and then try again.
-=======
-If you try to start or stop the server without running the setup first, you will see an error stating that the `peeringdb_server` directory was not found. If this happens, run the `--setup` command and then try again.
->>>>>>> support_202309
