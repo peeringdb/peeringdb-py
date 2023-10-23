@@ -123,7 +123,7 @@ class Fetcher:
                 self.remote_cache_used = True
             else:
                 raise ValueError(
-                    f"Error fetching {resource} @ {self.cache_url}/{resource}.json from remote cache: {resp.status_code}"
+                    f"Error fetching {resource} @ {self.cache_url}/{resource}-0.json from remote cache: {resp.status_code}"
                 )
 
         # Fall back to fetching from API
