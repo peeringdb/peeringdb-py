@@ -39,9 +39,25 @@ class Updater:
         for field in self.backend.get_fields(new.__class__):
             try:
                 setattr(old, field.name, getattr(new, field.name))
-            except TypeError:
-                pass  # Ignore refs
-        self.backend.clean(old)
+            except TypeError as e:
+                if "Direct assignment" in str(e):
+                    pass  # Ignore refs
+                else:
+                    raise
+
+        try:
+            self.backend.clean(old)
+        except self.backend.validation_error() as e:
+            # e.message_dict contains field names as keys and lists of errors as values
+            for errors in e.message_dict.values():
+                for error in errors:
+                    # Checking if the error message is the one we want to ignore
+                    # field is allowed to be None in the db, but not blank according to backend
+                    # validation. We ignore this error since the data is already validated
+                    # and writing None to the db is fine.
+                    if error != "This field cannot be blank.":
+                        raise e
+
         self.backend.save(old)
 
     def create_obj(self, row: dict, res) -> (any, bool):
