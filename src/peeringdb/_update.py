@@ -45,8 +45,19 @@ class Updater:
                 else:
                     raise
 
+        self.clean_obj(old)
+        self.backend.save(old)
+
+    def clean_obj(self, obj):
+
+        """
+        Run object through backend validation
+
+        Will raise an exception if the object is not valid
+        """
+
         try:
-            self.backend.clean(old)
+            self.backend.clean(obj)
         except self.backend.validation_error() as e:
             # e.message_dict contains field names as keys and lists of errors as values
             for errors in e.message_dict.values():
@@ -57,8 +68,6 @@ class Updater:
                     # and writing None to the db is fine.
                     if error != "This field cannot be blank.":
                         raise e
-
-        self.backend.save(old)
 
     def create_obj(self, row: dict, res) -> (any, bool):
         """
@@ -86,7 +95,7 @@ class Updater:
 
                     rel_obj, _ = self.create_obj(related_row, resource)
                     try:
-                        self.backend.clean(rel_obj)
+                        self.clean_obj(rel_obj)
                     except self.backend.validation_error() as e:
                         self._log.error(
                             "Failed to clean dangling object %s %s: %s", resource, pk, e
@@ -131,12 +140,12 @@ class Updater:
         set_many_relations(self.backend, res, obj, row)
 
         try:
-            self.backend.clean(obj)
+            self.clean_obj(obj)
         except self.backend.validation_error() as e:
             self._log.debug("[%s] Failed to clean %s %s: %s", res.tag, res, obj, e)
             if "already exists" in str(e):
                 self.update_collision(res, row, e)
-                self.backend.clean(obj)
+                self.clean_obj(obj)
             return obj, True
 
         return obj, False
@@ -246,7 +255,7 @@ class Updater:
             if ret:
                 obj, _ = self.create_obj(row, res)
             if obj:
-                self.backend.clean(obj)
+                self.clean_obj(obj)
                 self.backend.save(obj)
 
     def update_collision(self, res, row: dict, exc: Exception):
