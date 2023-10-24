@@ -49,7 +49,6 @@ class Updater:
         self.backend.save(old)
 
     def clean_obj(self, obj):
-
         """
         Run object through backend validation
 
