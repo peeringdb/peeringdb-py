@@ -112,9 +112,7 @@ class Fetcher:
             self._log.info(f"[{resource}] Fetching from remote cache")
             self._log.debug(f"[{resource}] {cache_url}")
 
-            resp = requests.get(
-                cache_url, timeout=self.timeout
-            )
+            resp = requests.get(cache_url, timeout=self.timeout)
 
             if resp.status_code == 200:
                 # make sure dir exists
