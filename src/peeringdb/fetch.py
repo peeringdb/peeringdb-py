@@ -101,16 +101,19 @@ class Fetcher:
             and os.path.getmtime(cache_file) > (time.time() - 15 * 60)
         ):
             self._log.info(f"[{resource}] Fetching from local cache")
+            self._log.debug(f"[{resource}] {cache_file}")
             with open(cache_file) as f:
                 self.resources[resource] = json.load(f)["data"]
             self.local_cache_used = True
 
         # Fetch from remote cache if available
         elif not since and self.cache_url and not fetch_private:
+            cache_url = f"{self.cache_url}/{resource}-0.json"
             self._log.info(f"[{resource}] Fetching from remote cache")
+            self._log.debug(f"[{resource}] {cache_url}")
 
             resp = requests.get(
-                f"{self.cache_url}/{resource}-0.json", timeout=self.timeout
+                cache_url, timeout=self.timeout
             )
 
             if resp.status_code == 200:
