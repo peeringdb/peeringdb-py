@@ -220,9 +220,7 @@ class Updater:
 
             initial_private = False
             if fetch_private:
-                initial_private = not private_data_has_been_fetched(
-                    self.backend, res
-                )
+                initial_private = not private_data_has_been_fetched(self.backend, res)
 
             self.fetcher.load(
                 res.tag,
