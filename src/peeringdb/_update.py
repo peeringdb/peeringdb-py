@@ -205,39 +205,38 @@ class Updater:
         """
 
         for res in rs:
-            with self.backend.atomic_transaction():
-                if skip is not None:
-                    for i in skip:
-                        self.fetcher.load(i, since)
+            if skip is not None:
+                for i in skip:
+                    self.fetcher.load(i, since)
 
-                if skip and res.tag in skip:
-                    self._log.info("[%s] Skipping", res.tag)
-                    continue
+            if skip and res.tag in skip:
+                self._log.info("[%s] Skipping", res.tag)
+                continue
 
-                if since is None:
-                    _since = self.backend.last_change(self.backend.get_concrete(res))
-                else:
-                    _since = since
+            if since is None:
+                _since = self.backend.last_change(self.backend.get_concrete(res))
+            else:
+                _since = since
 
-                initial_private = False
-                if fetch_private:
-                    initial_private = not private_data_has_been_fetched(
-                        self.backend, res
-                    )
-
-                self.fetcher.load(
-                    res.tag,
-                    _since + 1 if _since else None,
-                    fetch_private=fetch_private,
-                    initial_private=initial_private,
+            initial_private = False
+            if fetch_private:
+                initial_private = not private_data_has_been_fetched(
+                    self.backend, res
                 )
-                entries = self.fetcher.entries(res.tag)
-                self._log.info("[%s] Processing %d objects", res.tag, len(entries))
 
-                if not _since:
-                    self._handle_initial_sync(entries, res)
-                else:
-                    self._handle_incremental_sync(entries, res)
+            self.fetcher.load(
+                res.tag,
+                _since + 1 if _since else None,
+                fetch_private=fetch_private,
+                initial_private=initial_private,
+            )
+            entries = self.fetcher.entries(res.tag)
+            self._log.info("[%s] Processing %d objects", res.tag, len(entries))
+
+            if not _since:
+                self._handle_initial_sync(entries, res)
+            else:
+                self._handle_incremental_sync(entries, res)
 
     def update_one(self, res, pk: int, depth=0):
         """
@@ -247,15 +246,14 @@ class Updater:
         :param depth: Depth of recursion
         :return:
         """
-        with self.backend.atomic_transaction():
-            self.fetcher.load(res.tag, 0)
-            row = self.fetcher.get(res.tag, pk, depth=depth)
-            obj, ret = self.create_obj(row, res)
-            if ret:
-                obj, _ = self.create_obj(row, res)
-            if obj:
-                self.clean_obj(obj)
-                self.backend.save(obj)
+        self.fetcher.load(res.tag, 0)
+        row = self.fetcher.get(res.tag, pk, depth=depth)
+        obj, ret = self.create_obj(row, res)
+        if ret:
+            obj, _ = self.create_obj(row, res)
+        if obj:
+            self.clean_obj(obj)
+            self.backend.save(obj)
 
     def update_collision(self, res, row: dict, exc: Exception):
         """
