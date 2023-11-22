@@ -66,9 +66,9 @@ def build_cache_files():
             print(f"Successfully fetched and stored data for {tag} in cache directory")
 
             # store the json data to a file in data/full directory in Django fixture format
-            full_file_path = os.path.join("data", "full", f"{tag}.json")
+            full_file_path = os.path.join("data", "full", f"{tag}-0.json")
             full_nonunique_file_path = os.path.join(
-                "data", "full_nonunique", f"{tag}.json"
+                "data", "full_nonunique", f"{tag}-0.json"
             )
 
             fixture_data = []

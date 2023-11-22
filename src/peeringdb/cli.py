@@ -65,8 +65,4 @@ def main(args=sys.argv):
     cfg = check_load_config(options.config_dir)
 
     handler = getattr(options, "handler", options.usage_handler)
-    try:
-        return handler(config=cfg, **vars(options))
-    except peeringdb._fetch.CompatibilityError as e:
-        print(e, file=sys.stderr)
-        return 1
+    return handler(config=cfg, **vars(options))

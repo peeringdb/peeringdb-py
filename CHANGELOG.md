@@ -5,8 +5,10 @@
 ### Added
 - django 4.2 support
 - python 3.11 support
+- refactor of sync and fetch logic to simplify and modernize approach
 - support for fetching data from peeringdb cache servers
 - support for quickly setting a local snapshot of peeringdb server via the `peeringdb server` commands
+- env variable support for config (see docs/config.md)
 ### Removed
 - python 3.7 support
 - django 2.2 support
