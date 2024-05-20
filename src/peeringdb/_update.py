@@ -251,8 +251,8 @@ class Updater:
             )
 
         row = self.fetcher.get(res.tag, pk, depth=0, force_fetch=True)
+        obj, _ = self.create_obj(row, res)
         try:
-            obj, _ = self.create_obj(row, res)
             self.copy_object(obj)
         except self.backend.object_missing_error(self.backend.get_concrete(res)):
             obj, _ = self.create_obj(row, res)
