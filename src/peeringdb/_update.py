@@ -251,10 +251,14 @@ class Updater:
             )
 
         row = self.fetcher.get(res.tag, pk, depth=0, force_fetch=True)
+        # create object instance (unsaved)
         obj, _ = self.create_obj(row, res)
         try:
+            # attempt update existing instance of object (if exists, will save)
             self.copy_object(obj)
         except self.backend.object_missing_error(self.backend.get_concrete(res)):
+            # object does not exist, create object instance and save as
+            # new object
             obj, _ = self.create_obj(row, res)
             self.backend.save(obj)
 
