@@ -2,6 +2,8 @@
 
 
 ## Unreleased
+### Fixed
+- fixes automatic solving of unique constraint errors (#85)
 
 
 ## 2.0.0

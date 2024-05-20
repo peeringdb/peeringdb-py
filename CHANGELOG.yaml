@@ -1,6 +1,7 @@
 Unreleased:
   added: []
-  fixed: []
+  fixed:
+  - fixes automatic solving of unique constraint errors (#85)
   changed: []
   deprecated: []
   removed: []

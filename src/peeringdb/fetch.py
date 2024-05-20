@@ -152,14 +152,15 @@ class Fetcher:
             self.load(tag)
         return self.resources[tag]
 
-    def get(self, tag: str, pk: int, depth: int = 0):
+    def get(self, tag: str, pk: int, depth: int = 0, force_fetch: bool = False):
         """
         Get an individual object or attempt to query
         :param tag: Resource tag (i.e. "net")
         :param pk: Primary key
         :param depth: Depth of related objects to fetch
+        :param force_fetch: Force a fetch from the API
         """
-        if tag not in self.resources:
+        if tag not in self.resources or force_fetch:
             objs = self._get(tag, since=1, id=pk, depth=depth)
             if len(objs) > 0:
                 return objs[0]

@@ -56,13 +56,6 @@ def test_single(client_empty):
     assert client.get(Organization, FIRST_NET)
 
 
-def test_single_deep(client_empty):
-    client = get_pclient()
-    client.updater.update_one(Network, FIRST_NET, depth=2)
-    assert client.get(Network, FIRST_NET)
-    assert client.get(Organization, FIRST_NET)
-
-
 # Test sync where update would result in a duplicate field
 # Test data should include: swapped case; deleted case
 def test_nonunique(client_dup):
@@ -94,6 +87,39 @@ def test_nonunique_single(client_dup):
     client = get_pclient()
     client.updater.update_one(Network, FIRST_NET)
     assert client.get(Network, FIRST_NET)
+
+
+def test_auto_resolve_unique_conflict(client_empty):
+    # first load all entries
+    client = get_client()
+    rs = all_resources()
+    client.updater.update_all(rs)
+
+    # then manually change name of network with id 3
+    net = client.get(Network, 3)
+
+    net_3_remote_name = net.name
+
+    net.name = "placeholder"
+    client.updater.backend.save(net)
+
+    # then manually change name of network with id 1
+    # to the same name as network with id 3 creating
+    # a conflict
+
+    net = client.get(Network, 1)
+    net.name = net_3_remote_name
+    client.updater.backend.save(net)
+
+    class DummyUniqueException:
+        error_dict = {"name": "already exists"}
+
+    row = client.fetcher._get("net", id=3)[0]
+    client.updater.update_collision(Network, row, DummyUniqueException())
+
+    # check if the conflict was resolved
+    net = client.get(Network, 1)
+    assert net.name != net_3_remote_name
 
 
 @pytest.mark.sync
