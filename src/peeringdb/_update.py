@@ -244,13 +244,22 @@ class Updater:
         :param depth: Depth of recursion
         :return:
         """
-        self.fetcher.load(res.tag, 0)
-        row = self.fetcher.get(res.tag, pk, depth=depth)
-        obj, ret = self.create_obj(row, res)
-        if ret:
+        if depth != 0:
+            # no longer relevant, deprecation warning
+            self._log.warning(
+                "update_one: depth parameter is not used and will be removed in a future version"
+            )
+
+        row = self.fetcher.get(res.tag, pk, depth=0, force_fetch=True)
+        # create object instance (unsaved)
+        obj, _ = self.create_obj(row, res)
+        try:
+            # attempt update existing instance of object (if exists, will save)
+            self.copy_object(obj)
+        except self.backend.object_missing_error(self.backend.get_concrete(res)):
+            # object does not exist, create object instance and save as
+            # new object
             obj, _ = self.create_obj(row, res)
-        if obj:
-            self.clean_obj(obj)
             self.backend.save(obj)
 
     def update_collision(self, res, row: dict, exc: Exception):
