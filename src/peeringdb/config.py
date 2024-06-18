@@ -3,6 +3,7 @@ PeeringDB configuration module.
 
 This defines config schemas and related I/O.
 """
+
 import os
 
 import munge
@@ -47,9 +48,11 @@ class ClientSchema(_schema.Schema):
         only = _schema.List(
             "only",
             item=_schema.Str(),
-            default=os.environ.get("PDB_SYNC_ONLY", "").split(",")
-            if os.environ.get("PDB_SYNC_ONLY")
-            else [],
+            default=(
+                os.environ.get("PDB_SYNC_ONLY", "").split(",")
+                if os.environ.get("PDB_SYNC_ONLY")
+                else []
+            ),
         )
         timeout = _schema.Int(
             "timeout", default=int(os.environ.get("PDB_SYNC_TIMEOUT", "0"))

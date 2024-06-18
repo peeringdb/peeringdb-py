@@ -1,6 +1,7 @@
 """
 Module defining main interface classes for sync
 """
+
 import logging
 from datetime import datetime
 from typing import List, Union
@@ -13,7 +14,6 @@ from peeringdb.util import group_fields
 
 
 class Updater:
-
     """
     Handles initial and incremental update from a PeeringDB remote API
     to the local backend.

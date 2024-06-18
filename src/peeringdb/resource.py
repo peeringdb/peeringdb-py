@@ -1,6 +1,7 @@
 """
 PeeringDB resource definitions
 """
+
 from collections import OrderedDict
 
 # Generate classes
