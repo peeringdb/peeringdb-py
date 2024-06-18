@@ -1,5 +1,6 @@
 Unreleased:
-  added: []
+  added:
+  - Client.update_all() method to update all objects in the database - this existed in v1 and has now been readded
   fixed:
   - fixes automatic solving of unique constraint errors (#85)
   changed: []

@@ -2,6 +2,8 @@
 
 
 ## Unreleased
+### Added
+- Client.update_all() method to update all objects in the database - this existed in v1 and has now been readded
 ### Fixed
 - fixes automatic solving of unique constraint errors (#85)
 
