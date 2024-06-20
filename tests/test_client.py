@@ -19,6 +19,11 @@ def test_get(client):
         client.get(resource.Network, 9999)
 
 
+def test_update_all(client):
+    client.update_all()
+    assert client.get(resource.Network, NET0)
+
+
 def test_type_wrap(client):
     assert client.tags.net.get(NET0)
     assert client.tags.net.all()

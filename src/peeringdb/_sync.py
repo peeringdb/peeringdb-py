@@ -1,6 +1,7 @@
 """
 Sync implementation module
 """
+
 from collections import defaultdict
 
 from peeringdb.util import group_fields

@@ -41,7 +41,6 @@ class Field:
 
 
 class EmptyContext:
-
     """
     We use this to provide a dummy context wherever it's optional
     """
@@ -54,7 +53,6 @@ class EmptyContext:
 
 
 class Base:
-
     """
     Backend base class.
 
@@ -105,7 +103,6 @@ class Base:
 
 
 class Interface(Base):
-
     """
     backend adapter interface
 

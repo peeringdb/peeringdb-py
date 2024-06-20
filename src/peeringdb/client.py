@@ -78,6 +78,10 @@ class Client:
         backend = get_backend()
         return backend.get_objects(backend.get_concrete(res))
 
+    def update_all(self):
+        """Update all resources from the API."""
+        return self.updater.update_all(resource.all_resources())
+
     @property
     def backend(self):
         return get_backend()
