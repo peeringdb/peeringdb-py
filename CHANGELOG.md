@@ -4,8 +4,10 @@
 ## Unreleased
 ### Added
 - Client.update_all() method to update all objects in the database - this existed in v1 and has now been readded
+- Allow option for logging to co-exist with existing loggers (#67)
 ### Fixed
 - fixes automatic solving of unique constraint errors (#85)
+- fixes -O , --output-format commands not supporting all output formats supported (#72)
 
 
 ## 2.0.0

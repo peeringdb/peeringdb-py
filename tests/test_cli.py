@@ -1,8 +1,11 @@
 import io
+import json
 import re
 
 import helper
 import pytest
+import toml
+import yaml
 
 from peeringdb import cli as _cli
 
@@ -61,6 +64,57 @@ def test_get(runcli, client):
 def test_get_empty(runcli, client_empty):
     assert runcli("get", NET0) != 0
     assert runcli("get", NET0, "-R") == 0
+
+
+def test_get_json(runcli, client, capsys):
+    runcli("get", "--output-format", "json", NET0)
+    out, err = capsys.readouterr()
+
+    runcli("get", "-O", "json", NET0)
+    out2, err2 = capsys.readouterr()
+
+    # check if output is valid JSON
+    try:
+        print(f"json output 1 is {out}")
+        json.loads(out)
+    except json.JSONDecodeError:
+        pytest.fail("Output is not valid JSON.")
+
+    assert out == out2
+
+
+def test_get_yaml(runcli, client, capsys):
+    runcli("get", "--output-format", "yaml", NET0)
+    out, err = capsys.readouterr()
+
+    runcli("get", "-O", "yaml", NET0)
+    out2, err2 = capsys.readouterr()
+
+    # check if output is valid YAML
+    try:
+        print(f"yaml output 1 is {out}")
+        yaml.safe_load(out)
+    except yaml.YAMLError:
+        pytest.fail("Output is not valid YAML.")
+
+    assert out == out2
+
+
+def test_get_toml(runcli, client, capsys):
+    runcli("get", "--output-format", "toml", NET0)
+    out, err = capsys.readouterr()
+
+    runcli("get", "-O", "toml", NET0)
+    out2, err2 = capsys.readouterr()
+
+    # check if output is valid TOML
+    try:
+        print(f"toml output 1 is {out}")
+        toml.loads(out)
+    except toml.TomlDecodeError:
+        pytest.fail("Output is not valid TOML.")
+
+    assert out == out2
 
 
 def test_whois(runcli, client):

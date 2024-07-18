@@ -6,7 +6,7 @@ import logging
 from datetime import datetime
 from typing import List, Union
 
-from peeringdb import _config_logs, get_backend
+from peeringdb import get_backend
 from peeringdb._sync import extract_relations, set_many_relations, set_single_relations
 from peeringdb.fetch import Fetcher
 from peeringdb.private import private_data_has_been_fetched
@@ -24,7 +24,6 @@ class Updater:
     """
 
     def __init__(self, fetcher: Fetcher):
-        _config_logs()
         self._log = logging.getLogger(__name__)
         self.resources = {}
         self.backend = get_backend()

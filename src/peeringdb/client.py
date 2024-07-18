@@ -3,6 +3,7 @@ from collections import OrderedDict
 import munge.util
 
 from peeringdb import (
+    _config_logs,
     backend_initialized,
     config,
     get_backend,
@@ -43,6 +44,8 @@ class Client:
         if cfg is None:
             cfg = config.load_config()
         self.config = cfg
+        log_config = cfg["log"]
+        _config_logs(**log_config)
         orm_config = cfg["orm"]
         orm_name = orm_config["backend"]
         if not backend_initialized():

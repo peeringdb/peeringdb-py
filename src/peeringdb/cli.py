@@ -42,8 +42,6 @@ def check_load_config(config_dir):
 
 
 def main(args=sys.argv):
-    peeringdb._config_logs()
-
     parser = ArgumentParser()
     parser.add_argument(
         "--version", action="version", version="%(prog)s " + peeringdb.__version__

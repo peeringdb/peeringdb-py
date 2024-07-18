@@ -4,15 +4,18 @@ PeeringDB API
 
 import logging
 import sys
+from distutils.util import strtobool
 from importlib import import_module
 
 import pkg_resources
+
+from peeringdb.util import get_log_level
 
 __version__ = pkg_resources.require("peeringdb")[0].version
 _log_level = logging.INFO
 
 
-def _config_logs(lvl=None, name=None):
+def _config_logs(level=None, name=None, allow_other_loggers=False):
     """
     Set up or change logging configuration.
 
@@ -24,13 +27,23 @@ def _config_logs(lvl=None, name=None):
     # maybe better for log files
     # FORMAT='[%(levelname)s]:%(message)s',
 
-    # Reset handlers
-    for h in list(logging.root.handlers):
-        logging.root.removeHandler(h)
+    if isinstance(level, str):
+        level = get_log_level(level)
 
     global _log_level
-    if lvl:
-        _log_level = lvl
+    if level:
+        _log_level = level
+
+    if not isinstance(allow_other_loggers, bool):
+        try:
+            allow_other_loggers = strtobool(str(allow_other_loggers))
+        except Exception:
+            allow_other_loggers = False
+
+    if not allow_other_loggers:
+        # Reset handlers
+        for h in list(logging.root.handlers):
+            logging.root.removeHandler(h)
 
     logging.basicConfig(level=_log_level, format=logging_format, stream=sys.stdout)
     _log = logging.getLogger(__name__)

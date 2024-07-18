@@ -102,3 +102,18 @@ def client_load(client, path):
             des = serializers.deserialize("json", fin)
             for obj in des:
                 obj.save()
+
+
+def get_log_level(level_str):
+    """
+    Convert a string log level to its corresponding logging module level.
+    """
+    levels = {
+        "CRITICAL": logging.CRITICAL,
+        "ERROR": logging.ERROR,
+        "WARNING": logging.WARNING,
+        "INFO": logging.INFO,
+        "DEBUG": logging.DEBUG,
+        "NOTSET": logging.NOTSET,
+    }
+    return levels.get(level_str.strip().upper())

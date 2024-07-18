@@ -46,7 +46,7 @@ By default, this produces a shallow output (depth = 0). Set the depth with `--de
 
 You may also change the output format to anything munge supports, so to get json, it would be:
 
-    peeringdb -O json get net1
+    peeringdb get -O json net1
 
 ## whois `<obj><id>`
 Fetches a specific object and outputs to stdout, supports everything that `get` does, as well as:
