@@ -32,6 +32,7 @@ CONFIG = {
         # caching will be tested specifically, so keep blank
         "cache_url": "",
     },
+    "log": {"allow_other_loggers": 0, "level": "INFO"},
 }
 
 CONFIG_CACHING = {
@@ -59,6 +60,7 @@ CONFIG_CACHING = {
         # caching will be tested specifically, so keep blank
         "cache_url": "cache://localhost",
     },
+    "log": {"allow_other_loggers": 0, "level": "INFO"},
 }
 
 _DATA_PATH = None

@@ -1,15 +1,16 @@
-import yaml
+import json
+from datetime import datetime
+from decimal import Decimal
+from ipaddress import IPv4Address, IPv6Address
+
+import django_countries.fields
 
 from peeringdb import get_backend
 from peeringdb.util import group_fields
 
-# from peeringdb.debug import try_or_debug
 
-
-# Wrap orm object into node for graph traversal
-class YamlWrap:
+class DictWrap:
     def __init__(self, o, depth):
-        self.tag = "tag:yaml.org,2002:map"
         self.object = o
         self.depth = depth
         backend = get_backend()
@@ -18,7 +19,7 @@ class YamlWrap:
     @staticmethod
     def _resolve_one(name, value, depth):
         if depth > 0:
-            return YamlWrap(value, depth - 1)
+            return DictWrap(value, depth - 1).to_dict()
         elif value is None:
             return None
         else:
@@ -27,17 +28,25 @@ class YamlWrap:
     @staticmethod
     def _resolve_many(name, value, depth):
         if depth > 1:
-            return [YamlWrap(o, depth - 1) for o in value.all()]
+            return [DictWrap(o, depth - 1).to_dict() for o in value.all()]
         elif depth == 1:
             return list(value.values_list("id", flat=True))
 
     def resolve(self, group, name, value):
         if group == "scalars":
+            if isinstance(value, datetime):
+                return value.isoformat()
+            elif isinstance(value, django_countries.fields.Country):
+                return str(value)
+            elif isinstance(value, Decimal):
+                return float(value)
+            elif isinstance(value, (IPv4Address, IPv6Address)):
+                return str(value)
             return value
         elif group == "single_refs":
-            return YamlWrap._resolve_one(name, value, self.depth)
+            return DictWrap._resolve_one(name, value, self.depth)
         elif group == "many_refs":
-            return YamlWrap._resolve_many(name, value, self.depth)
+            return DictWrap._resolve_many(name, value, self.depth)
         else:
             raise ValueError(group)
 
@@ -47,30 +56,18 @@ class YamlWrap:
                 continue
             for name in self.fields[group]:
                 value = self.resolve(group, name, getattr(self.object, name))
+                if value is None:
+                    value = "None"
                 yield name, value
 
-
-def represent_wrapped(dumper, wrap):
-    _dict = {}
-    for name, value in wrap.field_values():
-        _dict[name] = value
-    alist = [(k, _dict[k]) for k in sorted(_dict)]
-    return dumper.represent_mapping(wrap.tag, alist)
+    def to_dict(self):
+        data = {}
+        for name, value in self.field_values():
+            data[name] = value
+        return data
 
 
-def default_representer(dumper, data):
-    return dumper.represent_str(str(data))
-
-
-def _init():
-    dumper = yaml.SafeDumper
-    for cls in get_backend().CUSTOM_FIELDS:
-        dumper.add_representer(cls, default_representer)
-    dumper.add_representer(YamlWrap, represent_wrapped)
-
-
-def dump(obj, depth, file):
-    _init()
+def dump_python_dict(obj, depth):
     if get_backend().is_concrete(type(obj)):
-        obj = YamlWrap(obj, depth)
-    yaml.safe_dump(obj, stream=file, default_flow_style=False)
+        obj = DictWrap(obj, depth).to_dict()
+    return obj

@@ -1,3 +1,4 @@
+import io
 import logging
 import os
 import subprocess
@@ -9,7 +10,7 @@ import peeringdb
 from peeringdb import config as cfg
 from peeringdb import resource, util
 from peeringdb.client import Client
-from peeringdb.output._yaml import dump
+from peeringdb.output._dict import dump_python_dict
 from peeringdb.whois import WhoisFormat
 
 
@@ -99,8 +100,12 @@ class Get:
                 else:
                     print(f"Not found: {tag}-{pk}", file=sys.stderr)
                     return 1
-
-            dump(obj, depth, sys.stdout)
+            try:
+                codec = munge.get_codec(output_format)()
+                codec.dump(dump_python_dict(obj, depth), sys.stdout)
+            except TypeError as e:
+                print(f"Output format not supported: {output_format}", file=sys.stderr)
+                return 1
 
 
 class Whois:
@@ -234,9 +239,10 @@ class Sync:
 
         loglvl = 1 + (verbose or 0) - (quiet or 0)
         if loglvl > 1:
-            peeringdb._config_logs(logging.DEBUG)
-        if loglvl < 1:
+            config.update({"log": {"level": logging.DEBUG}})
+        elif loglvl < 1:
             peeringdb._config_logs(logging.WARNING)
+            config.update({"log": {"level": logging.WARNING}})
 
         client = Client(config, **kwargs)
         # todo verify table schema

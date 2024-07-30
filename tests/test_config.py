@@ -92,6 +92,7 @@ def test_schema_migration():
                 "password": "abc",
             },
         },
+        "log": {"allow_other_loggers": 0, "level": "INFO"},
     }
 
     # Test detection

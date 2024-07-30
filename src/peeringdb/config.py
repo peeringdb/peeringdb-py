@@ -93,8 +93,15 @@ class ClientSchema(_schema.Schema):
         migrate = _schema.Bool("migrate", default=True)
         database = OrmDbSchema()
 
+    class LogSchema(_schema.Schema):
+        allow_other_loggers = _schema.Int(
+            "allow_other_loggers", default=os.environ.get("ALLOW_OTHER_LOGGERS", 0)
+        )
+        level = _schema.Str("log_level", default=os.environ.get("LOG_LEVEL", "INFO"))
+
     sync = SyncSchema()
     orm = OrmSchema()
+    log = LogSchema()
 
 
 CLIENT_SCHEMA = ClientSchema()

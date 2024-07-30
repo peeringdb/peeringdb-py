@@ -29,3 +29,8 @@ This document describes the environment variables used to configure the PeeringD
 ### General ORM Configuration
 
 - **PDB_ORM_BACKEND**: The backend to use for the ORM. Default is `django_peeringdb`.
+
+### Logging Configuration
+
+- **ALLOW_OTHER_LOGGERS**: To allow other loggers to be used (1 for true, 0 for false). Default is `0`.
+- **LOG_LEVEL**: The python logging level to use. Default is `INFO`
