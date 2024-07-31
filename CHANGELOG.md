@@ -2,6 +2,9 @@
 
 
 ## Unreleased
+
+
+## 2.1.0
 ### Added
 - Client.update_all() method to update all objects in the database - this existed in v1 and has now been readded
 - Allow option for logging to co-exist with existing loggers (#67)
