@@ -4,6 +4,11 @@
 ## Unreleased
 
 
+## 2.1.1
+### Fixed
+- fix pyproject.toml version
+
+
 ## 2.1.0
 ### Added
 - Client.update_all() method to update all objects in the database - this existed in v1 and has now been readded
