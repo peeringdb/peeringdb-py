@@ -6,6 +6,8 @@ from unittest.mock import MagicMock, patch
 
 import helper
 import pytest
+import toml
+import yaml
 
 from peeringdb import cli as _cli
 
