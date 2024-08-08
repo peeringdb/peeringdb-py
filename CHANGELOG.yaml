@@ -1,6 +1,7 @@
 Unreleased:
   added: []
-  fixed: []
+  fixed:
+  - Client should handle rate limiting errors gracefully #76
   changed: []
   deprecated: []
   removed: []
