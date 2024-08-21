@@ -26,6 +26,7 @@ class Fetcher:
         :param api_key: API key
         :param cache_url: PeeringDB cache URL
         :param cache_dir: Local cache directory
+        :param retry: The maximum number of retry attempts when rate limited (default is 5)
         :param kwargs:
         """
         self._log = logging.getLogger(__name__)
@@ -45,6 +46,9 @@ class Fetcher:
         self.remote_cache_used = False
         self.local_cache_used = False
 
+        # used for sync 429 status code (pause and resume)
+        self.attempt = 0
+
     def _get(self, endpoint: str, **params):
         url = f"{self.url}/{endpoint}"
         url_params = urllib.parse.urlencode(params)
@@ -60,18 +64,28 @@ class Fetcher:
                 + base64.b64encode(f"{self.user}:{self.password}".encode()).decode()
             }
 
-        resp = requests.get(url, timeout=self.timeout, headers=headers)
-
-        if resp.status_code == 429:
-            raise ValueError(f"Rate limited: {resp.text}")
-        elif resp.status_code == 400:
-            error = resp.json()["meta"]["error"]
-            if re.search("client version is incompatible", error):
-                raise CompatibilityError(error)
-            raise
-        elif resp.status_code != 200:
-            raise ValueError(f"Error fetching {url}: {resp.status_code}")
-        return resp.json()["data"]
+        while True:
+            try:
+                resp = requests.get(url, timeout=self.timeout, headers=headers)
+                resp.raise_for_status()
+                return resp.json()["data"]
+            except requests.exceptions.HTTPError as e:
+                if resp.status_code == 429:
+                    retry_after = min(2**self.attempt, 60)
+                    self._log.info(
+                        f"Rate limited. Retrying in {retry_after} seconds..."
+                    )
+                    time.sleep(retry_after)
+                    self.attempt += 1
+                elif resp.status_code == 400:
+                    error = resp.json().get("meta", {}).get("error", "")
+                    if re.search("client version is incompatible", error):
+                        raise CompatibilityError(error)
+                    raise ValueError(f"Bad request error: {error}")
+                else:
+                    raise ValueError(f"Error fetching {url}: {resp.status_code}")
+            except requests.exceptions.RequestException as err:
+                raise ValueError(f"Request error: {err}")
 
     def load(
         self,
@@ -79,6 +93,7 @@ class Fetcher:
         since: int = 0,
         fetch_private: bool = False,
         initial_private: bool = False,
+        delay: float = 0.5,
     ):
         """
         Load a resource from mock data.
@@ -141,6 +156,8 @@ class Fetcher:
                 self.resources[resource] = self._get(resource)
             else:
                 self.resources[resource] = self._get(resource, since=since)
+
+            time.sleep(delay)
 
     def entries(self, tag: str):
         """

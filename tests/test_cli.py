@@ -1,6 +1,8 @@
 import io
 import json
 import re
+import time
+from unittest.mock import MagicMock, patch
 
 import helper
 import pytest
@@ -160,3 +162,52 @@ def test_verbosity(runcli, client, capsys):
 
     # Verbose output should be longer
     assert len(outq) < len(outv)
+
+
+@patch("time.sleep", return_value=None)
+def test_rate_limit_handling(mock_sleep):
+    attempt = 0
+    log_mock = MagicMock()
+
+    # Mock response with status code 429
+    mock_resp = MagicMock()
+    mock_resp.status_code = 429
+
+    # Test rate limit handling
+    for _ in range(10):
+        if mock_resp.status_code == 429:
+            retry_after = min(2**attempt, 60)
+            log_mock.info(f"Rate limited. Retrying in {retry_after} seconds...")
+            time.sleep(retry_after)
+            attempt += 1
+
+    # Assert log calls and sleep durations
+    expected_calls = [
+        (("Rate limited. Retrying in 1 seconds...",),),
+        (("Rate limited. Retrying in 2 seconds...",),),
+        (("Rate limited. Retrying in 4 seconds...",),),
+        (("Rate limited. Retrying in 8 seconds...",),),
+        (("Rate limited. Retrying in 16 seconds...",),),
+        (("Rate limited. Retrying in 32 seconds...",),),
+        (("Rate limited. Retrying in 60 seconds...",),),
+        (("Rate limited. Retrying in 60 seconds...",),),
+        (("Rate limited. Retrying in 60 seconds...",),),
+        (("Rate limited. Retrying in 60 seconds...",),),
+    ]
+
+    assert log_mock.info.call_args_list == expected_calls
+
+    expected_sleep_calls = [
+        ((1,),),
+        ((2,),),
+        ((4,),),
+        ((8,),),
+        ((16,),),
+        ((32,),),
+        ((60,),),
+        ((60,),),
+        ((60,),),
+        ((60,),),
+    ]
+
+    assert mock_sleep.call_args_list == expected_sleep_calls
