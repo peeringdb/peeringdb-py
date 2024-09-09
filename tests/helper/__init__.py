@@ -89,7 +89,6 @@ def data_path():
 
 
 def reset_data(dumppath=None):
-    from django.db import connection  # FIXME django-specific
 
     # Make sure db is empty
     client = peeringdb.client.Client(CONFIG)

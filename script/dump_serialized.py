@@ -1,5 +1,6 @@
 import json
 import sys
+from pathlib import Path
 
 from django.core import serializers
 
@@ -12,7 +13,7 @@ def client_dump(client):
         yield q.res, ser
 
 
-def client_load(fp):
+def client_load(client, fp):
     dump = {}
     for qs in client.tags.all():
         ser = serializers.serialize("json", qs.all())

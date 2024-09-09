@@ -7,11 +7,10 @@ import json
 import os
 
 import requests
+from django_peeringdb.models.concrete import tag_dict
 
-import peeringdb
 from peeringdb.client import Client
 from peeringdb.resource import _NAMES as objs
-from peeringdb.resource import RESOURCES_BY_TAG
 
 CONFIG = {
     "orm": {
@@ -47,9 +46,6 @@ def get_client():
 
 def build_cache_files():
     tags = objs.keys()
-    client = get_client()
-    B = peeringdb.get_backend()
-    from django_peeringdb.models.concrete import tag_dict
 
     for tag in tags:
         url = f"https://test.peeringdb.com/api/{tag}?depth=0"

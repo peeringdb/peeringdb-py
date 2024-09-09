@@ -69,7 +69,7 @@ class Fetcher:
                 resp = requests.get(url, timeout=self.timeout, headers=headers)
                 resp.raise_for_status()
                 return resp.json()["data"]
-            except requests.exceptions.HTTPError as e:
+            except requests.exceptions.HTTPError:
                 if resp.status_code == 429:
                     retry_after = min(2**self.attempt, 60)
                     self._log.info(

@@ -2,7 +2,6 @@ import contextlib
 import tempfile
 
 import pytest
-from confu.exceptions import ValidationError
 
 try:
     from tempfile import TemporaryDirectory
@@ -16,9 +15,6 @@ except ImportError:
         shutil.rmtree(path)
 
 
-import helper
-
-import peeringdb
 from peeringdb import config
 
 

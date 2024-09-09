@@ -5,7 +5,6 @@ import helper
 import pytest
 
 import peeringdb
-from peeringdb.client import Client
 
 peeringdb._config_logs(logging.INFO)
 
