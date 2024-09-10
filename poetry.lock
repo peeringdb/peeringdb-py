@@ -626,19 +626,17 @@ name = "django-peeringdb"
 version = "3.4.0"
 description = "PeeringDB Django models"
 optional = false
-python-versions = "^3.9"
-files = []
-develop = false
+python-versions = "<4.0,>=3.8"
+files = [
+    {file = "django_peeringdb-3.4.0-py3-none-any.whl", hash = "sha256:5b08810a2674ce7f13882ec1f89e060a84d8a6e96f541237f867f2d994fc5310"},
+    {file = "django_peeringdb-3.4.0.tar.gz", hash = "sha256:7cc060ade1cb55b85b0b4ea19afb910ad0a9511f0c495517be8dec9e0cb6ae84"},
+]
 
 [package.dependencies]
 asgiref = ">=3"
 django_countries = ">1"
 django_handleref = ">=2"
 django_inet = ">=1"
-
-[package.source]
-type = "directory"
-url = "../django-peeringdb"
 
 [[package]]
 name = "docutils"
@@ -2366,4 +2364,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "f5213f09886deb22464c1cf2ef97c2e63a8cae94dccbcb1fee10ca5eb1818f53"
+content-hash = "fd7fa6f0faa34f15878fd6810ffdfdc1f28c25ba74b11eb50bbe6574ce800b72"
