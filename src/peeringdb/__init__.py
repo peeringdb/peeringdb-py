@@ -7,11 +7,11 @@ import sys
 from distutils.util import strtobool
 from importlib import import_module
 
-import pkg_resources
+from importlib import metadata as importlib_metadata
 
 from peeringdb.util import get_log_level
 
-__version__ = pkg_resources.require("peeringdb")[0].version
+__version__ = importlib_metadata.version("peeringdb")
 _log_level = logging.INFO
 
 

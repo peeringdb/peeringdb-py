@@ -38,3 +38,13 @@ def patch_backend_version(monkeypatch):
             yield
 
     return func()
+
+
+# Register custom pytest marks 'sync' and 'output'
+def pytest_configure(config):
+    config.addinivalue_line(
+        "markers", "sync: mark a test as part of the sync tests"
+    )
+    config.addinivalue_line(
+        "markers", "output: mark a test as part of the output tests"
+    )
