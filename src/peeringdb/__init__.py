@@ -6,7 +6,6 @@ import logging
 import sys
 from distutils.util import strtobool
 from importlib import import_module
-
 from importlib import metadata as importlib_metadata
 
 from peeringdb.util import get_log_level
