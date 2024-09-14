@@ -13,7 +13,7 @@ def client_dump(client):
         yield q.res, ser
 
 
-def client_load(client, fp):
+def client_load(client):
     dump = {}
     for qs in client.tags.all():
         ser = serializers.serialize("json", qs.all())
