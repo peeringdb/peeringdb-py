@@ -117,3 +117,11 @@ def get_log_level(level_str):
         "NOTSET": logging.NOTSET,
     }
     return levels.get(level_str.strip().upper())
+
+
+def str_to_bool(value):
+    if value in ["y", "yes", "t", "true", "on", "1"]:
+        return True
+    elif value in ["n", "no", "f", "false", "off", "0"]:
+        return False
+    raise ValueError

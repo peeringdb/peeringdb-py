@@ -24,13 +24,12 @@ repos:
         language: python
         types: [python]
         pass_filenames: true
-  - repo: local
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.14
     hooks:
-      - id: system
-        name: Black
-        entry: poetry run black .
-        language: system
-        pass_filenames: false
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
   - repo: local
     hooks:
       - id: system

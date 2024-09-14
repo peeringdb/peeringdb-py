@@ -89,7 +89,6 @@ def data_path():
 
 
 def reset_data(dumppath=None):
-
     # Make sure db is empty
     client = peeringdb.client.Client(CONFIG)
     client.backend.delete_all()
