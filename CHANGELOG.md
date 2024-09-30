@@ -2,6 +2,9 @@
 
 
 ## Unreleased
+
+
+## 2.2.0
 ### Fixed
 - Client should handle rate limiting errors gracefully
 
