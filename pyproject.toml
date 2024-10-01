@@ -38,9 +38,11 @@ dependencies = [
 dev = [
     "django_peeringdb>=3.1.0",
     "django>=4.2",
-    "pytest>=6.0.1",
-    "pytest-cov",
+    "pytest>=8",
+    "pytest-cov >= 5",
     "tox>=4",
+    "tox-gh-actions >= 3",
+    "tox-uv>=1.13.0",
     "isort>=5.7.0",
     "flake8>=3.8.4",
     "mypy>=0.950",
