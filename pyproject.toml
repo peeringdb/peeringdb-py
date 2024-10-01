@@ -4,7 +4,7 @@ version = "2.1.1"
 description = "PeeringDB Django models"
 readme = "README.md"
 repository = "https://github.com/peeringdb/peeringdb-py"
-authors = ["PeeringDB <support@peeringdb.com>"]
+authors = [{ name = "PeeringDB", email = "support@peeringdb.com" }]
 license = "Apache-2.0"
 requires-python = ">=3.8"
 
@@ -26,16 +26,6 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Internet"
 ]
-
-# Packages
-packages = [
-    { include = "peeringdb", from = "src" }
-]
-
-# Scripts
-scripts = { peeringdb = "peeringdb.cli:main" }
-
-# Dependencies
 dependencies = [
     "confu>=1",
     "munge[toml,tomlkit,yaml]>=1.2.0",
@@ -44,8 +34,8 @@ dependencies = [
     "httpx>=0.24.1"
 ]
 
-# Dev Dependencies
-dev-dependencies = [
+[project.optional-dependencies]
+dev = [
     "django_peeringdb>=3.1.0",
     "django>=4.2",
     "pytest>=6.0.1",
@@ -65,11 +55,20 @@ dev-dependencies = [
     "tmpl>=1",
     "twine>=3"
 ]
+[project.scripts]
+peeringdb = "peeringdb.cli:main"
 
-# Plugins
-plugins = { "markdown.extensions" = { pymdgen = "pymdgen.md:Extension" } }
+[[project.packages]]
+include = "peeringdb"
+from = "src"
 
-# Source
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.plugins."markdown.extensions"]
+pymdgen = "pymdgen.md:Extension"
+
 [[project.source]]
 name = "pypi-public"
 url = "https://pypi.org/simple/"
