@@ -6,6 +6,11 @@
 - Client should handle rate limiting errors gracefully
 
 
+## 2.2.0
+### Fixed
+- Client should handle rate limiting errors gracefully
+
+
 ## 2.1.1
 ### Fixed
 - fix pyproject.toml version

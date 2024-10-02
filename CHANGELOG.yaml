@@ -6,6 +6,9 @@ Unreleased:
   deprecated: []
   removed: []
   security: []
+2.2.0:
+  fixed:
+  - Client should handle rate limiting errors gracefully
 2.1.1:
   fixed:
   - fix pyproject.toml version
