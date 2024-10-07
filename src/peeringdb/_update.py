@@ -3,14 +3,15 @@ Module defining main interface classes for sync
 """
 
 import logging
+import sys
 from datetime import datetime
 from typing import List, Union
 
-from peeringdb import get_backend
+from peeringdb import config, get_backend
 from peeringdb._sync import extract_relations, set_many_relations, set_single_relations
 from peeringdb.fetch import Fetcher
 from peeringdb.private import private_data_has_been_fetched
-from peeringdb.util import group_fields
+from peeringdb.util import group_fields, log_error
 
 
 class Updater:
@@ -28,6 +29,7 @@ class Updater:
         self.resources = {}
         self.backend = get_backend()
         self.fetcher = fetcher
+        self.config = config.load_config()
 
     def copy_object(self, new):
         """
@@ -160,14 +162,23 @@ class Updater:
         objs = []
         retry = []
         for row in entries:
-            obj, ret = self.create_obj(row, res)
-            if ret:
-                retry.append(row)
-            elif obj:  # not retry and obj
+            try:
+                obj, _ = self.create_obj(row, res)
                 objs.append(obj)
-        for row in retry:
-            obj, _ = self.create_obj(row, res)
-            objs.append(obj)
+            except self.backend.object_missing_error(self.backend.get_concrete(res)):
+                try:
+                    obj, _ = self.create_obj(row, res)
+                    self.backend.save(obj)
+                except Exception as e:
+                    self._log.info(
+                        f"Error creating {res.tag} with id {row.get('id', 'Unknown')}: {e}"
+                    )
+                    log_error(self.config, res.tag, row.get("id", "Unknown"), str(e))
+            except Exception as e:
+                self._log.info(
+                    f"Error updating {res.tag} with id {row.get('id', 'Unknown')}: {e}"
+                )
+                log_error(self.config, res.tag, row.get("id", "Unknown"), str(e))
 
         self.backend.get_concrete(res).objects.bulk_create(objs)
 
@@ -186,8 +197,19 @@ class Updater:
                 obj, _ = self.create_obj(row, res)
                 self.copy_object(obj)
             except self.backend.object_missing_error(self.backend.get_concrete(res)):
-                obj, _ = self.create_obj(row, res)
-                self.backend.save(obj)
+                try:
+                    obj, _ = self.create_obj(row, res)
+                    self.backend.save(obj)
+                except Exception as e:
+                    self._log.info(
+                        f"Error creating {res.tag} with id {row.get('id', 'Unknown')}: {e}"
+                    )
+                    log_error(self.config, res.tag, row.get("id", "Unknown"), str(e))
+            except Exception as e:
+                self._log.info(
+                    f"Error updating {res.tag} with id {row.get('id', 'Unknown')}: {e}"
+                )
+                log_error(self.config, res.tag, row.get("id", "Unknown"), str(e))
 
     def update_all(
         self,

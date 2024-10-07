@@ -1,10 +1,63 @@
 import json
 import logging
+import os
 import re
 
 from django.core import serializers
 
 from peeringdb import resource
+
+
+def load_failed_entries(config):
+    """
+    Load a list of failed entries from the failed entries file
+
+    Returns:
+        list: a list of failed entries
+    """
+
+    FAILED_ENTRIES_FILE = config["sync"].get("failed_entries")
+
+    try:
+        with open(FAILED_ENTRIES_FILE) as f:
+            data = f.read()
+            if data:
+                return json.loads(data)
+            else:
+                return []
+    except FileNotFoundError:
+        return []
+
+
+def save_failed_entries(config, entries):
+    """
+    Save a list of failed entries to the failed entries file
+
+    Args:
+        entries (list): a list of failed entries
+    """
+    FAILED_ENTRIES_FILE = config["sync"].get("failed_entries")
+
+    with open(FAILED_ENTRIES_FILE, "w") as f:
+        json.dump(entries, f, indent=4)
+
+
+def log_error(config, resource_tag, pk, error_message):
+    """
+    Log an error and save the failed entry to the failed entries file
+
+    Args:
+        resource_tag (str): the resource tag
+        pk (int): the primary key of the failed entry
+        error_message (str): the error message
+    """
+    logging.error(f"Error syncing {resource_tag}-{pk}: {error_message}")
+    failed_entries = load_failed_entries(config)
+
+    new_entry = {"resource_tag": resource_tag, "pk": pk, "error": error_message}
+    if new_entry not in failed_entries:
+        failed_entries.append(new_entry)
+        save_failed_entries(config, failed_entries)
 
 
 def split_ref(string):
@@ -30,22 +83,6 @@ def pretty_speed(value):
             return "%dM" % value
     except ValueError:
         return value
-
-
-def prompt(msg, default=None):
-    "Prompt for input"
-    if default is not None:
-        msg = f"{msg} ({repr(default)})"
-    msg = f"{msg}: "
-    try:
-        s = input(msg)
-    except KeyboardInterrupt:
-        exit(1)
-    except EOFError:
-        s = ""
-    if not s:
-        s = default
-    return s
 
 
 def group_fields(B, concrete):
@@ -117,3 +154,19 @@ def get_log_level(level_str):
         "NOTSET": logging.NOTSET,
     }
     return levels.get(level_str.strip().upper())
+
+
+def prompt(msg, default=None):
+    "Prompt for input"
+    if default is not None:
+        msg = f"{msg} ({repr(default)})"
+    msg = f"{msg}: "
+    try:
+        s = input(msg)
+    except KeyboardInterrupt:
+        exit(1)
+    except EOFError:
+        s = ""
+    if not s:
+        s = default
+    return s

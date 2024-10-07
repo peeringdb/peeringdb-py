@@ -78,6 +78,7 @@ def test_schema_migration():
             "timeout": 5,
             "only": [],
             "strip_tz": 1,
+            "failed_entries": "failed_entries.json",
         },
         "orm": {
             "backend": "django_peeringdb",

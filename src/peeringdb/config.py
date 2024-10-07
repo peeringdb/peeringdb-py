@@ -60,6 +60,10 @@ class ClientSchema(_schema.Schema):
         api_key = _schema.Str(
             "api_key", blank=True, default=os.environ.get("PDB_SYNC_API_KEY", "")
         )
+        failed_entries = _schema.Str(
+            "failed_entries",
+            default=os.environ.get("FAILED_ENTRIES_FILE", "failed_entries.json"),
+        )
 
     class OrmSchema(_schema.Schema):
         class OrmDbSchema(_schema.Schema):
