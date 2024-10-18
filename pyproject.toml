@@ -4,7 +4,7 @@ version = "2.2.0"
 description = "PeeringDB Django models"
 readme = "README.md"
 authors = [{ name = "PeeringDB", email = "support@peeringdb.com" }]
-license = "Apache-2.0"
+license = { text = "BSD-2-Clause" }
 requires-python = ">=3.8"
 
 classifiers = [
@@ -16,7 +16,7 @@ classifiers = [
     "Intended Audience :: Developers",
     "Intended Audience :: System Administrators",
     "Intended Audience :: Telecommunications Industry",
-    "License :: OSI Approved :: Apache Software License",
+    "License :: OSI Approved :: BSD License",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
