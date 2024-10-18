@@ -1,9 +1,11 @@
 Unreleased:
-  added: []
+  added:
+  - python 3.12 support
   fixed:
   - handle api data errors more gracefully, allowing to skip broken objects and retry them
     later (#95)
-  changed: []
+  changed:
+  - poetry to uv packaging
   deprecated: []
   removed: []
   security: []

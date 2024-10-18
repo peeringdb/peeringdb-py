@@ -51,7 +51,7 @@ dev-dependencies = [
     "mypy>=0.950",
     "pre-commit>=2.13",
     "ruff>=0.1",
-    "markdown",
+    "markdown>=3",
     "markdown-include>=0.5,<1",
     "mkdocs>=1.2.3",
     "ctl>=1",

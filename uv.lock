@@ -1047,7 +1047,7 @@ dev = [
     { name = "django", specifier = ">=4.2" },
     { name = "django-peeringdb", specifier = ">=3.1.0" },
     { name = "jinja2", specifier = ">=3" },
-    { name = "markdown" },
+    { name = "markdown", specifier = ">=3" },
     { name = "markdown-include", specifier = ">=0.5,<1" },
     { name = "mkdocs", specifier = ">=1.2.3" },
     { name = "mypy", specifier = ">=0.950" },
