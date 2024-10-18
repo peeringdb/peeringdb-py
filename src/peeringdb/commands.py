@@ -12,7 +12,6 @@ from peeringdb.client import Client
 from peeringdb.output._dict import dump_python_dict
 from peeringdb.util import load_failed_entries, save_failed_entries
 from peeringdb.whois import WhoisFormat
-from peeringdb.util import load_failed_entries, save_failed_entries
 
 
 _log = logging.getLogger(__name__)
