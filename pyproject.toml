@@ -50,7 +50,6 @@ dev-dependencies = [
     "tox-uv>=1.13.0",
     "mypy>=0.950",
     "pre-commit>=2.13",
-    "pyupgrade>=2.19",
     "ruff>=0.1",
     "markdown",
     "markdown-include>=0.5,<1",

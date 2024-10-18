@@ -145,8 +145,8 @@ def test_handle_initial_sync_error(client_empty, monkeypatch):
     """
 
     # Delete the file if exists
-    if os.path.exists("failed_entries_file.json"):
-        os.remove("failed_entries_file.json")
+    if os.path.exists("failed_entries.json"):
+        os.remove("failed_entries.json")
 
     client = get_client()
     rs = all_resources()
@@ -165,14 +165,14 @@ def test_handle_initial_sync_error(client_empty, monkeypatch):
 
     with pytest.raises(client.backend.object_missing_error()):
         client.get(Organization, 2)  # Object with ID 2 should be missing
-    with open("failed_entries_file.json") as f:
+    with open("failed_entries.json") as f:
         failed_objects = json.load(f)
         assert len(failed_objects) == 1
         assert failed_objects[0]["pk"] == 2
 
     # Delete the file after the test
-    if os.path.exists("failed_entries_file.json"):
-        os.remove("failed_entries_file.json")
+    if os.path.exists("failed_entries.json"):
+        os.remove("failed_entries.json")
 
 
 def test_handle_incremental_sync_success(client_empty):
@@ -194,8 +194,8 @@ def test_handle_incremental_sync_error(client_empty, monkeypatch):
     Test error handling in _handle_incremental_sync.
     """
     # Delete the file if exists
-    if os.path.exists("failed_entries_file.json"):
-        os.remove("failed_entries_file.json")
+    if os.path.exists("failed_entries.json"):
+        os.remove("failed_entries.json")
 
     client = get_client()
     rs = all_resources()
@@ -219,7 +219,7 @@ def test_handle_incremental_sync_error(client_empty, monkeypatch):
 
     # Assertions
     assert client.get(Organization, 1)  # Object with ID 1 should still exist
-    with open("failed_entries_file.json") as f:
+    with open("failed_entries.json") as f:
         failed_objects = json.load(f)
         assert len(failed_objects) >= 1
         assert any(
@@ -227,8 +227,8 @@ def test_handle_incremental_sync_error(client_empty, monkeypatch):
         )  # Check if object ID 1 is present
 
     # Delete the file if exists
-    if os.path.exists("failed_entries_file.json"):
-        os.remove("failed_entries_file.json")
+    if os.path.exists("failed_entries.json"):
+        os.remove("failed_entries.json")
 
 
 @pytest.mark.sync
