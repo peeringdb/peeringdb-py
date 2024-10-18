@@ -1,3 +1,6 @@
+import json
+import os
+
 import helper
 import pytest
 
@@ -120,6 +123,112 @@ def test_auto_resolve_unique_conflict(client_empty):
     # check if the conflict was resolved
     net = client.get(Network, 1)
     assert net.name != net_3_remote_name
+
+
+def test_handle_initial_sync_success(client_empty):
+    """
+    Test successful initial sync using _handle_initial_sync.
+    """
+    client = get_client()
+    rs = all_resources()
+
+    # Sync only the first resource (Organization)
+    client.updater._handle_initial_sync(client.fetcher.entries(rs[0].tag), rs[0])
+
+    # Check if the first organization exists
+    assert client.get(Organization, 1)
+
+
+def test_handle_initial_sync_error(client_empty, monkeypatch):
+    """
+    Test error handling in _handle_initial_sync.
+    """
+
+    # Delete the file if exists
+    if os.path.exists("failed_entries.json"):
+        os.remove("failed_entries.json")
+
+    client = get_client()
+    rs = all_resources()
+
+    # Mock create_obj to simulate an error for a specific object ID
+    original_create_obj = client.updater.create_obj
+
+    def mock_create_obj(row: dict, res):
+        if row["id"] == 2:  # Simulate an error for object with ID 2
+            raise ValueError("Simulating an error during object creation")
+        return original_create_obj(row, res)
+
+    monkeypatch.setattr(client.updater, "create_obj", mock_create_obj)
+
+    client.updater._handle_initial_sync(client.fetcher.entries(rs[0].tag), rs[0])
+
+    with pytest.raises(client.backend.object_missing_error()):
+        client.get(Organization, 2)  # Object with ID 2 should be missing
+    with open("failed_entries.json") as f:
+        failed_objects = json.load(f)
+        assert len(failed_objects) == 1
+        assert failed_objects[0]["pk"] == 2
+
+    # Delete the file after the test
+    if os.path.exists("failed_entries.json"):
+        os.remove("failed_entries.json")
+
+
+def test_handle_incremental_sync_success(client_empty):
+    """
+    Test successful incremental sync using _handle_incremental_sync.
+    """
+
+    client = get_client()
+    rs = all_resources()
+    client.updater.update_all(rs)  # Do a full sync first
+    client.updater._handle_incremental_sync(
+        client.fetcher.entries(rs[0].tag), rs[0]
+    )  # Incremental sync for Organizations
+    assert client.get(Organization, 1)  # Check if the first organization still exists
+
+
+def test_handle_incremental_sync_error(client_empty, monkeypatch):
+    """
+    Test error handling in _handle_incremental_sync.
+    """
+    # Delete the file if exists
+    if os.path.exists("failed_entries.json"):
+        os.remove("failed_entries.json")
+
+    client = get_client()
+    rs = all_resources()
+
+    # Perform a full sync first
+    client.updater.update_all(rs)
+
+    # Mock copy_object to simulate an error for a specific object ID
+    original_copy_object = client.updater.copy_object
+
+    def mock_copy_object(new_obj):
+        if new_obj.id == 1:  # Simulate an error for object with ID 1
+            raise ValueError("Simulating an error during object update")
+        return original_copy_object(new_obj)
+
+    monkeypatch.setattr(client.updater, "copy_object", mock_copy_object)
+
+    client.updater._handle_incremental_sync(
+        client.fetcher.entries(rs[0].tag), rs[0]
+    )  # Incremental sync for Organizations
+
+    # Assertions
+    assert client.get(Organization, 1)  # Object with ID 1 should still exist
+    with open("failed_entries.json") as f:
+        failed_objects = json.load(f)
+        assert len(failed_objects) >= 1
+        assert any(
+            entry["pk"] == 1 for entry in failed_objects
+        )  # Check if object ID 1 is present
+
+    # Delete the file if exists
+    if os.path.exists("failed_entries.json"):
+        os.remove("failed_entries.json")
 
 
 @pytest.mark.sync

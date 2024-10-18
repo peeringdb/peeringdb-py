@@ -11,7 +11,10 @@ from peeringdb import config as cfg
 from peeringdb import resource, util
 from peeringdb.client import Client
 from peeringdb.output._dict import dump_python_dict
+from peeringdb.util import load_failed_entries, save_failed_entries
 from peeringdb.whois import WhoisFormat
+
+_log = logging.getLogger(__name__)
 
 
 def _handler(func):
@@ -265,7 +268,39 @@ class Sync:
             print()
             kwargs["fetch_private"] = False
 
-        client.updater.update_all(rs, since, fetch_private=kwargs["fetch_private"])
+        failed_entries = load_failed_entries(config)
+        if failed_entries:
+            _log.info("Retrying previously failed entries...")
+            Sync.retry_failed_entries(client, failed_entries)
+        try:
+            client.updater.update_all(rs, since, fetch_private=kwargs["fetch_private"])
+        except Exception as e:
+            _log.info(f"Error during sync : {e}")
+
+    def retry_failed_entries(client, failed_entries):
+        """Retries entries that failed in previous sync runs.
+
+        Args:
+            client (peeringdb.Client): The PeeringDB client instance.
+            failed_entries (list): A list of dictionaries, where each dictionary
+                                  represents a failed entry and contains "resource_tag" and "pk".
+        """
+        retried_entries = []
+        for entry in failed_entries:
+            resource_tag = entry["resource_tag"]
+            pk = entry["pk"]
+            try:
+                _log.info(f"Retrying {resource_tag}-{pk}...")
+                client.updater.update_one(resource.get_resource(resource_tag), pk)
+                retried_entries.append(entry)
+                _log.info(f"Successfully retried {resource_tag}-{pk}")
+            except Exception as e:
+                _log.info(f"Error retrying {resource_tag}-{pk}: {e}")
+
+        for entry in retried_entries:
+            failed_entries.remove(entry)
+
+        save_failed_entries(client.config, failed_entries)
 
 
 class DropTables:

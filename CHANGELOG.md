@@ -2,6 +2,8 @@
 
 
 ## Unreleased
+### Fixed
+- handle api data errors more gracefully, allowing to skip broken objects and retry them later (#95)
 
 
 ## 2.2.0
