@@ -4,14 +4,12 @@ PeeringDB API
 
 import logging
 import sys
-from distutils.util import strtobool
 from importlib import import_module
+from importlib import metadata as importlib_metadata
 
-import pkg_resources
+from peeringdb.util import get_log_level, str_to_bool
 
-from peeringdb.util import get_log_level
-
-__version__ = pkg_resources.require("peeringdb")[0].version
+__version__ = importlib_metadata.version("peeringdb")
 _log_level = logging.INFO
 
 
@@ -36,7 +34,7 @@ def _config_logs(level=None, name=None, allow_other_loggers=False):
 
     if not isinstance(allow_other_loggers, bool):
         try:
-            allow_other_loggers = strtobool(str(allow_other_loggers))
+            allow_other_loggers = str_to_bool(str(allow_other_loggers))
         except Exception:
             allow_other_loggers = False
 

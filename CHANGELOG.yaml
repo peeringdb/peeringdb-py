@@ -9,7 +9,7 @@ Unreleased:
   security: []
 2.2.0:
   fixed:
-  - Client should handle rate limiting errors gracefully
+  - Client should handle rate limiting errors gracefully (#76)
 2.1.1:
   fixed:
   - fix pyproject.toml version

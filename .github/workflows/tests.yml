@@ -7,13 +7,14 @@ jobs:
   linting:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Install virtualenv from poetry
-        uses: 20c/workflows/poetry@v1
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v2
+      - name: install project
+        run: uv sync --all-extras --dev
       - name: Run linters
         run: |
-          poetry run isort src/
-          poetry run black --check src/
+          uv run pre-commit run --all-files
 
   test:
     needs: linting
@@ -25,18 +26,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
-      - name: Install virtualenv from poetry
-        uses: 20c/workflows/poetry@v1
-        with:
-          python-version: ${{ matrix.python-version }}
+        uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v2
+      - name: Install python
+        run: uv python install ${{ matrix.python-version }}
+      - name: install tox
+        run: uv sync --all-extras --dev
       - name: Run tests
-        run: |
-          poetry run pytest -vv --cov-report=term-missing --cov=peeringdb --cov-report=xml tests/
-          poetry run coverage report
+        run: uv run tox
       - name: Upload coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
-          file: ./coverage.xml
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}

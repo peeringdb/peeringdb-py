@@ -1,6 +1,5 @@
 import json
 import logging
-import os
 import re
 
 from django.core import serializers
@@ -170,3 +169,11 @@ def prompt(msg, default=None):
     if not s:
         s = default
     return s
+
+
+def str_to_bool(value):
+    if value in ["y", "yes", "t", "true", "on", "1"]:
+        return True
+    elif value in ["n", "no", "f", "false", "off", "0"]:
+        return False
+    raise ValueError
