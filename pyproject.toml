@@ -33,9 +33,11 @@ dependencies = [
     "httpx>=0.24.1",
 ]
 
+[project.scripts]
+peeringdb = "peeringdb.cli:main"
+
 [project.urls]
 repository = "https://github.com/peeringdb/peeringdb-py"
-
 
 [tool.uv]
 dev-dependencies = [
@@ -59,8 +61,12 @@ dev-dependencies = [
     "twine>=3",
 ]
 
-[project.scripts]
-peeringdb = "peeringdb.cli:main"
+[tool.ruff.lint]
+extend-select = [
+    "I",  # isort
+    "UP", # pyupgrade
+]
+
 
 [build-system]
 requires = ["hatchling"]

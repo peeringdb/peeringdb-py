@@ -9,14 +9,6 @@ repos:
     hooks:
       - id: check-yaml
       - id: trailing-whitespace
-  - repo: local
-    hooks:
-    -   id: pyupgrade
-        name: pyupgrade
-        entry: uv run pyupgrade --py36-plus
-        language: python
-        types: [python]
-        pass_filenames: true
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.7.0
     hooks:
