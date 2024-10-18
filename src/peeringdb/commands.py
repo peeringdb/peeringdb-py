@@ -1,4 +1,3 @@
-import io
 import logging
 import os
 import subprocess
@@ -13,6 +12,8 @@ from peeringdb.client import Client
 from peeringdb.output._dict import dump_python_dict
 from peeringdb.util import load_failed_entries, save_failed_entries
 from peeringdb.whois import WhoisFormat
+
+_log = logging.getLogger(__name__)
 
 _log = logging.getLogger(__name__)
 
@@ -106,7 +107,7 @@ class Get:
             try:
                 codec = munge.get_codec(output_format)()
                 codec.dump(dump_python_dict(obj, depth), sys.stdout)
-            except TypeError as e:
+            except TypeError:
                 print(f"Output format not supported: {output_format}", file=sys.stderr)
                 return 1
 
@@ -142,7 +143,7 @@ class Whois:
                 print(f"Not found: {tag}={key}: {e}", file=sys.stderr)
                 return 1
             if len(objs) == 0:
-                print(f"Not found: {tag}={key}:", file=sys.stderr)
+                print(f"Not found: {tag}={key}: ", file=sys.stderr)
                 return 1
 
             fmt.display(tag, objs[0])

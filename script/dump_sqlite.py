@@ -37,7 +37,7 @@ def main(file, dumpfile=None):
 
     def write(f):
         for line in output:
-            f.write("%s\n" % line)
+            f.write(f"{str(line)}\n")
 
     if dumpfile is None:
         write(sys.stdout)

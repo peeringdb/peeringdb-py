@@ -3,7 +3,6 @@ Module defining main interface classes for sync
 """
 
 import logging
-import sys
 from datetime import datetime
 from typing import List, Union
 
@@ -160,7 +159,6 @@ class Updater:
         """
 
         objs = []
-        retry = []
         for row in entries:
             try:
                 obj, _ = self.create_obj(row, res)

@@ -1,15 +1,22 @@
 Unreleased:
   added: []
-  fixed:
-  - handle api data errors more gracefully, allowing to skip broken objects and retry them
-    later (#95)
+  fixed: []
   changed: []
   deprecated: []
   removed: []
   security: []
+2.3.0:
+  added:
+  - python 3.12 support
+  fixed:
+  - handle api data errors more gracefully, allowing to skip broken objects and retry
+    them later (#95)
+  changed:
+  - modernize (#94)
+  - poetry to uv packaging
 2.2.0:
   fixed:
-  - Client should handle rate limiting errors gracefully
+  - Client should handle rate limiting errors gracefully (#76)
 2.1.1:
   fixed:
   - fix pyproject.toml version

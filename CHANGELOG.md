@@ -2,13 +2,21 @@
 
 
 ## Unreleased
+
+
+## 2.3.0
+### Added
+- python 3.12 support
 ### Fixed
 - handle api data errors more gracefully, allowing to skip broken objects and retry them later (#95)
+### Changed
+- modernize (#94)
+- poetry to uv packaging
 
 
 ## 2.2.0
 ### Fixed
-- Client should handle rate limiting errors gracefully
+- Client should handle rate limiting errors gracefully (#76)
 
 
 ## 2.1.1
