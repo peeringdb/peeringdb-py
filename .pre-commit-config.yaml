@@ -11,30 +11,15 @@ repos:
       - id: trailing-whitespace
   - repo: local
     hooks:
-      - id: system
-        name: isort
-        entry: poetry run isort .
-        language: system
-        pass_filenames: false
-  - repo: local
-    hooks:
     -   id: pyupgrade
         name: pyupgrade
-        entry: poetry run pyupgrade --py36-plus
+        entry: uv run pyupgrade --py36-plus
         language: python
         types: [python]
         pass_filenames: true
-  - repo: local
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.14
     hooks:
-      - id: system
-        name: Black
-        entry: poetry run black .
-        language: system
-        pass_filenames: false
-  - repo: local
-    hooks:
-      - id: system
-        name: flake8
-        entry: poetry run flake8 .
-        language: system
-        pass_filenames: false
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format

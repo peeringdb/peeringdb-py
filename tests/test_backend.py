@@ -1,19 +1,19 @@
+import helper
 import pytest
 
 import peeringdb
 
 peeringdb.SUPPORTED_BACKENDS["_mock"] = "mock.backend"
-import helper
 
 
 @pytest.mark.skip
 def test_get():
     # get before init
     with pytest.raises(peeringdb.BackendError):
-        B = peeringdb.get_backend()
+        peeringdb.get_backend()
 
     peeringdb.initialize_backend("_mock")
-    B = peeringdb.get_backend()
+    peeringdb.get_backend()
 
 
 @pytest.mark.skip("todo - need per-test state")
@@ -42,7 +42,7 @@ def test_delete_all(client):
     ct = _count()
     assert ct[0] > 0, ct
 
-    client = peeringdb.client.Client(helper.CONFIG)
+    peeringdb.client.Client(helper.CONFIG)
     B = peeringdb.get_backend()
     B.delete_all()
 
