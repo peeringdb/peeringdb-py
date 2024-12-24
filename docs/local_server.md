@@ -70,13 +70,13 @@ Once complete, you should should be able to go to `http://localhost:8000` in you
 
 ## 5. Using the Local PeeringDB
 
-When your local PeeringDB is live, we commend just defining you can switch any scripts that normally do:
+When your local PeeringDB is ready, you can use the new endpoint in place of the official PeeringDB endpoint.
 
 Depending on how your scripts are written, you may need to adjust the API endpoint they use. For example, if you have a script that hits the PeeringDB API, you might change the endpoint from:
 
 ```python
 # real endpoint
-REAL_PEERINGDB_API_ENDPOINT = "https://api.peeringdb.com"
+REAL_PEERINGDB_API_ENDPOINT = "https://www.peeringdb.com/api"
 
 # local endpoint
 LOCAL_PEERINGDB_API_ENDPOINT = "http://localhost:8000/api"
