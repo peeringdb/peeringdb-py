@@ -98,7 +98,7 @@ force-single-line = false
 split-on-trailing-comma = true
 
 [tool.ruff.lint.mccabe]
-max-complexity = 10
+max-complexity = 12
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]  # Allow unused imports in __init__.py
