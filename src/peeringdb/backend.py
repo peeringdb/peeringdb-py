@@ -68,6 +68,13 @@ class Base:
     _CONCRETE_MAP: dict[type, type]
 
     @property
+    def CONCRETE_MAP(self) -> dict[type, type]:  # noqa: N802
+        """
+        Kept for backwards compatibility.
+        """
+        return self.concrete_map
+
+    @property
     def concrete_map(self) -> dict[type, type]:
         if not hasattr(self, "_CONCRETE_MAP"):
             self._CONCRETE_MAP = {
