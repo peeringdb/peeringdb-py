@@ -34,14 +34,8 @@ dependencies = [
     "httpx>=0.24.1",
 ]
 
-[project.scripts]
-peeringdb = "peeringdb.cli:main"
-
-[project.urls]
-repository = "https://github.com/peeringdb/peeringdb-py"
-
-[tool.uv]
-dev-dependencies = [
+[project.optional-dependencies]
+dev = [
     "django_peeringdb>=3.1.0",
     "django>=4.2",
     "pytest>=8",
@@ -62,6 +56,13 @@ dev-dependencies = [
     "tmpl>=1",
     "twine>=3",
 ]
+
+[project.scripts]
+peeringdb = "peeringdb.cli:main"
+
+[project.urls]
+repository = "https://github.com/peeringdb/peeringdb-py"
+
 
 [tool.ruff]
 line-length = 88
