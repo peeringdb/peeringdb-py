@@ -1,5 +1,6 @@
 """
-utility function that builds cache files from test.peeringdb.com/api for testing purposes
+utility function that builds cache files from test.peeringdb.com/api for testing
+purposes
 """
 
 import copy
@@ -10,7 +11,7 @@ import requests
 from django_peeringdb.models.concrete import tag_dict
 
 from peeringdb.client import Client
-from peeringdb.resource import _NAMES as objs
+from peeringdb.resource import _NAMES as RESOURCE_NAMES
 
 CONFIG = {
     "orm": {
@@ -45,7 +46,7 @@ def get_client():
 
 
 def build_cache_files():
-    tags = objs.keys()
+    tags = RESOURCE_NAMES.keys()
 
     for tag in tags:
         url = f"https://test.peeringdb.com/api/{tag}?depth=0"
@@ -61,7 +62,8 @@ def build_cache_files():
                 json.dump(data, file, indent=4)
             print(f"Successfully fetched and stored data for {tag} in cache directory")
 
-            # store the json data to a file in data/full directory in Django fixture format
+            # store the json data to a file in data/full directory in Django
+            # fixture format
             full_file_path = os.path.join("data", "full", f"{tag}-0.json")
             full_nonunique_file_path = os.path.join(
                 "data", "full_nonunique", f"{tag}-0.json"
@@ -107,7 +109,8 @@ def build_cache_files():
                 json.dump(fixture_data, file, indent=4)
 
             print(
-                f"Successfully stored data for {tag} in full directory in Django fixture format"
+                f"Successfully stored data for {tag} in full directory in Django "
+                "fixture format"
             )
         else:
             print(f"Failed to fetch data for {tag}")

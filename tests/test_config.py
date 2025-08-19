@@ -9,10 +9,12 @@ except ImportError:
     import shutil
 
     @contextlib.contextmanager
-    def TemporaryDirectory():
+    def temporary_directory():  # noqa: N802
         path = tempfile.mkdtemp()
         yield path
         shutil.rmtree(path)
+
+    TemporaryDirectory = temporary_directory
 
 
 from peeringdb import config
@@ -20,10 +22,10 @@ from peeringdb import config
 
 # Check round-tripping of config
 def test_default_config():
-    DEFAULT = config.default_config()
+    default_cfg = config.default_config()
     with TemporaryDirectory() as path:
         cfg = config.load_config(path)
-    assert DEFAULT == cfg
+    assert default_cfg == cfg
 
 
 def test_load_config(config0_dir):
@@ -31,17 +33,17 @@ def test_load_config(config0_dir):
         config.load_config("nonexistent")
 
     c = config.load_config(config0_dir)
-    DEFAULT = config.default_config()
-    assert c["sync"] != DEFAULT["sync"]
+    default_cfg = config.default_config()
+    assert c["sync"] != default_cfg["sync"]
     assert c["sync"]["timeout"] == 60
-    assert c["sync"]["strip_tz"] == DEFAULT["sync"]["strip_tz"]
-    assert c["sync"]["url"] != DEFAULT["sync"]["url"]
+    assert c["sync"]["strip_tz"] == default_cfg["sync"]["strip_tz"]
+    assert c["sync"]["url"] != default_cfg["sync"]["url"]
 
 
 def test_write():
     with TemporaryDirectory() as td:
-        DEFAULT = config.default_config()
-        config.write_config(DEFAULT, td)
+        default_cfg = config.default_config()
+        config.write_config(default_cfg, td)
 
 
 def test_schema_migration():

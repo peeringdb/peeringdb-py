@@ -4,7 +4,10 @@ Module defining main interface classes for sync
 
 import logging
 from datetime import datetime
-from typing import List, Union
+from typing import TYPE_CHECKING, Optional, Union
+
+if TYPE_CHECKING:
+    pass
 
 from peeringdb import config, get_backend
 from peeringdb._sync import extract_relations, set_many_relations, set_single_relations
@@ -25,7 +28,7 @@ class Updater:
 
     def __init__(self, fetcher: Fetcher):
         self._log = logging.getLogger(__name__)
-        self.resources = {}
+        self.resources: dict = {}
         self.backend = get_backend()
         self.fetcher = fetcher
         self.config = config.load_config()
@@ -62,13 +65,15 @@ class Updater:
             for errors in e.message_dict.values():
                 for error in errors:
                     # Checking if the error message is the one we want to ignore
-                    # field is allowed to be None in the db, but not blank according to backend
-                    # validation. We ignore this error since the data is already validated
-                    # and writing None to the db is fine.
+                    # field is allowed to be None in the db, but not blank according
+                    # to backend validation. We ignore this error since the data is
+                    # already validated and writing None to the db is fine.
                     if error != "This field cannot be blank.":
                         raise e
 
-    def create_obj(self, row: dict, res) -> (any, bool):
+    def create_obj(
+        self, row: dict[str, Union[str, int, bool, list, dict]], res: type
+    ) -> tuple[object, bool]:  # noqa: C901
         """
         Create a model instance from a row
         :param row: Object from API
@@ -88,7 +93,7 @@ class Updater:
                     # from the api and create it.
 
                     self._log.info("Fetching dangling relationship %s %s", resource, pk)
-                    related_row = self.fetcher.get(resource.tag, pk)
+                    related_row = self.fetcher.get(resource.tag, int(pk))
 
                     # instantiate the relationship object
 
@@ -125,7 +130,8 @@ class Updater:
                 and isinstance(value, str)
             ) or (getattr(obj, "tzinfo", None) is not None):
                 value = datetime.fromisoformat(value.rstrip("Z"))
-            # elif isinstance(value, str) and "T" in value and "Z" in value and "-" in value:
+            # elif (isinstance(value, str) and "T" in value and
+            #       "Z" in value and "-" in value):
             #     print("NOT DATETIME", fname, value, type(value))
 
             # Remove timezone info
@@ -168,14 +174,12 @@ class Updater:
                     obj, _ = self.create_obj(row, res)
                     self.backend.save(obj)
                 except Exception as e:
-                    self._log.info(
-                        f"Error creating {res.tag} with id {row.get('id', 'Unknown')}: {e}"
-                    )
+                    obj_id = row.get("id", "Unknown")
+                    self._log.info(f"Error creating {res.tag} with id {obj_id}: {e}")
                     log_error(self.config, res.tag, row.get("id", "Unknown"), str(e))
             except Exception as e:
-                self._log.info(
-                    f"Error updating {res.tag} with id {row.get('id', 'Unknown')}: {e}"
-                )
+                obj_id = row.get("id", "Unknown")
+                self._log.info(f"Error updating {res.tag} with id {obj_id}: {e}")
                 log_error(self.config, res.tag, row.get("id", "Unknown"), str(e))
 
         self.backend.get_concrete(res).objects.bulk_create(objs)
@@ -199,21 +203,19 @@ class Updater:
                     obj, _ = self.create_obj(row, res)
                     self.backend.save(obj)
                 except Exception as e:
-                    self._log.info(
-                        f"Error creating {res.tag} with id {row.get('id', 'Unknown')}: {e}"
-                    )
+                    obj_id = row.get("id", "Unknown")
+                    self._log.info(f"Error creating {res.tag} with id {obj_id}: {e}")
                     log_error(self.config, res.tag, row.get("id", "Unknown"), str(e))
             except Exception as e:
-                self._log.info(
-                    f"Error updating {res.tag} with id {row.get('id', 'Unknown')}: {e}"
-                )
+                obj_id = row.get("id", "Unknown")
+                self._log.info(f"Error updating {res.tag} with id {obj_id}: {e}")
                 log_error(self.config, res.tag, row.get("id", "Unknown"), str(e))
 
     def update_all(
         self,
-        rs: List[any],
-        since: int = None,
-        skip: Union[List[str], None] = None,
+        rs: list[type],
+        since: Optional[int] = None,
+        skip: Union[list[str], None] = None,
         fetch_private: bool = False,
     ):
         """
@@ -243,7 +245,7 @@ class Updater:
 
             self.fetcher.load(
                 res.tag,
-                _since + 1 if _since else None,
+                _since + 1 if _since and isinstance(_since, int) else None,
                 fetch_private=fetch_private,
                 initial_private=initial_private,
             )
@@ -266,7 +268,8 @@ class Updater:
         if depth != 0:
             # no longer relevant, deprecation warning
             self._log.warning(
-                "update_one: depth parameter is not used and will be removed in a future version"
+                "update_one: depth parameter is not used and will be removed "
+                "in a future version"
             )
 
         row = self.fetcher.get(res.tag, pk, depth=0, force_fetch=True)

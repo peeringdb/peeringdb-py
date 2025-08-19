@@ -36,8 +36,8 @@ def test_full(client_empty):
 def test_reversed(client_empty):
     client = client_empty
     # sanity check for empty client
-    B = peeringdb.get_backend()
-    with pytest.raises(B.object_missing_error()):
+    backend = peeringdb.get_backend()
+    with pytest.raises(backend.object_missing_error()):
         client.get(Network, FIRST_NET)
 
     rs = all_resources()

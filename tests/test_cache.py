@@ -10,10 +10,10 @@ from helper import CONFIG_CACHING
 
 from peeringdb.client import Client
 from peeringdb.fetch import Fetcher
-from peeringdb.resource import _NAMES as objs
+from peeringdb.resource import _NAMES as RESOURCE_NAMES
 from peeringdb.resource import all_resources
 
-tags = objs.keys()
+tags = RESOURCE_NAMES.keys()
 
 
 @pytest.fixture

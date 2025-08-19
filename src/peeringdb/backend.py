@@ -1,10 +1,12 @@
 import inspect
+from collections.abc import Sequence
 from functools import wraps
+from typing import Callable, Optional, Union
 
 from peeringdb.resource import RESOURCES_BY_TAG
 
 
-def reftag_to_cls(fn):
+def reftag_to_cls(fn: Callable[..., object]) -> Callable[..., object]:
     """
     decorator that checks function arguments for `concrete` and `resource`
     and will properly set them to class references if a string (reftag) is
@@ -14,17 +16,17 @@ def reftag_to_cls(fn):
     names, _ = spec.args, spec.defaults
 
     @wraps(fn)
-    def wrapped(*args, **kwargs):
-        i = 0
-        backend = args[0]
-        for name in names[1:]:
-            value = args[i]
-            if name == "concrete" and isinstance(value, str):
-                args[i] = backend.REFTAG_CONCRETE[value]
-            elif name == "resource" and isinstance(value, str):
-                args[i] = backend.REFTAG_RESOURCE[value]
-            i += 1
-        return fn(*args, **kwargs)
+    def wrapped(*args: object, **kwargs: object) -> object:
+        args_list = list(args)
+        backend = args_list[0]
+        for i, name in enumerate(names[1:], 1):
+            if i < len(args_list):
+                value = args_list[i]
+                if name == "concrete" and isinstance(value, str):
+                    args_list[i] = backend.REFTAG_CONCRETE[value]
+                elif name == "resource" and isinstance(value, str):
+                    args_list[i] = backend.REFTAG_RESOURCE[value]
+        return fn(*args_list, **kwargs)
 
     return wrapped
 
@@ -35,9 +37,9 @@ class Field:
     don't use classes to describe their fields
     """
 
-    def __init__(self, name):
+    def __init__(self, name: str) -> None:
         self.name = name
-        self.column = None  # ???
+        self.column: Optional[object] = None  # ???
 
 
 class EmptyContext:
@@ -45,10 +47,10 @@ class EmptyContext:
     We use this to provide a dummy context wherever it's optional
     """
 
-    def __enter__(self):
+    def __enter__(self) -> None:
         pass
 
-    def __exit__(self, *args):
+    def __exit__(self, *args: object) -> None:
         pass
 
 
@@ -61,17 +63,19 @@ class Base:
     """
 
     # Handleref tag to resource class mapping
-    REFTAG_RESOURCE = RESOURCES_BY_TAG
+    REFTAG_RESOURCE: dict[str, type] = RESOURCES_BY_TAG
+    RESOURCE_MAP: dict[type, type]
+    _CONCRETE_MAP: dict[type, type]
 
     @property
-    def CONCRETE_MAP(self):
+    def concrete_map(self) -> dict[type, type]:
         if not hasattr(self, "_CONCRETE_MAP"):
             self._CONCRETE_MAP = {
                 concrete: res for (res, concrete) in self.RESOURCE_MAP.items()
             }
         return self._CONCRETE_MAP
 
-    def get_concrete(self, res):
+    def get_concrete(self, res: type) -> type:
         """
         returns the concrete class for the resource
 
@@ -81,7 +85,7 @@ class Base:
         """
         return self.RESOURCE_MAP[res]
 
-    def is_concrete(self, cls):
+    def is_concrete(self, cls: type) -> bool:
         """
         check if concrete class exists in the resource -> concrete mapping
 
@@ -89,9 +93,9 @@ class Base:
 
             - bool: True if class exists in the resource -> concrete mapping
         """
-        return cls in self.CONCRETE_MAP
+        return cls in self.concrete_map
 
-    def get_resource(self, cls):
+    def get_resource(self, cls: type) -> type:
         """
         returns the resource class for the concrete class
 
@@ -99,7 +103,7 @@ class Base:
 
             - resource class
         """
-        return self.CONCRETE_MAP[cls]
+        return self.concrete_map[cls]
 
 
 class Interface(Base):
@@ -111,14 +115,14 @@ class Interface(Base):
 
     # Resource class to concrete class mapping
     # should go in here
-    RESOURCE_MAP = {}
+    RESOURCE_MAP: dict[type, type] = {}
 
     # Handleref tag to concrete class mapping
     # should go in here
-    REFTAG_CONCRETE = {}
+    REFTAG_CONCRETE: dict[str, type] = {}
 
     @classmethod
-    def validation_error(cls, concrete=None):
+    def validation_error(cls, concrete: Optional[type] = None) -> type[Exception]:
         """
         should return the exception class that will
         be raised when an object fails validation
@@ -136,7 +140,7 @@ class Interface(Base):
         return Exception
 
     @classmethod
-    def object_missing_error(cls, concrete=None):
+    def object_missing_error(cls, concrete: Optional[type] = None) -> type[Exception]:
         """
         should return the exception class that will
         be raised when an object cannot be found
@@ -154,7 +158,7 @@ class Interface(Base):
         return Exception
 
     @classmethod
-    def atomic_transaction(cls):
+    def atomic_transaction(cls) -> EmptyContext:
         """
         Allows you to return an atomic transaction context
         if your backend supports it, if it does not, leave as is
@@ -168,7 +172,7 @@ class Interface(Base):
         return EmptyContext()
 
     @classmethod
-    def setup(cls):
+    def setup(cls) -> None:
         """
         operations that need to be done ONCE during runtime
         to prepare usage for the backend
@@ -183,7 +187,9 @@ class Interface(Base):
     # decorator on the methods that need it
 
     @reftag_to_cls
-    def create_object(self, concrete, **data):
+    def create_object(
+        self, concrete: type, **data: Union[str, int, bool, list, dict]
+    ) -> object:
         """
         should create object from dict and return it
 
@@ -198,13 +204,15 @@ class Interface(Base):
         raise NotImplementedError()
 
     # TODO:
-    def delete_all(self):
+    def delete_all(self) -> None:
         """
         Delete all objects, essentially empty the database
         """
         raise NotImplementedError()
 
-    def detect_missing_relations(self, obj, exc):
+    def detect_missing_relations(
+        self, obj: object, exc: Exception
+    ) -> dict[type, list[Union[str, int]]]:
         """
         Should parse error messages and collect the missing relationship
         errors as a dict of Resource -> {id set} and return it
@@ -220,7 +228,7 @@ class Interface(Base):
         """
         raise NotImplementedError()
 
-    def detect_uniqueness_error(self, exc):
+    def detect_uniqueness_error(self, exc: Exception) -> Optional[list[str]]:
         """
         Should parse error message and collect any that describe violations
         of a uniqueness constraint.
@@ -239,7 +247,7 @@ class Interface(Base):
         raise NotImplementedError()
 
     @reftag_to_cls
-    def get_field_names(self, concrete):
+    def get_field_names(self, concrete: type) -> list[str]:
         """
         Should return a list of field names for the concrete class
 
@@ -254,7 +262,7 @@ class Interface(Base):
         raise NotImplementedError()
 
     @reftag_to_cls
-    def get_field_concrete(self, concrete, field_name):
+    def get_field_concrete(self, concrete: type, field_name: str) -> type:
         """
         Return concrete class for relationship by field name
 
@@ -270,7 +278,7 @@ class Interface(Base):
         raise NotImplementedError()
 
     @reftag_to_cls
-    def get_object(self, concrete, id):
+    def get_object(self, concrete: type, id: Union[str, int]) -> object:
         """
         should return instance of object with matching id
 
@@ -286,7 +294,9 @@ class Interface(Base):
         raise NotImplementedError()
 
     @reftag_to_cls
-    def get_object_by(self, concrete, field_name, value):
+    def get_object_by(
+        self, concrete: type, field_name: str, value: Union[str, int, bool]
+    ) -> object:
         """
         very simply search function that should return
         collection of objects where field matches value
@@ -304,7 +314,9 @@ class Interface(Base):
         raise NotImplementedError()
 
     @reftag_to_cls
-    def get_objects(self, concrete, ids=None):
+    def get_objects(
+        self, concrete: type, ids: Optional[Sequence[Union[str, int]]] = None
+    ) -> Sequence[object]:
         """
         should return collection of objects
 
@@ -322,7 +334,9 @@ class Interface(Base):
         raise NotImplementedError()
 
     @reftag_to_cls
-    def get_objects_by(self, concrete, field, value):
+    def get_objects_by(
+        self, concrete: type, field: str, value: Union[str, int, bool]
+    ) -> Sequence[object]:
         """
         very simple search function that should return
         collection of objects where field matches value
@@ -340,7 +354,7 @@ class Interface(Base):
         raise NotImplementedError()
 
     @reftag_to_cls
-    def is_field_related(self, concrete, field_name):
+    def is_field_related(self, concrete: type, field_name: str) -> tuple[bool, bool]:
         """
         Should return a tuple containing bools on whether
         a field signifies a relationship and if it's a single
@@ -358,7 +372,7 @@ class Interface(Base):
         raise NotImplementedError()
 
     @reftag_to_cls
-    def last_change(self, concrete):
+    def last_change(self, concrete: type) -> Optional[int]:
         """
         should return unix epoch timestamp of the `updated` field
         of the most recently updated object
@@ -373,7 +387,7 @@ class Interface(Base):
         """
         raise NotImplementedError()
 
-    def save(self, obj):
+    def save(self, obj: object) -> None:
         """
         Save the object instance
 
@@ -383,7 +397,9 @@ class Interface(Base):
         """
         raise NotImplementedError()
 
-    def set_relation_many_to_many(self, obj, field_name, objs):
+    def set_relation_many_to_many(
+        self, obj: object, field_name: str, objs: Sequence[object]
+    ) -> None:
         """
         Setup a many to many relationship
 
@@ -395,7 +411,9 @@ class Interface(Base):
         """
         raise NotImplementedError()
 
-    def update(self, obj, field_name, value):
+    def update(
+        self, obj: object, field_name: str, value: Union[str, int, bool]
+    ) -> None:
         """
         update field on a concrete instance to value
 
@@ -413,7 +431,7 @@ class Interface(Base):
     ## INTERFACE (OPTIONAL / SITUATIONAL)
 
     @reftag_to_cls
-    def get_field(self, concrete, field_name):
+    def get_field(self, concrete: type, field_name: str) -> Field:
         """
         Should retrun a field instance, if your backend does not use
         classes to describe fields, leave this as is
@@ -430,7 +448,7 @@ class Interface(Base):
         return Field(field_name)
 
     @reftag_to_cls
-    def get_fields(self, concrete):
+    def get_fields(self, concrete: type) -> list[Field]:
         """
         Should return a collection of fields, if your backend does not
         use classes to describe fields, leave this as is
@@ -443,9 +461,9 @@ class Interface(Base):
 
             - collection of field instances
         """
-        return [Field(name) for name in self.field_names(concrete)]
+        return [Field(name) for name in self.get_field_names(concrete)]
 
-    def clean(self, obj):
+    def clean(self, obj: object) -> None:
         """
         Should take an object instance and validate / clean it
 
@@ -455,7 +473,9 @@ class Interface(Base):
         """
 
     @reftag_to_cls
-    def convert_field(self, concrete, field_name, value):
+    def convert_field(
+        self, concrete: type, field_name: str, value: Union[str, int, bool]
+    ) -> Union[str, int, bool]:
         """
         Should take a value and a field definition and do a value
         conversion if needed.
@@ -468,8 +488,9 @@ class Interface(Base):
             - field_name
             - value
         """
+        return value
 
-    def migrate_database(self, verbosity=0):
+    def migrate_database(self, verbosity: int = 0) -> None:
         """
         Do database migrations
 
@@ -479,7 +500,7 @@ class Interface(Base):
                 1 = show some info about migrations.
         """
 
-    def is_database_migrated(self, **kwargs):
+    def is_database_migrated(self, **kwargs: Union[str, int, bool]) -> bool:
         """
         Should return whether the database is fully migrated
 

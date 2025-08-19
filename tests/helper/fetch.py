@@ -16,14 +16,14 @@ class Fetcher(RestClient):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def fetch(self, R, pk, depth):
-        return __data[R][pk]
+    def fetch(self, resource, pk, depth):
+        return __data[resource][pk]
 
-    def fetch_latest(self, R, pk, depth=0):
-        return self.fetch(R, pk, depth), None
+    def fetch_latest(self, resource, pk, depth=0):
+        return self.fetch(resource, pk, depth), None
 
-    def fetch_all_latest(self, R, params={}, depth=0):
-        return list(__data[R].values())
+    def fetch_all_latest(self, resource, params={}, depth=0):
+        return list(__data[resource].values())
 
-    def fetch_deleted(self, R, pk, depth=0):
-        return __deleted[R][pk]
+    def fetch_deleted(self, resource, pk, depth=0):
+        return __deleted[resource][pk]

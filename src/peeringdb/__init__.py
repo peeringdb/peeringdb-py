@@ -6,14 +6,22 @@ import logging
 import sys
 from importlib import import_module
 from importlib import metadata as importlib_metadata
+from typing import TYPE_CHECKING, Optional, Union
+
+if TYPE_CHECKING:
+    from peeringdb.backend import Interface
 
 from peeringdb.util import get_log_level, str_to_bool
 
-__version__ = importlib_metadata.version("peeringdb")
-_log_level = logging.INFO
+__version__: str = importlib_metadata.version("peeringdb")
+_log_level: int = logging.INFO
 
 
-def _config_logs(level=None, name=None, allow_other_loggers=False):
+def _config_logs(
+    level: Optional[Union[str, int]] = None,
+    name: Optional[str] = None,
+    allow_other_loggers: Union[bool, str] = False,
+) -> None:
     """
     Set up or change logging configuration.
 
@@ -57,34 +65,34 @@ class BackendError(Exception):
 
 
 # Map external module names to adaptor modules
-SUPPORTED_BACKENDS = {
+SUPPORTED_BACKENDS: dict[str, str] = {
     "django_peeringdb": "django_peeringdb.client_adaptor",
 }
 
-__backend = None
+__backend: Optional[tuple["Interface", tuple[str, str]]] = None
 
 
-def backend_initialized():
+def backend_initialized() -> bool:
     return __backend is not None
 
 
-def _get():
+def _get() -> tuple["Interface", tuple[str, str]]:
     global __backend
     if __backend:
-        return __backend
-    else:
-        raise BackendError("Backend not initialized")
+        return __backend  # type: ignore[unreachable]
+    # mypy has trouble with global analysis here
+    raise BackendError("Backend not initialized")
 
 
-def get_backend():
+def get_backend() -> "Interface":
     return _get()[0]
 
 
-def get_backend_info():
+def get_backend_info() -> tuple[str, str]:
     return _get()[1]
 
 
-def initialize_backend(name, **kwargs):
+def initialize_backend(name: str, **kwargs: Union[str, int, bool, dict]) -> None:
     global __backend
     if __backend:
         raise BackendError("Backend already initialized")
@@ -105,4 +113,5 @@ def initialize_backend(name, **kwargs):
 # TODO
 # def is_valid_backend(backend): ...
 
-# namespace imports
+# namespace imports - import client at the end to avoid circular imports
+from peeringdb import client  # noqa: E402

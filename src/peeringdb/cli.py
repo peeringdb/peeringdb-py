@@ -28,7 +28,8 @@ def check_load_config(config_dir):
 
     if config.detect_old(loaded):
         print(
-            "Found config file with pre-0.7 schema; backing up and converting to new format"
+            "Found config file with pre-0.7 schema; backing up and converting "
+            "to new format"
         )
         convert = True
         cfg = config.convert_old(loaded)
