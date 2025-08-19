@@ -1195,7 +1195,7 @@ dependencies = [
     { name = "twentyc-rpc" },
 ]
 
-[package.dev-dependencies]
+[package.optional-dependencies]
 dev = [
     { name = "ctl" },
     { name = "django", version = "4.2.23", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
@@ -1222,34 +1222,31 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "confu", specifier = ">=1" },
+    { name = "ctl", marker = "extra == 'dev'", specifier = ">=1" },
+    { name = "django", marker = "extra == 'dev'", specifier = ">=4.2" },
+    { name = "django-peeringdb", marker = "extra == 'dev'", specifier = ">=3.1.0" },
     { name = "httpx", specifier = ">=0.24.1" },
+    { name = "jinja2", marker = "extra == 'dev'", specifier = ">=3" },
+    { name = "markdown", marker = "extra == 'dev'", specifier = ">=3" },
+    { name = "markdown-include", marker = "extra == 'dev'", specifier = ">=0.5,<1" },
+    { name = "mkdocs", marker = "extra == 'dev'", specifier = ">=1.2.3" },
     { name = "munge", extras = ["toml", "tomlkit", "yaml"], specifier = ">=1.2.0" },
+    { name = "mypy", marker = "extra == 'dev'", specifier = ">=0.950" },
+    { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=2.13" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8" },
+    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=5" },
     { name = "pyyaml", specifier = ">=6.0.1" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.1" },
+    { name = "tmpl", marker = "extra == 'dev'", specifier = ">=1" },
+    { name = "tox", marker = "extra == 'dev'", specifier = ">=4" },
+    { name = "tox-gh-actions", marker = "extra == 'dev'", specifier = ">=3" },
+    { name = "tox-uv", marker = "extra == 'dev'", specifier = ">=1.13.0" },
     { name = "twentyc-rpc", specifier = ">=1" },
+    { name = "twine", marker = "extra == 'dev'", specifier = ">=3" },
+    { name = "types-pyyaml", marker = "extra == 'dev'" },
+    { name = "types-requests", marker = "extra == 'dev'" },
 ]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "ctl", specifier = ">=1" },
-    { name = "django", specifier = ">=4.2" },
-    { name = "django-peeringdb", specifier = ">=3.1.0" },
-    { name = "jinja2", specifier = ">=3" },
-    { name = "markdown", specifier = ">=3" },
-    { name = "markdown-include", specifier = ">=0.5,<1" },
-    { name = "mkdocs", specifier = ">=1.2.3" },
-    { name = "mypy", specifier = ">=0.950" },
-    { name = "pre-commit", specifier = ">=2.13" },
-    { name = "pytest", specifier = ">=8" },
-    { name = "pytest-cov", specifier = ">=5" },
-    { name = "ruff", specifier = ">=0.1" },
-    { name = "tmpl", specifier = ">=1" },
-    { name = "tox", specifier = ">=4" },
-    { name = "tox-gh-actions", specifier = ">=3" },
-    { name = "tox-uv", specifier = ">=1.13.0" },
-    { name = "twine", specifier = ">=3" },
-    { name = "types-pyyaml" },
-    { name = "types-requests" },
-]
+provides-extras = ["dev"]
 
 [[package]]
 name = "platformdirs"
