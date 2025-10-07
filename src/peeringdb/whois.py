@@ -54,7 +54,7 @@ class WhoisFormat:
 
     def display_set(self, typ, data, columns):
         """display a list of dicts"""
-        self.display_section("%s (%d)" % (self._get_name(typ), len(data)))
+        self.display_section(f"{self._get_name(typ)} ({len(data)})")
         headers = tuple(map(self._get_name, columns))
         fmt = self.mk_set_headers(data, columns)
         self.display_headers(fmt, headers)
@@ -125,7 +125,7 @@ class WhoisFormat:
         self._print("\n")
 
     def print_netfac_set(self, data):
-        self.display_section("Private Peering Facilities (%d)" % len(data))
+        self.display_section(f"Private Peering Facilities ({len(data)})")
         fmt = self.mk_fmt(51, 8, 15, 2)
         hdr = ("Facility Name", "ASN", "City", "CO")
         self.display_headers(fmt, hdr)
@@ -142,7 +142,7 @@ class WhoisFormat:
         self._print("\n")
 
     def print_netixlan_set(self, data):
-        self.display_section("Public Peering Points (%d)" % len(data))
+        self.display_section(f"Public Peering Points ({len(data)})")
         fmt = self.mk_fmt(36, 8, 27, 5)
         hdr = ("Exchange Point", "ASN", "IP Address", "Speed")
         self.display_headers(fmt, hdr)

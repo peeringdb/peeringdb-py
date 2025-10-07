@@ -98,11 +98,11 @@ def pretty_speed(value: Union[int, str, None]) -> str:
     try:
         value = int(value)
         if value >= 1000000:
-            return "%dT" % (value / 10**6)
+            return f"{value / 10**6:.0f}T"
         elif value >= 1000:
-            return "%dG" % (value / 10**3)
+            return f"{value / 10**3:.0f}G"
         else:
-            return "%dM" % value
+            return f"{value:.0f}M"
     except ValueError:
         return str(value)
 
