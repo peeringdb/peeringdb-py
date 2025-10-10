@@ -1,6 +1,6 @@
 [project]
 name = "peeringdb"
-version = "2.3.0"
+version = "2.4.0"
 description = "PeeringDB Django models"
 readme = "README.md"
 authors = [{ name = "PeeringDB", email = "support@peeringdb.com" }]

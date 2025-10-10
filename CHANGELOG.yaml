@@ -1,13 +1,17 @@
 Unreleased:
+  added: []
+  fixed: []
+  changed: []
+  deprecated: []
+  removed: []
+  security: []
+2.4.0:
   added:
   - python 3.13 support
   fixed:
-  - "Dependency updates and modernization (#108)"
-  changed: []
-  deprecated: []
+  - Dependency updates and modernization (#108)
   removed:
   - python 3.8 support (end of life)
-  security: []
 2.3.0:
   added:
   - python 3.12 support
