@@ -5,6 +5,7 @@ import os
 import re
 import time
 import urllib
+from typing import Optional, Union
 
 import requests
 
@@ -17,8 +18,13 @@ class CompatibilityError(Exception):
 
 class Fetcher:
     def __init__(
-        self, url: str, timeout: int, api_key: str = "", cache_url: str = "", **kwargs
-    ):
+        self,
+        url: str,
+        timeout: int,
+        api_key: str = "",
+        cache_url: str = "",
+        **kwargs: Union[str, int, bool, dict],
+    ) -> None:
         """
         Construct a new Fetcher
         :param url: PeeringDB API URL
@@ -26,30 +32,35 @@ class Fetcher:
         :param api_key: API key
         :param cache_url: PeeringDB cache URL
         :param cache_dir: Local cache directory
-        :param retry: The maximum number of retry attempts when rate limited (default is 5)
+        :param retry: The maximum number of retry attempts when rate limited
+                      (default is 5)
         :param kwargs:
         """
-        self._log = logging.getLogger(__name__)
+        self._log: logging.Logger = logging.getLogger(__name__)
 
-        self.resources = {}
-        self.url = url
-        self.timeout = timeout or 60
-        self.api_key = api_key
-        self.cache_url = cache_url
-        self.cache_dir = os.path.expanduser(
-            kwargs.get("cache_dir", "~/.cache/peeringdb")
+        self.resources: dict[
+            str, list[dict[str, Union[str, int, bool, list, dict]]]
+        ] = {}
+        self.url: str = url
+        self.timeout: int = timeout or 60
+        self.api_key: str = api_key
+        self.cache_url: str = cache_url
+        self.cache_dir: str = os.path.expanduser(
+            str(kwargs.get("cache_dir", "~/.cache/peeringdb"))
         )
-        self.user = kwargs.get("user", "")
-        self.password = kwargs.get("password", "")
+        self.user: str = str(kwargs.get("user", ""))
+        self.password: str = str(kwargs.get("password", ""))
 
         # Used for testing
-        self.remote_cache_used = False
-        self.local_cache_used = False
+        self.remote_cache_used: bool = False
+        self.local_cache_used: bool = False
 
         # used for sync 429 status code (pause and resume)
-        self.attempt = 0
+        self.attempt: int = 0
 
-    def _get(self, endpoint: str, **params):
+    def _get(
+        self, endpoint: str, **params: Union[str, int]
+    ) -> list[dict[str, Union[str, int, bool, list, dict]]]:
         url = f"{self.url}/{endpoint}"
         url_params = urllib.parse.urlencode(params)
         if url_params:
@@ -90,11 +101,11 @@ class Fetcher:
     def load(
         self,
         resource: str,
-        since: int = 0,
+        since: Optional[int] = 0,
         fetch_private: bool = False,
         initial_private: bool = False,
         delay: float = 0.5,
-    ):
+    ) -> None:
         """
         Load a resource from mock data.
         :param resource: Resource tag (i.e. "net")
@@ -138,8 +149,10 @@ class Fetcher:
                 self.resources[resource] = resp.json()["data"]
                 self.remote_cache_used = True
             else:
+                url = f"{self.cache_url}/{resource}-0.json"
                 raise ValueError(
-                    f"Error fetching {resource} @ {self.cache_url}/{resource}-0.json from remote cache: {resp.status_code}"
+                    f"Error fetching {resource} @ {url} from remote cache: "
+                    f"{resp.status_code}"
                 )
 
         # Fall back to fetching from API
@@ -159,7 +172,7 @@ class Fetcher:
 
             time.sleep(delay)
 
-    def entries(self, tag: str):
+    def entries(self, tag: str) -> list[dict[str, Union[str, int, bool, list, dict]]]:
         """
         Get all entries by tag ro load it if we don't already have the resource
         :param tag: Resource tag (i.e. "net")
@@ -169,7 +182,9 @@ class Fetcher:
             self.load(tag)
         return self.resources[tag]
 
-    def get(self, tag: str, pk: int, depth: int = 0, force_fetch: bool = False):
+    def get(
+        self, tag: str, pk: int, depth: int = 0, force_fetch: bool = False
+    ) -> dict[str, Union[str, int, bool, list, dict]]:
         """
         Get an individual object or attempt to query
         :param tag: Resource tag (i.e. "net")

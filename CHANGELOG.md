@@ -2,6 +2,12 @@
 
 
 ## Unreleased
+### Added
+- python 3.13 support
+### Fixed Issues
+- fixed peeringdb-py/#108: Dependency updates and modernization
+### Removed
+- python 3.8 support (end of life)
 
 
 ## 2.3.0

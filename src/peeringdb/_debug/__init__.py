@@ -3,14 +3,14 @@ import logging
 # import pdb
 
 
-def log_validation_errors(B, e, obj, k):
+def log_validation_errors(backend, e, obj, k):
     log = logging.getLogger("peeringdb.sync")
     log.debug(f"{e} : errors: {e.message_dict}")
     for k, v in e.message_dict.items():
-        field = B.get_field(obj, k)
+        field = backend.get_field(obj, k)
         try:
             log.debug(f"{k}: {getattr(obj, k)}, dict: {field.__dict__}")
-        except B.object_missing_error():
+        except backend.object_missing_error():
             log.debug(f"{k}: Missing Object, dict: {field.__dict__}")
 
 

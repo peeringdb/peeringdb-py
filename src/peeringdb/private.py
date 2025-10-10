@@ -5,10 +5,10 @@ from peeringdb.backend import Interface
 #
 # if --fetch-private is specified, these objects
 # will always be fetched from the API
-PRIVATE_OBJECTS = ["poc", "ixlan"]
+PRIVATE_OBJECTS: list[str] = ["poc", "ixlan"]
 
 
-def private_data_has_been_fetched(backend: Interface, res: object):
+def private_data_has_been_fetched(backend: Interface, res: type) -> bool:
     if res.tag not in PRIVATE_OBJECTS:
         return False
 
@@ -22,3 +22,5 @@ def private_data_has_been_fetched(backend: Interface, res: object):
             concrete, "ixf_ixp_member_list_url_visible", "Private"
         )
         return objs.filter(ixf_ixp_member_list_url__isnull=False).count() > 0
+
+    return False

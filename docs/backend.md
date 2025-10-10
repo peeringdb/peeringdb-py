@@ -389,5 +389,3 @@ Should return whether the database is fully migrated
 Returns:
 
     - bool
-
-

@@ -43,8 +43,8 @@ def test_delete_all(client):
     assert ct[0] > 0, ct
 
     peeringdb.client.Client(helper.CONFIG)
-    B = peeringdb.get_backend()
-    B.delete_all()
+    backend = peeringdb.get_backend()
+    backend.delete_all()
 
     ct = _count()
     assert ct[0] == 0, ct

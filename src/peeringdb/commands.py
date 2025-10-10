@@ -90,7 +90,7 @@ class Get:
         )
 
     @_handler
-    def handle(config, poids, output_format, depth, remote, **_):
+    def handle(config, poids, output_format, depth, remote, **_):  # noqa: N805
         client = Client(config)
         for poid in poids:
             (tag, pk) = util.split_ref(poid)
@@ -126,7 +126,7 @@ class Whois:
         )
 
     @_handler
-    def handle(config, poids, **_):
+    def handle(config, poids, **_):  # noqa: N805
         client = Client(config)
         fmt = WhoisFormat()
 
@@ -159,7 +159,7 @@ class DumpConfig:
         )
 
     @_handler
-    def handle(config, output_format, **_):
+    def handle(config, output_format, **_):  # noqa: N805
         codec = munge.get_codec(output_format)()
         codec.dump(config, sys.stdout)
 
@@ -181,7 +181,7 @@ class PromptConfig:
         )
 
     @_handler
-    def handle(config, defaults, config_dir, output_format, **_):
+    def handle(config, defaults, config_dir, output_format, **_):  # noqa: N805
         if defaults:
             newconfig = config
             outdir = config_dir
@@ -221,7 +221,8 @@ class Sync:
         # parser.add_argument('--only', action='append', default=[],
         #                     help='Only process this table')
         # parser.add_argument('--limit', type=int, default=0,
-        #                     help="Limit objects retrieved, retrieve all if 0 (default)")
+        #                     help="Limit objects retrieved, retrieve all if 0 "
+        #                     "(default)")
         parser.add_argument(
             "--init",
             action="store_true",
@@ -237,7 +238,7 @@ class Sync:
         )
 
     @_handler
-    def handle(config, verbose, quiet, init, since, **kwargs):
+    def handle(config, verbose, quiet, init, since, **kwargs):  # noqa: N805
         rs = resource.all_resources()
         # if only: rs = [resource.get_resource(tag) for tag in only]
 
@@ -263,7 +264,9 @@ class Sync:
         if kwargs["fetch_private"] and not config["sync"].get("api_key"):
             print()
             print(
-                "Warning: api key not set, private data will not be fetched. Set it either directly in the config or provide via the PDB_SYNC_API_KEY environment variable.",
+                "Warning: api key not set, private data will not be fetched. "
+                "Set it either directly in the config or provide via the "
+                "PDB_SYNC_API_KEY environment variable.",
                 file=sys.stderr,
             )
             print()
@@ -278,13 +281,14 @@ class Sync:
         except Exception as e:
             _log.info(f"Error during sync : {e}")
 
-    def retry_failed_entries(client, failed_entries):
+    def retry_failed_entries(client, failed_entries):  # noqa: N805
         """Retries entries that failed in previous sync runs.
 
         Args:
             client (peeringdb.Client): The PeeringDB client instance.
             failed_entries (list): A list of dictionaries, where each dictionary
-                                  represents a failed entry and contains "resource_tag" and "pk".
+                                  represents a failed entry and contains
+                                  "resource_tag" and "pk".
         """
         retried_entries = []
         for entry in failed_entries:
@@ -308,7 +312,7 @@ class DropTables:
     """Drop all database tables"""
 
     @_handler
-    def handle(config, **_):
+    def handle(config, **_):  # noqa: N805
         Client(config)
         backend = peeringdb.get_backend()
         backend.delete_all()
@@ -339,13 +343,14 @@ class Server:
         )
 
     @_handler
-    def handle(config, setup, start, stop, **_):
+    def handle(config, setup, start, stop, **_):  # noqa: N805
         parent_directory = os.path.abspath(os.path.join(os.getcwd()))
         clone_path = os.path.join(parent_directory, "peeringdb_server")
 
         if setup:
             # Clone the GitHub repository
-            # TODO: use latest release? (peeringdb server currently does no publish releases, just tags)
+            # TODO: use latest release? (peeringdb server currently does no publish
+            # releases, just tags)
             # TODO: use git module instead of subprocess?
             print("Setup-----------")
             subprocess.run(
@@ -364,14 +369,18 @@ class Server:
             try:
                 subprocess.run(["./Ctl/local/compose.sh", "up", "-d"], cwd=clone_path)
             except FileNotFoundError:
-                print(
-                    f"{clone_path} directory not found, make sure that you already run 'peeringdb server --setup'"
+                msg = (
+                    f"{clone_path} directory not found, make sure that you already "
+                    "run 'peeringdb server --setup'"
                 )
+                print(msg)
 
         if stop:
             try:
                 subprocess.run(["./Ctl/local/compose.sh", "down"], cwd=clone_path)
             except FileNotFoundError:
-                print(
-                    f"{clone_path} directory not found, make sure that you already run 'peeringdb server --setup'"
+                msg = (
+                    f"{clone_path} directory not found, make sure that you already "
+                    "run 'peeringdb server --setup'"
                 )
+                print(msg)
