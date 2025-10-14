@@ -1,6 +1,7 @@
 Unreleased:
   added: []
-  fixed: []
+  fixed:
+  - fix issue where a broken failed entries json log would prevent the sync command from running
   changed: []
   deprecated: []
   removed: []
