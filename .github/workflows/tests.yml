@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
       - name: install project
         run: uv sync --all-extras --dev
       - name: Run linters
@@ -28,7 +28,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v5
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
       - name: Install python
         run: uv python install ${{ matrix.python-version }}
       - name: install tox
