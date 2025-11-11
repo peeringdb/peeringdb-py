@@ -37,6 +37,12 @@ def load_failed_entries(
                 return []
     except FileNotFoundError:
         return []
+    except json.JSONDecodeError as e:
+        logging.warning(
+            f"Failed entries file '{failed_entries_file}' contains invalid JSON "
+            f"and will be ignored: {e}"
+        )
+        return []
 
 
 def save_failed_entries(

@@ -2,6 +2,8 @@
 
 
 ## Unreleased
+### Fixed
+- fix issue where a broken failed entries json log would prevent the sync command from running
 
 
 ## 2.4.0
