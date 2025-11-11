@@ -1,19 +1,15 @@
 [project]
 name = "peeringdb"
-version = "2.4.0"
-description = "PeeringDB Django models"
+version = "2.4.1"
+description = "PeeringDB Python client and library"
 readme = "README.md"
 authors = [{ name = "PeeringDB", email = "support@peeringdb.com" }]
 license = { text = "BSD-2-Clause" }
 requires-python = ">=3.9"
+keywords = ["peeringdb", "networking", "peering", "internet", "api", "bgp", "asn"]
 
 classifiers = [
     "Development Status :: 5 - Production/Stable",
-    "Framework :: Django :: 3.2",
-    "Framework :: Django :: 4.2",
-    "Framework :: Django :: 5.0",
-    "Framework :: Django :: 5.1",
-    "Framework :: Django :: 5.2",
     "Intended Audience :: Developers",
     "Intended Audience :: System Administrators",
     "Intended Audience :: Telecommunications Industry",
@@ -62,6 +58,10 @@ peeringdb = "peeringdb.cli:main"
 
 [project.urls]
 repository = "https://github.com/peeringdb/peeringdb-py"
+homepage = "https://www.peeringdb.com"
+documentation = "https://peeringdb.github.io/peeringdb-py"
+changelog = "https://github.com/peeringdb/peeringdb-py/blob/master/CHANGELOG.md"
+issues = "https://github.com/peeringdb/peeringdb-py/issues"
 
 
 [tool.ruff]
