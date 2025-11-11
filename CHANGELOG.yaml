@@ -1,11 +1,14 @@
 Unreleased:
   added: []
-  fixed:
-  - fix issue where a broken failed entries json log would prevent the sync command from running
+  fixed: []
   changed: []
   deprecated: []
   removed: []
   security: []
+2.4.1:
+  fixed:
+  - fix issue where a broken failed entries json log would prevent the sync command
+    from running
 2.4.0:
   added:
   - python 3.13 support
