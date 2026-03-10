@@ -28,11 +28,11 @@ dependencies = [
     "twentyc.rpc>=1",
     "pyyaml>=6.0.1",
     "httpx>=0.24.1",
+    "django_peeringdb>=3.1.0",
 ]
 
 [dependency-groups]
 dev = [
-    "django_peeringdb>=3.1.0",
     "django>=4.2",
     "pytest>=8",
     "pytest-cov>=5",
