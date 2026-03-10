@@ -1,6 +1,7 @@
 Unreleased:
   added: []
-  fixed: []
+  fixed:
+  - peeringdb.client.Client constructor type is too strict (#134)
   changed: []
   deprecated: []
   removed: []

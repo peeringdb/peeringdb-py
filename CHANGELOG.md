@@ -2,7 +2,8 @@
 
 
 ## Unreleased
-
+### Fixed
+- peeringdb.client.Client constructor type is too strict (#134)
 
 ## 2.4.1
 ### Fixed
