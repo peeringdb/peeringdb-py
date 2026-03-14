@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union, Any, Mapping
 
 import munge.util
 
@@ -36,7 +36,7 @@ class Client:
     """Main PeeringDB client."""
 
     def __init__(
-        self, cfg: Optional[dict[str, object]] = None, **kwargs: object
+        self, cfg: Optional[Mapping[str, Any]] = None, **kwargs: object
     ) -> None:
         """
         Arguments:
