@@ -1,11 +1,13 @@
 Unreleased:
   added: []
-  fixed:
-  - peeringdb.client.Client constructor type is too strict (#134)
+  fixed: []
   changed: []
   deprecated: []
   removed: []
   security: []
+2.4.2:
+  fixed:
+  - peeringdb.client.Client constructor type is too strict (#134)
 2.4.1:
   fixed:
   - fix issue where a broken failed entries json log would prevent the sync command
