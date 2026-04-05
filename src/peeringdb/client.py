@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from collections.abc import Mapping
 from typing import TYPE_CHECKING, Optional, Union
 
 import munge.util
@@ -36,7 +37,7 @@ class Client:
     """Main PeeringDB client."""
 
     def __init__(
-        self, cfg: Optional[dict[str, object]] = None, **kwargs: object
+        self, cfg: Optional[Mapping[str, object]] = None, **kwargs: object
     ) -> None:
         """
         Arguments:
@@ -49,7 +50,7 @@ class Client:
         """
         if cfg is None:
             cfg = config.load_config()
-        self.config: dict[str, object] = cfg
+        self.config: Mapping[str, object] = cfg
         log_config = cfg.get("log", {}) if isinstance(cfg, dict) else {}
         if isinstance(log_config, dict):
             _config_logs(**log_config)
