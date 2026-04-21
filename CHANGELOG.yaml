@@ -1,7 +1,6 @@
 Unreleased:
   added: []
   fixed:
-  - peeringdb.client.Client constructor type is too strict (#134)
   - "normalize URLs to avoid `//` in URL concatenations"
   changed: []
   deprecated: []
