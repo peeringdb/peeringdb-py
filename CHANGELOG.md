@@ -7,6 +7,7 @@
 ## 2.4.2
 ### Fixed
 - peeringdb.client.Client constructor type is too strict (#134)
+- normalize URLs to avoid `//` in URL concatenations
 
 
 ## 2.4.1

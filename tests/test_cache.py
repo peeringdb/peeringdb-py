@@ -24,6 +24,40 @@ def fetcher():
     return Fetcher(**CONFIG_CACHING["sync"])
 
 
+@pytest.mark.parametrize(
+    "url,cache_url,expected_url,expected_cache_url",
+    [
+        (
+            "https://www.peeringdb.com/api",
+            "https://public.peeringdb.com",
+            "https://www.peeringdb.com/api",
+            "https://public.peeringdb.com",
+        ),
+        (
+            "https://www.peeringdb.com/api/",
+            "https://public.peeringdb.com/",
+            "https://www.peeringdb.com/api",
+            "https://public.peeringdb.com",
+        ),
+        (
+            "https://www.peeringdb.com/api///",
+            "https://public.peeringdb.com///",
+            "https://www.peeringdb.com/api",
+            "https://public.peeringdb.com",
+        ),
+        ("", "", "", ""),
+    ],
+)
+def test_fetcher_url_normalization(url, cache_url, expected_url, expected_cache_url):
+    """
+    Trailing slashes on url and cache_url must be stripped so that
+    f"{self.url}/{endpoint}" concatenations don't produce `//`.
+    """
+    fetcher = Fetcher(url=url, timeout=60, cache_url=cache_url)
+    assert fetcher.url == expected_url
+    assert fetcher.cache_url == expected_cache_url
+
+
 @pytest.mark.parametrize("tag", tags)
 @patch("requests.get")
 def test_fetch_cache(mock_get, fetcher, tag):
