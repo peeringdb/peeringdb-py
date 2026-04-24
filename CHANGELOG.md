@@ -2,6 +2,8 @@
 
 
 ## Unreleased
+### Fixed
+- normalize URLs to avoid `//` in URL concatenations
 
 
 ## 2.4.2

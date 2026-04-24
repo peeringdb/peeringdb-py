@@ -41,10 +41,11 @@ class Fetcher:
         self.resources: dict[
             str, list[dict[str, Union[str, int, bool, list, dict]]]
         ] = {}
-        self.url: str = url
+        # normalize to avoid `//` in URL concatenations like f"{self.url}/{endpoint}"
+        self.url: str = url.rstrip("/")
         self.timeout: int = timeout or 60
         self.api_key: str = api_key
-        self.cache_url: str = cache_url
+        self.cache_url: str = cache_url.rstrip("/")
         self.cache_dir: str = os.path.expanduser(
             str(kwargs.get("cache_dir", "~/.cache/peeringdb"))
         )

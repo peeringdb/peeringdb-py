@@ -1,6 +1,7 @@
 Unreleased:
   added: []
-  fixed: []
+  fixed:
+  - "normalize URLs to avoid `//` in URL concatenations"
   changed: []
   deprecated: []
   removed: []
