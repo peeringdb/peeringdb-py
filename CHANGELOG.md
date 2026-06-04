@@ -2,6 +2,8 @@
 
 
 ## Unreleased
+### Added
+- Support HTTP proxy settings in config file
 ### Fixed
 - normalize URLs to avoid `//` in URL concatenations
 
