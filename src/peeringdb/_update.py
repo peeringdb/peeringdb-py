@@ -2,7 +2,9 @@
 Module defining main interface classes for sync
 """
 
+import json
 import logging
+import os
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional, Union
 
@@ -12,7 +14,7 @@ if TYPE_CHECKING:
 from peeringdb import config, get_backend
 from peeringdb._sync import extract_relations, set_many_relations, set_single_relations
 from peeringdb.fetch import Fetcher
-from peeringdb.private import private_data_has_been_fetched
+from peeringdb.private import PRIVATE_OBJECTS
 from peeringdb.util import group_fields, log_error
 
 
@@ -32,6 +34,53 @@ class Updater:
         self.backend = get_backend()
         self.fetcher = fetcher
         self.config = config.load_config()
+
+    # since_private watermark (#92)
+    # Tracks, per (source URL, private resource), the last_change timestamp
+    # reached by a --fetch-private pull, so subsequent private syncs resume
+    # incrementally instead of re-fetching everything. Persisted as a small JSON
+    # map in the cache dir, namespaced by the API URL so reusing one cache dir
+    # against multiple instances can't cross-contaminate watermarks. If it's
+    # lost (cache cleared) the next private sync just does one full fetch and
+    # re-seeds it.
+
+    def _since_private_path(self) -> str:
+        return os.path.join(self.fetcher.cache_dir, ".since-private.json")
+
+    def _load_since_private(self) -> dict:
+        try:
+            with open(self._since_private_path()) as f:
+                data = json.load(f)
+            return data if isinstance(data, dict) else {}
+        except (OSError, ValueError):
+            # missing, unreadable, or corrupt -> treat as no watermark
+            return {}
+
+    def _get_since_private(self, tag: str) -> Optional[int]:
+        bucket = self._load_since_private().get(self.fetcher.url)
+        if not isinstance(bucket, dict):
+            return None
+        value = bucket.get(tag)
+        return value if isinstance(value, int) else None
+
+    def _set_since_private(self, tag: str, ts: Optional[int]) -> None:
+        if not ts:
+            return
+        data = self._load_since_private()
+        bucket = data.get(self.fetcher.url)
+        if not isinstance(bucket, dict):
+            bucket = {}
+        bucket[tag] = ts
+        data[self.fetcher.url] = bucket
+
+        os.makedirs(self.fetcher.cache_dir, exist_ok=True)
+        # write-then-rename: an interrupted write can't corrupt the live file
+        # (and even if it somehow did, _load_since_private degrades to {}).
+        path = self._since_private_path()
+        tmp = f"{path}.tmp"
+        with open(tmp, "w") as f:
+            json.dump(data, f)
+        os.replace(tmp, path)
 
     def copy_object(self, new):
         """
@@ -256,7 +305,8 @@ class Updater:
         """
         Return the object to persist if `row` changes `old`, else None: fast path
         on `updated` (newer apply / older skip), and on a tie build the object and
-        fall back to a content comparison since the API timestamp is whole-second (#135).
+        fall back to a content comparison since the API timestamp is whole-second
+        (#135).
         """
         cmp = self._compare_updated(row, old)
         if cmp == -1:
@@ -333,19 +383,35 @@ class Updater:
                 continue
 
             if since is None:
-                _since = self.backend.last_change(self.backend.get_concrete(res))
+                last = self.backend.last_change(self.backend.get_concrete(res))
+                _since = last if isinstance(last, int) else None
             else:
                 _since = since
 
-            initial_private = False
-            if fetch_private:
-                initial_private = not private_data_has_been_fetched(self.backend, res)
+            is_private = fetch_private and res.tag in PRIVATE_OBJECTS
 
+            # Private objects (poc, ixlan) fetch incrementally from their OWN
+            # watermark (since_private), not the public last_change: a non-private
+            # sync advances last_change (and can null out private fields) without
+            # private data having been re-fetched, so keying off last_change would
+            # skip those rows. The watermark is None until the first private fetch,
+            # which then grabs everything. Only consult it when the DB already has
+            # data — an empty DB always full-fetches, so a stale watermark (e.g.
+            # after a DB wipe) can never truncate the sync into an empty table.
+            if is_private and since is None and _since:
+                fetch_since = self._get_since_private(res.tag)
+            else:
+                fetch_since = _since
+
+            # The #135 lookback applies to whichever base we picked above (public
+            # last_change or the private watermark): _since_param rewinds by
+            # PDB_SYNC_LOOKBACK so a boundary-second change isn't skipped, and the
+            # change detection in _handle_incremental_sync drops the rows the
+            # widened window re-fetches. None -> full fetch (first private pull).
             self.fetcher.load(
                 res.tag,
-                self._since_param(_since),
+                self._since_param(fetch_since),
                 fetch_private=fetch_private,
-                initial_private=initial_private,
             )
             entries = self.fetcher.entries(res.tag)
             # Rows returned by the API/cache; for incremental syncs the lookback
@@ -353,6 +419,9 @@ class Updater:
             # it is logged at debug while the INFO line below reports real work.
             self._log.debug("[%s] Fetched %d objects", res.tag, len(entries))
 
+            # Save mode is decided by DB state (last_change), not the fetch window,
+            # so a first private pull over an already-populated DB still does a
+            # full fetch but an incremental (upsert) save — no bulk_create clash.
             if not _since:
                 self._handle_initial_sync(entries, res)
                 self._log.info("[%s] Processed %d objects", res.tag, len(entries))
@@ -367,6 +436,19 @@ class Updater:
                     counts["created"],
                     counts["updated"],
                     counts["unchanged"],
+                )
+
+            # Advance the watermark only on the automatic path. An explicit
+            # --since N is a manual override that may skip private rows in
+            # (watermark, N]; advancing the watermark past them would make a
+            # later default sync resume beyond un-fetched rows and never recover.
+            if is_private and since is None:
+                # Record where this private pull reached so the next private sync
+                # resumes from here. Read after the save, so it's server-authored
+                # (no client clock skew) and reuses the existing last_change logic.
+                reached = self.backend.last_change(self.backend.get_concrete(res))
+                self._set_since_private(
+                    res.tag, reached if isinstance(reached, int) else None
                 )
 
     def update_one(self, res, pk: int, depth=0):
