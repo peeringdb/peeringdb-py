@@ -52,9 +52,7 @@ class Fetcher:
         self.user: str = str(kwargs.get("user", ""))
         self.password: str = str(kwargs.get("password", ""))
         proxy: str = str(kwargs.get("proxy", ""))
-        self.proxies: dict[str, str] = (
-            {"http": proxy, "https": proxy} if proxy else {}
-        )
+        self.proxies: dict[str, str] = {"http": proxy, "https": proxy} if proxy else {}
 
         # Used for testing
         self.remote_cache_used: bool = False
