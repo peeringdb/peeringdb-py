@@ -3,6 +3,8 @@ Unreleased:
   - "Support HTTP proxy settings in config file"
   fixed:
   - "normalize URLs to avoid `//` in URL concatenations"
+  - "race condition that could cause missed records when syncing incremental updates (#135)"
+  - "with --fetch-private, ixlan is not being cached (#92)"
   changed: []
   deprecated: []
   removed: []

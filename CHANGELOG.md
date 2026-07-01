@@ -6,6 +6,8 @@
 - Support HTTP proxy settings in config file
 ### Fixed
 - normalize URLs to avoid `//` in URL concatenations
+- race condition that could cause missed records when syncing incremental updates (#135)
+- with --fetch-private, ixlan is not being cached (#92)
 
 
 ## 2.4.2
