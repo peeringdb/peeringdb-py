@@ -1,5 +1,6 @@
 Unreleased:
-  added: []
+  added:
+  - "Support HTTP proxy settings in config file"
   fixed:
   - "normalize URLs to avoid `//` in URL concatenations"
   changed: []
