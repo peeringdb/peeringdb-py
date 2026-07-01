@@ -77,6 +77,8 @@ def test_schema_migration():
             "only": [],
             "strip_tz": 1,
             "failed_entries": "failed_entries.json",
+            "proxy": "",
+            "lookback": 1,
         },
         "orm": {
             "backend": "django_peeringdb",
@@ -126,6 +128,21 @@ def _patch_input(mp, inputs):
     with mp.context() as m:
         m.setattr("builtins.input", _input)
         yield
+
+
+def test_proxy_in_default_config():
+    cfg = config.default_config()
+    assert "proxy" in cfg["sync"]
+    assert cfg["sync"]["proxy"] == ""
+
+
+def test_proxy_roundtrip():
+    with TemporaryDirectory() as td:
+        cfg = config.default_config()
+        cfg["sync"]["proxy"] = "http://proxy.example.com:3128"
+        config.write_config(cfg, td)
+        loaded = config.load_config(td)
+    assert loaded["sync"]["proxy"] == "http://proxy.example.com:3128"
 
 
 # TODO test_prompt_config

@@ -156,6 +156,54 @@ def test_cache_used(mock_get, fetcher):
 
 
 @patch("requests.get")
+def test_proxy_passed_to_api_get(mock_get):
+    """Proxy setting is forwarded to requests.get for API calls."""
+    proxy_url = "http://proxy.example.com:3128"
+    fetcher = Fetcher(
+        url="https://test.peeringdb.com/api",
+        timeout=0,
+        proxy=proxy_url,
+    )
+
+    mock_response = requests.Response()
+    mock_response.status_code = 200
+    mock_response._content = json.dumps({"data": []}).encode()
+    mock_get.return_value = mock_response
+
+    fetcher._get("net")
+
+    _, kwargs = mock_get.call_args
+    assert kwargs.get("proxies") == {"http": proxy_url, "https": proxy_url}
+
+
+@patch("requests.get")
+def test_proxy_passed_to_cache_fetch(mock_get):
+    """Proxy setting is forwarded to requests.get for remote cache fetches."""
+    proxy_url = "http://proxy.example.com:3128"
+    fetcher = Fetcher(
+        url="https://test.peeringdb.com/api",
+        timeout=0,
+        cache_url="cache://localhost",
+        proxy=proxy_url,
+    )
+
+    with open("tests/data/cache/net-0.json") as f:
+        test_data = json.load(f)
+
+    mock_response = requests.Response()
+    mock_response.status_code = 200
+    mock_response._content = json.dumps(test_data).encode()
+    mock_get.return_value = mock_response
+
+    with tempfile.TemporaryDirectory() as cache_dir:
+        fetcher.cache_dir = cache_dir
+        fetcher.entries("net")
+
+    _, kwargs = mock_get.call_args
+    assert kwargs.get("proxies") == {"http": proxy_url, "https": proxy_url}
+
+
+@patch("requests.get")
 def test_cache_file_used(mock_get, fetcher):
     """
     Test that cache is downloaded and used. Instead of parametrizing per tag,

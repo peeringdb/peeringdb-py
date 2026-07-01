@@ -14,6 +14,8 @@ This document describes the environment variables used to configure the PeeringD
 - **PDB_SYNC_STRIP_TZ**: Strip timezone information (1 for true, 0 for false). Default is `1`.
 - **PDB_SYNC_ONLY**: Comma-separated list of data to sync. Default is all data (empty list).
 - **PDB_SYNC_TIMEOUT**: The timeout for syncing operations in seconds. Default is `0` (no timeout).
+- **PDB_SYNC_PROXY**: Proxy URL for all sync requests (e.g. `http://proxy.example.com:3128`). The same URL is applied to both the `http` and `https` schemes (separate proxies per scheme are not supported), and to both API and remote cache fetches. No default value. When unset, the standard `HTTP_PROXY`/`HTTPS_PROXY` environment variables are still honored by `requests`; setting this option overrides them.
+- **PDB_SYNC_LOOKBACK**: Seconds to rewind the incremental-sync cursor (`since = last_change - lookback`). Default is `1`, which re-includes the boundary second the API would otherwise skip (whole-second `updated` + strict greater-than). Re-fetched objects are filtered out by change detection, so a wider window costs reads, not writes; increase it to add margin for upstream replication lag.
 
 ## ORM Configuration
 

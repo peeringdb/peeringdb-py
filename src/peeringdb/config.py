@@ -64,6 +64,13 @@ class ClientSchema(_schema.Schema):
             "failed_entries",
             default=os.environ.get("FAILED_ENTRIES_FILE", "failed_entries.json"),
         )
+        proxy = _schema.Str(
+            "proxy", blank=True, default=os.environ.get("PDB_SYNC_PROXY", "")
+        )
+        lookback = _schema.Int(
+            "lookback",
+            default=int(os.environ.get("PDB_SYNC_LOOKBACK", "1")),
+        )
 
     class OrmSchema(_schema.Schema):
         class OrmDbSchema(_schema.Schema):
