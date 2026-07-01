@@ -51,6 +51,10 @@ class Fetcher:
         )
         self.user: str = str(kwargs.get("user", ""))
         self.password: str = str(kwargs.get("password", ""))
+        proxy: str = str(kwargs.get("proxy", ""))
+        self.proxies: dict[str, str] = (
+            {"http": proxy, "https": proxy} if proxy else {}
+        )
 
         # Used for testing
         self.remote_cache_used: bool = False
@@ -78,7 +82,9 @@ class Fetcher:
 
         while True:
             try:
-                resp = requests.get(url, timeout=self.timeout, headers=headers)
+                resp = requests.get(
+                    url, timeout=self.timeout, headers=headers, proxies=self.proxies
+                )
                 resp.raise_for_status()
                 return resp.json()["data"]
             except requests.exceptions.HTTPError:
@@ -139,7 +145,7 @@ class Fetcher:
             self._log.info(f"[{resource}] Fetching from remote cache")
             self._log.info(f"[{resource}] {cache_url}")
 
-            resp = requests.get(cache_url, timeout=self.timeout)
+            resp = requests.get(cache_url, timeout=self.timeout, proxies=self.proxies)
 
             if resp.status_code == 200:
                 # make sure dir exists

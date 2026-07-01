@@ -184,24 +184,120 @@ class Updater:
 
         self.backend.get_concrete(res).objects.bulk_create(objs)
 
+    def _lookback(self) -> int:
+        """
+        Seconds to rewind the incremental cursor (PDB_SYNC_LOOKBACK); see
+        `_since_param`. Defaults to 1, always non-negative.
+        """
+        sync = self.config.get("sync", {}) if isinstance(self.config, dict) else {}
+        try:
+            return max(int(sync.get("lookback", 1)), 0)
+        except (TypeError, ValueError):
+            return 1
+
+    def _since_param(self, _since) -> Optional[int]:
+        """
+        Compute the `since` value for an incremental fetch (None = full fetch).
+
+        Queries from `_since - lookback` instead of the old `_since + 1`, which
+        skipped objects changed in the boundary second against a whole-second
+        upstream + strict `>` (#135). Floored at 1 (0 would mean full fetch).
+        """
+        if _since and isinstance(_since, int):
+            return max(_since - self._lookback(), 1)
+        return None
+
+    def _compare_updated(self, row: dict, old) -> Optional[int]:
+        """
+        Compare the row's `updated` against the stored object's. The backend
+        stores `updated` verbatim from the server, so this is apples-to-apples.
+
+        :returns: 1 (remote newer), -1 (older), 0 (equal), or None if the
+            timestamp is missing/unparseable on either side.
+        """
+        raw = row.get("updated")
+        if not raw or not isinstance(raw, str):
+            return None
+        try:
+            remote = datetime.fromisoformat(raw.rstrip("Z")).replace(tzinfo=None)
+        except ValueError:
+            return None
+        local = getattr(old, "updated", None)
+        if local is None:
+            return None
+        if local.tzinfo is not None:
+            local = local.replace(tzinfo=None)
+        if remote > local:
+            return 1
+        if remote < local:
+            return -1
+        return 0
+
+    def _content_differs(self, new, old) -> bool:
+        """
+        True if `new` differs from `old` over their concrete columns (scalars +
+        FK ids) — breaks an `updated` tie the whole-second API timestamp can't
+        resolve (#135). Biased to True on uncomparable fields (never skip a change).
+        """
+        for field in self.backend.get_fields(new.__class__):
+            if not getattr(field, "concrete", False):
+                continue
+            name = getattr(field, "attname", field.name)  # *_id for FKs
+            if name in ("created", "updated"):
+                continue
+            try:
+                if getattr(new, name) != getattr(old, name):
+                    return True
+            except Exception:
+                return True
+        return False
+
+    def _changed_obj(self, row: dict, res, old):
+        """
+        Return the object to persist if `row` changes `old`, else None: fast path
+        on `updated` (newer apply / older skip), and on a tie build the object and
+        fall back to a content comparison since the API timestamp is whole-second (#135).
+        """
+        cmp = self._compare_updated(row, old)
+        if cmp == -1:
+            return None
+        # `old` and this obj must be distinct instances: create_obj re-fetches and
+        # mutates its own copy. Holds for django_peeringdb (get_object returns a
+        # fresh instance, no identity map); a memoizing backend would make `old`
+        # already-mutated and break the same-second content tie-break below.
+        obj, _ = self.create_obj(row, res)
+        if cmp == 0 and not self._content_differs(obj, old):
+            return None
+        return obj
+
     def _handle_incremental_sync(self, entries: list, res):
         """
-        Called during an incremental sync of a resource (i.e. not the first sync)
+        Apply an incremental sync: create/update changed objects, skip unchanged.
 
-        Entries will only contain objects that have changed since the last sync
+        The lookback window (see `_since_param`) re-fetches rows we already have;
+        `_changed_obj` filters those out so they aren't re-written (#135).
+
         :param entries: List of objects from API
         :param res: Resource to sync
+        :returns: dict with `created`, `updated` and `unchanged` counts
         """
 
+        concrete = self.backend.get_concrete(res)
+        created = updated = unchanged = 0
         for row in entries:
             try:
-                self.backend.get_object(self.backend.get_concrete(res), row["id"])
-                obj, _ = self.create_obj(row, res)
+                old = self.backend.get_object(concrete, row["id"])
+                obj = self._changed_obj(row, res, old)
+                if obj is None:
+                    unchanged += 1
+                    continue
                 self.copy_object(obj)
-            except self.backend.object_missing_error(self.backend.get_concrete(res)):
+                updated += 1
+            except self.backend.object_missing_error(concrete):
                 try:
                     obj, _ = self.create_obj(row, res)
                     self.backend.save(obj)
+                    created += 1
                 except Exception as e:
                     obj_id = row.get("id", "Unknown")
                     self._log.info(f"Error creating {res.tag} with id {obj_id}: {e}")
@@ -210,6 +306,8 @@ class Updater:
                 obj_id = row.get("id", "Unknown")
                 self._log.info(f"Error updating {res.tag} with id {obj_id}: {e}")
                 log_error(self.config, res.tag, row.get("id", "Unknown"), str(e))
+
+        return {"created": created, "updated": updated, "unchanged": unchanged}
 
     def update_all(
         self,
@@ -245,17 +343,31 @@ class Updater:
 
             self.fetcher.load(
                 res.tag,
-                _since + 1 if _since and isinstance(_since, int) else None,
+                self._since_param(_since),
                 fetch_private=fetch_private,
                 initial_private=initial_private,
             )
             entries = self.fetcher.entries(res.tag)
-            self._log.info("[%s] Processing %d objects", res.tag, len(entries))
+            # Rows returned by the API/cache; for incremental syncs the lookback
+            # window can make this exceed the number of actual changes (#135), so
+            # it is logged at debug while the INFO line below reports real work.
+            self._log.debug("[%s] Fetched %d objects", res.tag, len(entries))
 
             if not _since:
                 self._handle_initial_sync(entries, res)
+                self._log.info("[%s] Processed %d objects", res.tag, len(entries))
             else:
-                self._handle_incremental_sync(entries, res)
+                counts = self._handle_incremental_sync(entries, res)
+                # Report actual changes, not fetched rows, so the count is
+                # idempotent: a re-run that changes nothing reads "Processed 0".
+                self._log.info(
+                    "[%s] Processed %d objects (%d created, %d updated, %d unchanged)",
+                    res.tag,
+                    counts["created"] + counts["updated"],
+                    counts["created"],
+                    counts["updated"],
+                    counts["unchanged"],
+                )
 
     def update_one(self, res, pk: int, depth=0):
         """
