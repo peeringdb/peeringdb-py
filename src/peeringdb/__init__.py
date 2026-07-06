@@ -6,7 +6,7 @@ import logging
 import sys
 from importlib import import_module
 from importlib import metadata as importlib_metadata
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from peeringdb.backend import Interface
