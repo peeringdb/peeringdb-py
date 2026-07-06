@@ -3,7 +3,7 @@ import logging
 import re
 import resource as sys_resource
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional, Union, cast
+from typing import TYPE_CHECKING, cast
 
 from django.core import serializers
 
@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 
 
 def load_failed_entries(
-    config: dict[str, Union[str, dict]],
-) -> list[dict[str, Union[str, int]]]:
+    config: dict[str, str | dict],
+) -> list[dict[str, str | int]]:
     """
     Load a list of failed entries from the failed entries file
 
@@ -46,7 +46,7 @@ def load_failed_entries(
 
 
 def save_failed_entries(
-    config: dict[str, Union[str, dict]], entries: list[dict[str, Union[str, int]]]
+    config: dict[str, str | dict], entries: list[dict[str, str | int]]
 ) -> None:
     """
     Save a list of failed entries to the failed entries file
@@ -66,9 +66,9 @@ def save_failed_entries(
 
 
 def log_error(
-    config: dict[str, Union[str, dict]],
+    config: dict[str, str | dict],
     resource_tag: str,
-    pk: Union[int, str],
+    pk: int | str,
     error_message: str,
 ) -> None:
     """
@@ -98,7 +98,7 @@ def split_ref(string: str) -> tuple[str, int]:
     return (m.group("tag").lower(), int(m.group("pk")))
 
 
-def pretty_speed(value: Union[int, str, None]) -> str:
+def pretty_speed(value: int | str | None) -> str:
     if not value:
         return ""
     try:
@@ -114,7 +114,7 @@ def pretty_speed(value: Union[int, str, None]) -> str:
 
 
 def group_fields(
-    backend: "Interface", concrete: Optional[type]
+    backend: "Interface", concrete: type | None
 ) -> dict[str, dict[str, "Field"]]:
     """Partition a concrete's fields into groups based on type"""
     groups = ("scalars", "single_refs", "many_refs")
@@ -186,7 +186,7 @@ def client_load(client: "Client", path: Path) -> None:
                 obj.save()
 
 
-def get_log_level(level_str: str) -> Optional[int]:
+def get_log_level(level_str: str) -> int | None:
     """
     Convert a string log level to its corresponding logging module level.
     """
@@ -201,13 +201,13 @@ def get_log_level(level_str: str) -> Optional[int]:
     return levels.get(level_str.strip().upper())
 
 
-def prompt(msg: str, default: Optional[str] = None) -> Optional[str]:
+def prompt(msg: str, default: str | None = None) -> str | None:
     "Prompt for input"
     if default is not None:
         msg = f"{msg} ({repr(default)})"
     msg = f"{msg}: "
     try:
-        s: Optional[str] = input(msg)
+        s: str | None = input(msg)
     except KeyboardInterrupt:
         exit(1)
     except EOFError:

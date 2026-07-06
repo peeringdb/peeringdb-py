@@ -37,7 +37,7 @@ Below, we’ll focus on the **`peeringdb-py`** approach, while pulling in import
 
 ## 2. Prerequisites
 
-1. **Python 3.8+** – Required for the `peeringdb-py` CLI.
+1. **Python 3.10+** – Required for the `peeringdb-py` CLI.
 2. **Docker** (and **Docker Compose** if not already included with your Docker install).
 3. **Git** (optional, unless you want to also directly clone or reference PeeringDB’s code).
 

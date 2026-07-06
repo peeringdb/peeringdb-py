@@ -6,7 +6,7 @@ import json
 import logging
 import os
 from datetime import datetime
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     pass
@@ -56,14 +56,14 @@ class Updater:
             # missing, unreadable, or corrupt -> treat as no watermark
             return {}
 
-    def _get_since_private(self, tag: str) -> Optional[int]:
+    def _get_since_private(self, tag: str) -> int | None:
         bucket = self._load_since_private().get(self.fetcher.url)
         if not isinstance(bucket, dict):
             return None
         value = bucket.get(tag)
         return value if isinstance(value, int) else None
 
-    def _set_since_private(self, tag: str, ts: Optional[int]) -> None:
+    def _set_since_private(self, tag: str, ts: int | None) -> None:
         if not ts:
             return
         data = self._load_since_private()
@@ -121,7 +121,7 @@ class Updater:
                         raise e
 
     def create_obj(
-        self, row: dict[str, Union[str, int, bool, list, dict]], res: type
+        self, row: dict[str, str | int | bool | list | dict], res: type
     ) -> tuple[object, bool]:  # noqa: C901
         """
         Create a model instance from a row
@@ -244,7 +244,7 @@ class Updater:
         except (TypeError, ValueError):
             return 1
 
-    def _since_param(self, _since) -> Optional[int]:
+    def _since_param(self, _since) -> int | None:
         """
         Compute the `since` value for an incremental fetch (None = full fetch).
 
@@ -256,7 +256,7 @@ class Updater:
             return max(_since - self._lookback(), 1)
         return None
 
-    def _compare_updated(self, row: dict, old) -> Optional[int]:
+    def _compare_updated(self, row: dict, old) -> int | None:
         """
         Compare the row's `updated` against the stored object's. The backend
         stores `updated` verbatim from the server, so this is apples-to-apples.
@@ -362,8 +362,8 @@ class Updater:
     def update_all(
         self,
         rs: list[type],
-        since: Optional[int] = None,
-        skip: Union[list[str], None] = None,
+        since: int | None = None,
+        skip: list[str] | None = None,
         fetch_private: bool = False,
     ):
         """

@@ -5,7 +5,7 @@ description = "PeeringDB Python client and library"
 readme = "README.md"
 authors = [{ name = "PeeringDB", email = "support@peeringdb.com" }]
 license = { text = "BSD-2-Clause" }
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 keywords = ["peeringdb", "networking", "peering", "internet", "api", "bgp", "asn"]
 
 classifiers = [
@@ -14,11 +14,11 @@ classifiers = [
     "Intended Audience :: System Administrators",
     "Intended Audience :: Telecommunications Industry",
     "License :: OSI Approved :: BSD License",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Internet",
 ]
@@ -66,7 +66,7 @@ issues = "https://github.com/peeringdb/peeringdb-py/issues"
 
 [tool.ruff]
 line-length = 88
-target-version = "py39"
+target-version = "py310"
 
 [tool.ruff.lint]
 extend-select = [
@@ -106,7 +106,7 @@ max-complexity = 12
 "tests/**/*" = ["S101"]   # Allow assert statements in tests
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.10"
 warn_return_any = false
 warn_unused_configs = true
 disallow_untyped_defs = false
