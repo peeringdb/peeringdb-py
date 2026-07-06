@@ -3,7 +3,7 @@ PeeringDB resource definitions
 """
 
 from collections import OrderedDict
-from typing import Callable
+from collections.abc import Callable
 
 # Generate classes
 _NAMES: OrderedDict[str, str] = OrderedDict(

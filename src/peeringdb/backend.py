@@ -1,7 +1,6 @@
 import inspect
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from functools import wraps
-from typing import Callable, Optional, Union
 
 from peeringdb.resource import RESOURCES_BY_TAG
 
@@ -39,7 +38,7 @@ class Field:
 
     def __init__(self, name: str) -> None:
         self.name = name
-        self.column: Optional[object] = None  # ???
+        self.column: object | None = None  # ???
 
 
 class EmptyContext:
@@ -129,7 +128,7 @@ class Interface(Base):
     REFTAG_CONCRETE: dict[str, type] = {}
 
     @classmethod
-    def validation_error(cls, concrete: Optional[type] = None) -> type[Exception]:
+    def validation_error(cls, concrete: type | None = None) -> type[Exception]:
         """
         should return the exception class that will
         be raised when an object fails validation
@@ -147,7 +146,7 @@ class Interface(Base):
         return Exception
 
     @classmethod
-    def object_missing_error(cls, concrete: Optional[type] = None) -> type[Exception]:
+    def object_missing_error(cls, concrete: type | None = None) -> type[Exception]:
         """
         should return the exception class that will
         be raised when an object cannot be found
@@ -195,7 +194,7 @@ class Interface(Base):
 
     @reftag_to_cls
     def create_object(
-        self, concrete: type, **data: Union[str, int, bool, list, dict]
+        self, concrete: type, **data: str | int | bool | list | dict
     ) -> object:
         """
         should create object from dict and return it
@@ -219,7 +218,7 @@ class Interface(Base):
 
     def detect_missing_relations(
         self, obj: object, exc: Exception
-    ) -> dict[type, list[Union[str, int]]]:
+    ) -> dict[type, list[str | int]]:
         """
         Should parse error messages and collect the missing relationship
         errors as a dict of Resource -> {id set} and return it
@@ -235,7 +234,7 @@ class Interface(Base):
         """
         raise NotImplementedError()
 
-    def detect_uniqueness_error(self, exc: Exception) -> Optional[list[str]]:
+    def detect_uniqueness_error(self, exc: Exception) -> list[str] | None:
         """
         Should parse error message and collect any that describe violations
         of a uniqueness constraint.
@@ -285,7 +284,7 @@ class Interface(Base):
         raise NotImplementedError()
 
     @reftag_to_cls
-    def get_object(self, concrete: type, id: Union[str, int]) -> object:
+    def get_object(self, concrete: type, id: str | int) -> object:
         """
         should return instance of object with matching id
 
@@ -302,7 +301,7 @@ class Interface(Base):
 
     @reftag_to_cls
     def get_object_by(
-        self, concrete: type, field_name: str, value: Union[str, int, bool]
+        self, concrete: type, field_name: str, value: str | int | bool
     ) -> object:
         """
         very simply search function that should return
@@ -322,7 +321,7 @@ class Interface(Base):
 
     @reftag_to_cls
     def get_objects(
-        self, concrete: type, ids: Optional[Sequence[Union[str, int]]] = None
+        self, concrete: type, ids: Sequence[str | int] | None = None
     ) -> Sequence[object]:
         """
         should return collection of objects
@@ -342,7 +341,7 @@ class Interface(Base):
 
     @reftag_to_cls
     def get_objects_by(
-        self, concrete: type, field: str, value: Union[str, int, bool]
+        self, concrete: type, field: str, value: str | int | bool
     ) -> Sequence[object]:
         """
         very simple search function that should return
@@ -379,7 +378,7 @@ class Interface(Base):
         raise NotImplementedError()
 
     @reftag_to_cls
-    def last_change(self, concrete: type) -> Optional[int]:
+    def last_change(self, concrete: type) -> int | None:
         """
         should return unix epoch timestamp of the `updated` field
         of the most recently updated object
@@ -418,9 +417,7 @@ class Interface(Base):
         """
         raise NotImplementedError()
 
-    def update(
-        self, obj: object, field_name: str, value: Union[str, int, bool]
-    ) -> None:
+    def update(self, obj: object, field_name: str, value: str | int | bool) -> None:
         """
         update field on a concrete instance to value
 
@@ -481,8 +478,8 @@ class Interface(Base):
 
     @reftag_to_cls
     def convert_field(
-        self, concrete: type, field_name: str, value: Union[str, int, bool]
-    ) -> Union[str, int, bool]:
+        self, concrete: type, field_name: str, value: str | int | bool
+    ) -> str | int | bool:
         """
         Should take a value and a field definition and do a value
         conversion if needed.
@@ -507,7 +504,7 @@ class Interface(Base):
                 1 = show some info about migrations.
         """
 
-    def is_database_migrated(self, **kwargs: Union[str, int, bool]) -> bool:
+    def is_database_migrated(self, **kwargs: str | int | bool) -> bool:
         """
         Should return whether the database is fully migrated
 

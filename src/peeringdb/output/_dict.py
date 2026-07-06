@@ -1,7 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 from ipaddress import IPv4Address, IPv6Address
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from peeringdb.backend import Field
@@ -13,7 +13,7 @@ from peeringdb.util import group_fields
 
 
 class DictWrap:
-    def __init__(self, o: Optional[object], depth: int):
+    def __init__(self, o: object | None, depth: int):
         self.object = o
         self.depth = depth
         backend = get_backend()
@@ -27,9 +27,7 @@ class DictWrap:
             self.fields = group_fields(backend, o.__class__)
 
     @staticmethod
-    def _resolve_one(
-        name: str, value: Optional[object], depth: int
-    ) -> Union[dict, int, None]:
+    def _resolve_one(name: str, value: object | None, depth: int) -> dict | int | None:
         if depth > 0:
             return DictWrap(value, depth - 1).to_dict()
         elif value is None:
@@ -38,9 +36,7 @@ class DictWrap:
             return getattr(value, "id", None)
 
     @staticmethod
-    def _resolve_many(
-        name: str, value: object, depth: int
-    ) -> Optional[list[Union[dict, int]]]:
+    def _resolve_many(name: str, value: object, depth: int) -> list[dict | int] | None:
         if depth > 1:
             all_method = getattr(value, "all", None)
             if all_method:
@@ -90,7 +86,7 @@ class DictWrap:
         return data
 
 
-def dump_python_dict(obj: object, depth: int) -> Union[dict, object]:
+def dump_python_dict(obj: object, depth: int) -> dict | object:
     if get_backend().is_concrete(type(obj)):
         obj = DictWrap(obj, depth).to_dict()
     return obj

@@ -5,7 +5,6 @@ import os
 import re
 import time
 import urllib
-from typing import Optional, Union
 
 import requests
 
@@ -23,7 +22,7 @@ class Fetcher:
         timeout: int,
         api_key: str = "",
         cache_url: str = "",
-        **kwargs: Union[str, int, bool, dict],
+        **kwargs: str | int | bool | dict,
     ) -> None:
         """
         Construct a new Fetcher
@@ -38,9 +37,7 @@ class Fetcher:
         """
         self._log: logging.Logger = logging.getLogger(__name__)
 
-        self.resources: dict[
-            str, list[dict[str, Union[str, int, bool, list, dict]]]
-        ] = {}
+        self.resources: dict[str, list[dict[str, str | int | bool | list | dict]]] = {}
         # normalize to avoid `//` in URL concatenations like f"{self.url}/{endpoint}"
         self.url: str = url.rstrip("/")
         self.timeout: int = timeout or 60
@@ -62,8 +59,8 @@ class Fetcher:
         self.attempt: int = 0
 
     def _get(
-        self, endpoint: str, **params: Union[str, int]
-    ) -> list[dict[str, Union[str, int, bool, list, dict]]]:
+        self, endpoint: str, **params: str | int
+    ) -> list[dict[str, str | int | bool | list | dict]]:
         url = f"{self.url}/{endpoint}"
         url_params = urllib.parse.urlencode(params)
         if url_params:
@@ -106,7 +103,7 @@ class Fetcher:
     def load(
         self,
         resource: str,
-        since: Optional[int] = 0,
+        since: int | None = 0,
         fetch_private: bool = False,
         delay: float = 0.5,
     ) -> None:
@@ -178,7 +175,7 @@ class Fetcher:
 
             time.sleep(delay)
 
-    def entries(self, tag: str) -> list[dict[str, Union[str, int, bool, list, dict]]]:
+    def entries(self, tag: str) -> list[dict[str, str | int | bool | list | dict]]:
         """
         Get all entries by tag ro load it if we don't already have the resource
         :param tag: Resource tag (i.e. "net")
@@ -190,7 +187,7 @@ class Fetcher:
 
     def get(
         self, tag: str, pk: int, depth: int = 0, force_fetch: bool = False
-    ) -> dict[str, Union[str, int, bool, list, dict]]:
+    ) -> dict[str, str | int | bool | list | dict]:
         """
         Get an individual object or attempt to query
         :param tag: Resource tag (i.e. "net")

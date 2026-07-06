@@ -6,7 +6,7 @@ import logging
 import sys
 from importlib import import_module
 from importlib import metadata as importlib_metadata
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from peeringdb.backend import Interface
@@ -18,9 +18,9 @@ _log_level: int = logging.INFO
 
 
 def _config_logs(
-    level: Optional[Union[str, int]] = None,
-    name: Optional[str] = None,
-    allow_other_loggers: Union[bool, str] = False,
+    level: str | int | None = None,
+    name: str | None = None,
+    allow_other_loggers: bool | str = False,
 ) -> None:
     """
     Set up or change logging configuration.
@@ -69,7 +69,7 @@ SUPPORTED_BACKENDS: dict[str, str] = {
     "django_peeringdb": "django_peeringdb.client_adaptor",
 }
 
-__backend: Optional[tuple["Interface", tuple[str, str]]] = None
+__backend: tuple["Interface", tuple[str, str]] | None = None
 
 
 def backend_initialized() -> bool:
@@ -92,7 +92,7 @@ def get_backend_info() -> tuple[str, str]:
     return _get()[1]
 
 
-def initialize_backend(name: str, **kwargs: Union[str, int, bool, dict]) -> None:
+def initialize_backend(name: str, **kwargs: str | int | bool | dict) -> None:
     global __backend
     if __backend:
         raise BackendError("Backend already initialized")

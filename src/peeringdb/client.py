@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 import munge.util
 
@@ -26,7 +26,7 @@ class _Query:
         self.client = client
         self.res = res
 
-    def get(self, pk: Union[int, str]) -> object:
+    def get(self, pk: int | str) -> object:
         return self.client.get(self.res, pk)
 
     def all(self, **kwargs: object) -> object:
@@ -37,7 +37,7 @@ class Client:
     """Main PeeringDB client."""
 
     def __init__(
-        self, cfg: Optional[Mapping[str, object]] = None, **kwargs: object
+        self, cfg: Mapping[str, object] | None = None, **kwargs: object
     ) -> None:
         """
         Arguments:
@@ -87,7 +87,7 @@ class Client:
         self._Tags: type = type("_Tags", (), tag_attrs)
         self.tags: object = self._Tags()
 
-    def get(self, res: type, pk: Union[int, str]) -> object:
+    def get(self, res: type, pk: int | str) -> object:
         """Get a resource instance by primary key (id)"""
         backend = get_backend()
         return backend.get_object(backend.get_concrete(res), pk)
