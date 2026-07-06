@@ -78,6 +78,7 @@ def test_schema_migration():
             "strip_tz": 1,
             "failed_entries": "failed_entries.json",
             "proxy": "",
+            "lookback": 1,
         },
         "orm": {
             "backend": "django_peeringdb",

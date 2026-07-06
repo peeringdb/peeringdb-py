@@ -108,15 +108,15 @@ class Fetcher:
         resource: str,
         since: Optional[int] = 0,
         fetch_private: bool = False,
-        initial_private: bool = False,
         delay: float = 0.5,
     ) -> None:
         """
         Load a resource from mock data.
         :param resource: Resource tag (i.e. "net")
-        :param since: Unix timestamp of last update (0 for all)
+        :param since: Unix timestamp of last update (0/None for all). For private
+            objects the caller passes the since_private watermark (None on the
+            first private fetch, which grabs everything).
         :param fetch_private: Fetch private data (poc, ixlan)
-        :param initial_private: private data has never been fetched before.
         """
         if resource in self.resources:
             return
@@ -125,9 +125,15 @@ class Fetcher:
 
         fetch_private = fetch_private and resource in PRIVATE_OBJECTS
 
-        # Load from local cache if <15m old
+        # Load from local cache if <15m old. Skipped for private fetches: the
+        # local cache file only ever holds the PUBLIC payload (it's written by
+        # the remote-cache branch below, which has no private fields), so a
+        # --fetch-private run must hit the API rather than read stale public
+        # data. Matters now that the first private fetch arrives with since=None
+        # (watermark unset), which would otherwise reach this branch.
         if (
             not since
+            and not fetch_private
             and os.path.exists(cache_file)
             and os.path.getmtime(cache_file) > (time.time() - 15 * 60)
         ):
@@ -162,11 +168,6 @@ class Fetcher:
 
         # Fall back to fetching from API
         else:
-            if fetch_private and initial_private:
-                # Fetch private data for the first time, so we reset the
-                # since parameter to grab all objects.
-                since = None
-
             self._log.info(
                 f"[{resource}] Fetching from API {'(private)' if fetch_private else ''}"
             )

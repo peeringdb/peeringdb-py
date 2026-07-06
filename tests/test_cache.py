@@ -264,3 +264,142 @@ def test_cache_file_used(mock_get, fetcher):
         assert model.objects.all().count()
 
         client.backend.delete_all()
+
+
+def _api_response(payload):
+    resp = requests.Response()
+    resp.status_code = 200
+    resp._content = json.dumps(payload).encode()
+    return resp
+
+
+@patch("requests.get")
+def test_private_object_bypasses_remote_cache_and_hits_api(mock_get):
+    """A private object with fetch_private=True must skip the remote cache
+    (which has no private fields) and fetch from the API instead (#92)."""
+    mock_get.side_effect = lambda url, *a, **k: _api_response({"data": [{"id": 1}]})
+
+    with tempfile.TemporaryDirectory() as cache_dir:
+        fetcher = Fetcher(
+            url="https://test.peeringdb.com/api",
+            timeout=0,
+            api_key="testkey",
+            cache_url="https://public.peeringdb.com",
+            cache_dir=cache_dir,
+        )
+        fetcher.load("ixlan", since=None, fetch_private=True)
+
+    urls = [call.args[0] for call in mock_get.call_args_list]
+    assert urls, "expected at least one request"
+    # remote cache was never contacted...
+    assert all("public.peeringdb.com" not in u for u in urls)
+    assert fetcher.remote_cache_used is False
+    # ...the API was
+    assert any("test.peeringdb.com/api/ixlan" in u for u in urls)
+
+
+@patch("requests.get")
+def test_private_incremental_passes_since_to_api(mock_get):
+    """The since_private watermark the caller passes must reach the API query."""
+    mock_get.side_effect = lambda url, *a, **k: _api_response({"data": []})
+
+    with tempfile.TemporaryDirectory() as cache_dir:
+        fetcher = Fetcher(
+            url="https://test.peeringdb.com/api",
+            timeout=0,
+            api_key="testkey",
+            cache_url="https://public.peeringdb.com",
+            cache_dir=cache_dir,
+        )
+        fetcher.load("ixlan", since=201, fetch_private=True)
+
+    urls = [call.args[0] for call in mock_get.call_args_list]
+    assert any("ixlan?since=201" in u for u in urls)
+
+
+@patch("requests.get")
+def test_private_sync_writes_and_reuses_since_private_watermark(mock_get, tmp_path):
+    """End-to-end through the real backend: a --fetch-private sync seeds the
+    since_private watermark for each private resource, and the next sync fetches
+    them incrementally from the watermark (windowed by the #135 lookback)."""
+
+    def side_effect(url, *args, **kwargs):
+        resp = requests.Response()
+        resp.status_code = 200
+        # incremental API queries return nothing new
+        if "?since=" in url:
+            resp._content = json.dumps({"data": []}).encode()
+            return resp
+        # serve any resource from the shared fixtures, whether requested as an
+        # API path (".../ixlan") or a cache file (".../ixlan-0.json")
+        tag = url.rstrip("/").split("/")[-1].replace("-0.json", "")
+        try:
+            with open(f"tests/data/cache/{tag}-0.json") as f:
+                resp._content = f.read().encode()
+        except FileNotFoundError:
+            resp._content = json.dumps({"data": []}).encode()
+        return resp
+
+    mock_get.side_effect = side_effect
+
+    config = copy.deepcopy(CONFIG_CACHING)
+    config["sync"]["cache_dir"] = str(tmp_path)
+    api_url = config["sync"]["url"].rstrip("/")
+
+    client = Client(config)
+    rs = all_resources()
+
+    # first --fetch-private sync: full fetch, then seed the watermark
+    client.updater.update_all(rs, fetch_private=True)
+
+    state_file = tmp_path / ".since-private.json"
+    assert state_file.exists()
+    state = json.loads(state_file.read_text())
+    assert isinstance(state[api_url]["ixlan"], int)
+    assert isinstance(state[api_url]["poc"], int)
+    ixlan_ts = state[api_url]["ixlan"]
+
+    # second sync: ixlan is fetched incrementally from the watermark, not in
+    # full. Use a fresh Client so the fetcher's in-memory resource cache is
+    # empty (each real CLI run is a new process); same DB + cache dir persist.
+    mock_get.reset_mock()
+    client = Client(config)
+    client.updater.update_all(rs, fetch_private=True)
+    urls = [call.args[0] for call in mock_get.call_args_list]
+    expected_since = client.updater._since_param(ixlan_ts)
+    assert any(f"ixlan?since={expected_since}" in u for u in urls)
+
+    client.backend.delete_all()
+
+
+@patch("requests.get")
+def test_private_fetch_ignores_fresh_public_local_cache(mock_get, tmp_path):
+    """A --fetch-private run must NOT read a fresh public local cache file.
+
+    The first private fetch passes since=None (watermark unset), which reaches
+    the local-cache branch. The local cache file only ever holds the public
+    payload (no private fields), so without the not-fetch-private guard it would
+    load public data and silently skip private data — reintroducing #92 on the
+    canonical "public sync, then --fetch-private within 15m" first-run flow.
+    """
+    # a fresh public cache file left by a prior non-private sync (url is null)
+    public = {"data": [{"id": 1, "ixf_ixp_member_list_url": None}]}
+    (tmp_path / "ixlan-0.json").write_text(json.dumps(public))
+
+    api = {"data": [{"id": 1, "ixf_ixp_member_list_url": "https://example.com/ixf"}]}
+    mock_get.side_effect = lambda url, *a, **k: _api_response(api)
+
+    fetcher = Fetcher(
+        url="https://test.peeringdb.com/api",
+        timeout=0,
+        api_key="testkey",
+        cache_url="https://public.peeringdb.com",
+        cache_dir=str(tmp_path),
+    )
+    fetcher.load("ixlan", since=None, fetch_private=True)
+
+    # went to the API, not the fresh public local cache
+    assert fetcher.local_cache_used is False
+    urls = [call.args[0] for call in mock_get.call_args_list]
+    assert any("test.peeringdb.com/api/ixlan" in u for u in urls)
+    assert fetcher.resources["ixlan"] == api["data"]
