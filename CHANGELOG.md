@@ -2,12 +2,20 @@
 
 
 ## Unreleased
+
+
+## 2.5.0
 ### Added
 - Support HTTP proxy settings in config file
+- python 3.14 support
+- django 5.2 and 6.0 added to test matrix
 ### Fixed
 - normalize URLs to avoid `//` in URL concatenations
 - race condition that could cause missed records when syncing incremental updates (#135)
 - with --fetch-private, ixlan is not being cached (#92)
+### Removed
+- python 3.9 support (end of life)
+- django 3.2 from test matrix (end of life)
 
 
 ## 2.4.2
