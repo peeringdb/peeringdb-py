@@ -7,13 +7,15 @@ from typing import TYPE_CHECKING, cast
 
 from django.core import serializers
 
+from peeringdb._types import Value
+
 if TYPE_CHECKING:
     from peeringdb.backend import Field, Interface
     from peeringdb.client import Client
 
 
 def load_failed_entries(
-    config: dict[str, str | dict],
+    config: dict[str, Value],
 ) -> list[dict[str, str | int]]:
     """
     Load a list of failed entries from the failed entries file
@@ -46,7 +48,8 @@ def load_failed_entries(
 
 
 def save_failed_entries(
-    config: dict[str, str | dict], entries: list[dict[str, str | int]]
+    config: dict[str, Value],
+    entries: list[dict[str, str | int]],
 ) -> None:
     """
     Save a list of failed entries to the failed entries file
@@ -66,7 +69,7 @@ def save_failed_entries(
 
 
 def log_error(
-    config: dict[str, str | dict],
+    config: dict[str, Value],
     resource_tag: str,
     pk: int | str,
     error_message: str,

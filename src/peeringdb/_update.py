@@ -6,13 +6,11 @@ import json
 import logging
 import os
 from datetime import datetime
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    pass
+from typing import cast
 
 from peeringdb import config, get_backend
 from peeringdb._sync import extract_relations, set_many_relations, set_single_relations
+from peeringdb._types import Value
 from peeringdb.fetch import Fetcher
 from peeringdb.private import PRIVATE_OBJECTS
 from peeringdb.util import group_fields, log_error
@@ -28,7 +26,7 @@ class Updater:
     or updating the corresponding objects in the local backend.
     """
 
-    def __init__(self, fetcher: Fetcher):
+    def __init__(self, fetcher: Fetcher) -> None:
         self._log = logging.getLogger(__name__)
         self.resources: dict = {}
         self.backend = get_backend()
@@ -82,7 +80,7 @@ class Updater:
             json.dump(data, f)
         os.replace(tmp, path)
 
-    def copy_object(self, new):
+    def copy_object(self, new: object) -> None:
         """
         Copies a new object to an existing one
         :return:
@@ -100,7 +98,7 @@ class Updater:
         self.clean_obj(old)
         self.backend.save(old)
 
-    def clean_obj(self, obj):
+    def clean_obj(self, obj: object) -> None:
         """
         Run object through backend validation
 
@@ -120,9 +118,7 @@ class Updater:
                     if error != "This field cannot be blank.":
                         raise e
 
-    def create_obj(
-        self, row: dict[str, str | int | bool | list | dict], res: type
-    ) -> tuple[object, bool]:  # noqa: C901
+    def create_obj(self, row: dict[str, Value], res: type) -> tuple[object, bool]:  # noqa: C901
         """
         Create a model instance from a row
         :param row: Object from API
@@ -204,7 +200,7 @@ class Updater:
 
         return obj, False
 
-    def _handle_initial_sync(self, entries: list, res):
+    def _handle_initial_sync(self, entries: list[dict[str, Value]], res: type) -> None:
         """
         Called during the first sync of a resource
 
@@ -225,11 +221,21 @@ class Updater:
                 except Exception as e:
                     obj_id = row.get("id", "Unknown")
                     self._log.info(f"Error creating {res.tag} with id {obj_id}: {e}")
-                    log_error(self.config, res.tag, row.get("id", "Unknown"), str(e))
+                    log_error(
+                        self.config,
+                        res.tag,
+                        cast("str | int", row.get("id", "Unknown")),
+                        str(e),
+                    )
             except Exception as e:
                 obj_id = row.get("id", "Unknown")
                 self._log.info(f"Error updating {res.tag} with id {obj_id}: {e}")
-                log_error(self.config, res.tag, row.get("id", "Unknown"), str(e))
+                log_error(
+                    self.config,
+                    res.tag,
+                    cast("str | int", row.get("id", "Unknown")),
+                    str(e),
+                )
 
         self.backend.get_concrete(res).objects.bulk_create(objs)
 
@@ -238,13 +244,15 @@ class Updater:
         Seconds to rewind the incremental cursor (PDB_SYNC_LOOKBACK); see
         `_since_param`. Defaults to 1, always non-negative.
         """
-        sync = self.config.get("sync", {}) if isinstance(self.config, dict) else {}
+        sync = self.config.get("sync", {})
+        if not isinstance(sync, dict):
+            return 1
         try:
             return max(int(sync.get("lookback", 1)), 0)
         except (TypeError, ValueError):
             return 1
 
-    def _since_param(self, _since) -> int | None:
+    def _since_param(self, _since: int | None) -> int | None:
         """
         Compute the `since` value for an incremental fetch (None = full fetch).
 
@@ -256,7 +264,7 @@ class Updater:
             return max(_since - self._lookback(), 1)
         return None
 
-    def _compare_updated(self, row: dict, old) -> int | None:
+    def _compare_updated(self, row: dict[str, Value], old: object) -> int | None:
         """
         Compare the row's `updated` against the stored object's. The backend
         stores `updated` verbatim from the server, so this is apples-to-apples.
@@ -282,7 +290,7 @@ class Updater:
             return -1
         return 0
 
-    def _content_differs(self, new, old) -> bool:
+    def _content_differs(self, new: object, old: object) -> bool:
         """
         True if `new` differs from `old` over their concrete columns (scalars +
         FK ids) — breaks an `updated` tie the whole-second API timestamp can't
@@ -301,7 +309,9 @@ class Updater:
                 return True
         return False
 
-    def _changed_obj(self, row: dict, res, old):
+    def _changed_obj(
+        self, row: dict[str, Value], res: type, old: object
+    ) -> object | None:
         """
         Return the object to persist if `row` changes `old`, else None: fast path
         on `updated` (newer apply / older skip), and on a tie build the object and
@@ -320,7 +330,9 @@ class Updater:
             return None
         return obj
 
-    def _handle_incremental_sync(self, entries: list, res):
+    def _handle_incremental_sync(
+        self, entries: list[dict[str, Value]], res: type
+    ) -> dict[str, int]:
         """
         Apply an incremental sync: create/update changed objects, skip unchanged.
 
@@ -351,11 +363,21 @@ class Updater:
                 except Exception as e:
                     obj_id = row.get("id", "Unknown")
                     self._log.info(f"Error creating {res.tag} with id {obj_id}: {e}")
-                    log_error(self.config, res.tag, row.get("id", "Unknown"), str(e))
+                    log_error(
+                        self.config,
+                        res.tag,
+                        cast("str | int", row.get("id", "Unknown")),
+                        str(e),
+                    )
             except Exception as e:
                 obj_id = row.get("id", "Unknown")
                 self._log.info(f"Error updating {res.tag} with id {obj_id}: {e}")
-                log_error(self.config, res.tag, row.get("id", "Unknown"), str(e))
+                log_error(
+                    self.config,
+                    res.tag,
+                    cast("str | int", row.get("id", "Unknown")),
+                    str(e),
+                )
 
         return {"created": created, "updated": updated, "unchanged": unchanged}
 
@@ -365,7 +387,7 @@ class Updater:
         since: int | None = None,
         skip: list[str] | None = None,
         fetch_private: bool = False,
-    ):
+    ) -> None:
         """
         Update all objects of a given type
         :param rs: List of resources to update
@@ -451,7 +473,7 @@ class Updater:
                     res.tag, reached if isinstance(reached, int) else None
                 )
 
-    def update_one(self, res, pk: int, depth=0):
+    def update_one(self, res: type, pk: int, depth: int = 0) -> None:
         """
         Update a single object
         :param res: Resource to update
@@ -478,7 +500,9 @@ class Updater:
             obj, _ = self.create_obj(row, res)
             self.backend.save(obj)
 
-    def update_collision(self, res, row: dict, exc: Exception):
+    def update_collision(
+        self, res: type, row: dict[str, Value], exc: Exception
+    ) -> None:
         """
         Sometimes we encounter edge-case collisions triggered by a
         unique constraint validation error. This function attempts to

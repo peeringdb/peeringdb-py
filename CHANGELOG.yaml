@@ -1,9 +1,11 @@
 Unreleased:
   added: []
-  fixed: []
+  fixed:
+  - Dependency updates and modernization (#139)
   changed: []
   deprecated: []
-  removed: []
+  removed:
+  - python 3.10 support (end of life)
   security: []
 2.5.0:
   added:

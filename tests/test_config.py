@@ -17,6 +17,8 @@ except ImportError:
     TemporaryDirectory = temporary_directory
 
 
+from confu import schema as _schema
+
 from peeringdb import config
 
 
@@ -145,4 +147,61 @@ def test_proxy_roundtrip():
     assert loaded["sync"]["proxy"] == "http://proxy.example.com:3128"
 
 
-# TODO test_prompt_config
+def test_prompt_config_keeps_defaults_on_empty(monkeypatch):
+    """Empty answers fall back to the schema defaults (and validate)."""
+    monkeypatch.setattr("builtins.input", lambda _prompt: "")
+    result = config.prompt_config(config.CLIENT_SCHEMA)
+
+    assert config.CLIENT_SCHEMA.validate(result)
+    default = config.default_config()
+    assert result["sync"]["url"] == default["sync"]["url"]
+    assert result["sync"]["timeout"] == default["sync"]["timeout"]
+    # non-str default (list) is preserved as its original type, not stringified
+    assert result["sync"]["only"] == []
+
+
+def test_prompt_config_uses_entered_value(monkeypatch):
+    """A non-empty answer for a nested field is used; others keep defaults."""
+
+    def _input(prompt_text):
+        return "alice" if prompt_text.startswith("sync.user") else ""
+
+    monkeypatch.setattr("builtins.input", _input)
+    result = config.prompt_config(config.CLIENT_SCHEMA)
+
+    assert result["sync"]["user"] == "alice"
+    assert result["sync"]["url"] == config.default_config()["sync"]["url"]
+
+
+def test_prompt_config_uses_supplied_defaults(monkeypatch):
+    """Supplied defaults are offered (and kept) when the user answers empty."""
+    monkeypatch.setattr("builtins.input", lambda _prompt: "")
+    custom = config.default_config()
+    custom["sync"]["user"] = "bob"
+
+    result = config.prompt_config(config.CLIENT_SCHEMA, defaults=custom)
+    assert result["sync"]["user"] == "bob"
+
+
+def test_prompt_config_empty_string_fallback(monkeypatch):
+    """A schema attr with no default falls back to an empty string."""
+
+    class _S(_schema.Schema):
+        x = _schema.Str("x", default=None, blank=True)
+
+    monkeypatch.setattr("builtins.input", lambda _prompt: "")
+    result = config.prompt_config(_S())
+    assert result["x"] == ""
+
+
+def test_write_config_creates_missing_dir(tmp_path):
+    target = tmp_path / "newdir"
+    config.write_config(config.default_config(), str(target))
+    assert target.exists()
+    assert list(target.glob("config.*"))
+
+
+def test_write_config_backs_up_existing(tmp_path):
+    config.write_config(config.default_config(), str(tmp_path))
+    config.write_config(config.default_config(), str(tmp_path), backup_existing=True)
+    assert list(tmp_path.glob("*.bak"))

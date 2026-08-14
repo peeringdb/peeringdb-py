@@ -3,7 +3,9 @@ Sync implementation module
 """
 
 from collections import defaultdict
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
+
+from peeringdb._types import Value
 
 if TYPE_CHECKING:
     from peeringdb.backend import Interface
@@ -22,8 +24,8 @@ def _field_resource(backend: "Interface", concrete: type, field: object) -> type
 
 
 def _get_subrow(
-    row: dict[str, str | int | bool | list | dict], fname: str, field: object
-) -> tuple[str, str | int | bool | list | dict | None]:
+    row: dict[str, Value], fname: str, field: object
+) -> tuple[str, Value | None]:
     key = getattr(field, "column", None)
     if key is not None and isinstance(key, str):
         subrow = row.get(key)
@@ -40,9 +42,9 @@ def _get_subrow(
 
 
 def extract_relations(
-    backend: "Interface", res: type, row: dict[str, str | int | bool | list | dict]
+    backend: "Interface", res: type, row: dict[str, Value]
 ) -> tuple[
-    dict[type, dict[str | int, dict[str, str | int | bool | list | dict]]],
+    dict[type, dict[str | int, dict[str, Value]]],
     dict[type, set[str | int]],
 ]:
     field_groups = group_fields(backend, backend.get_concrete(res))
@@ -51,14 +53,15 @@ def extract_relations(
     dangling = defaultdict(set)
 
     # Handle subrows that might be shallow (id) or deep (dict)
-    def _handle_subrow(resource, subrow):
+    def _handle_subrow(resource: type, subrow: Value | None) -> str | int | None:
         if isinstance(subrow, dict):
-            pk = subrow["id"]
+            pk = cast("str | int", subrow["id"])
             fetched[resource][pk] = subrow
         elif subrow is None:
-            return
+            return None
         else:
-            pk = subrow
+            # a shallow ref is a bare id (int/str)
+            pk = cast("str | int", subrow)
             dangling[resource].add(pk)
         return pk
 
@@ -81,7 +84,7 @@ def set_single_relations(
     backend: "Interface",
     res: type,
     obj: object,
-    row: dict[str, str | int | bool | list | dict],
+    row: dict[str, Value],
 ) -> None:
     field_groups = group_fields(backend, backend.get_concrete(res))
     for fname, field in field_groups["single_refs"].items():
@@ -97,7 +100,7 @@ def set_many_relations(
     backend: "Interface",
     res: type,
     obj: object,
-    row: dict[str, str | int | bool | list | dict],
+    row: dict[str, Value],
 ) -> None:
     field_groups = group_fields(backend, backend.get_concrete(res))
     for fname, field in field_groups["many_refs"].items():

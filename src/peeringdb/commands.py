@@ -1,13 +1,19 @@
+from __future__ import annotations
+
 import logging
 import os
 import subprocess
 import sys
+from argparse import ArgumentParser
+from collections.abc import Callable, Iterable
+from typing import cast
 
 import munge
 
 import peeringdb
 from peeringdb import config as cfg
 from peeringdb import resource, util
+from peeringdb._types import Value
 from peeringdb.client import Client
 from peeringdb.output._dict import dump_python_dict
 from peeringdb.util import load_failed_entries, save_failed_entries
@@ -18,10 +24,10 @@ _log = logging.getLogger(__name__)
 _log = logging.getLogger(__name__)
 
 
-def _handler(func):
+def _handler(func: Callable[..., int | None]) -> staticmethod:
     """Decorate a command handler"""
 
-    def _wrapped(*a, **k):
+    def _wrapped(*a: object, **k: object) -> int:
         r = func(*a, **k)
         if r is None:
             r = 0
@@ -30,7 +36,10 @@ def _handler(func):
     return staticmethod(_wrapped)
 
 
-def add_subcommands(parser, commands):
+def add_subcommands(
+    parser: ArgumentParser,
+    commands: Iterable[tuple[str, type | CommandGroup]],
+) -> None:
     """Add commands to a parser"""
     subps = parser.add_subparsers()
     for cmd, cls in commands:
@@ -46,7 +55,9 @@ def add_subcommands(parser, commands):
 class CommandGroup:
     """A group of nested subcommands."""
 
-    def __init__(self, commands, help=None):
+    def __init__(
+        self, commands: dict[str, type | CommandGroup], help: str | None = None
+    ) -> None:
         """
         Arguments:
             - commands<dict>: dict of command names to handler classes
@@ -55,10 +66,10 @@ class CommandGroup:
         if help:
             self.__doc__ = help
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser: ArgumentParser) -> None:
         add_subcommands(parser, self.commands.items())
 
-        def _usage(**_):
+        def _usage(**_: object) -> int:
             parser.print_usage()
             return 1
 
@@ -69,7 +80,7 @@ class Get:
     """Get a resource"""
 
     @staticmethod
-    def add_arguments(parser):
+    def add_arguments(parser: ArgumentParser) -> None:
         parser.add_argument("poids", nargs="+", help="Object IDs")
         parser.add_argument(
             "--depth",
@@ -90,7 +101,14 @@ class Get:
         )
 
     @_handler
-    def handle(config, poids, output_format, depth, remote, **_):  # noqa: N805
+    def handle(
+        config: dict[str, Value],
+        poids: list[str],
+        output_format: str,
+        depth: int,
+        remote: bool,
+        **_: object,
+    ) -> int | None:
         client = Client(config)
         for poid in poids:
             (tag, pk) = util.split_ref(poid)
@@ -110,6 +128,7 @@ class Get:
             except TypeError:
                 print(f"Output format not supported: {output_format}", file=sys.stderr)
                 return 1
+        return None
 
 
 class Whois:
@@ -120,13 +139,17 @@ class Whois:
     """
 
     @staticmethod
-    def add_arguments(parser):
+    def add_arguments(parser: ArgumentParser) -> None:
         parser.add_argument(
             "poids", nargs="+", help="Object IDs, or { as<ASN> | ixnets<net ID> }..."
         )
 
     @_handler
-    def handle(config, poids, **_):  # noqa: N805
+    def handle(
+        config: dict[str, Value],
+        poids: list[str],
+        **_: object,
+    ) -> int | None:
         client = Client(config)
         fmt = WhoisFormat()
 
@@ -147,19 +170,24 @@ class Whois:
                 return 1
 
             fmt.display(tag, objs[0])
+        return None
 
 
 class DumpConfig:
     """Output current config"""
 
     @staticmethod
-    def add_arguments(parser):
+    def add_arguments(parser: ArgumentParser) -> None:
         parser.add_argument(
             "--output-format", default="yaml", help="output data format"
         )
 
     @_handler
-    def handle(config, output_format, **_):  # noqa: N805
+    def handle(
+        config: dict[str, Value],
+        output_format: str,
+        **_: object,
+    ) -> None:
         codec = munge.get_codec(output_format)()
         codec.dump(config, sys.stdout)
 
@@ -168,7 +196,7 @@ class PromptConfig:
     """Prompt for configuration values and save to a file"""
 
     @staticmethod
-    def add_arguments(parser):
+    def add_arguments(parser: ArgumentParser) -> None:
         parser.add_argument(
             "--output-format", default="yaml", help="output data format"
         )
@@ -181,13 +209,19 @@ class PromptConfig:
         )
 
     @_handler
-    def handle(config, defaults, config_dir, output_format, **_):  # noqa: N805
+    def handle(
+        config: dict[str, Value],
+        defaults: bool,
+        config_dir: str,
+        output_format: str,
+        **_: object,
+    ) -> None:
         if defaults:
             newconfig = config
             outdir = config_dir
         else:
             newconfig = cfg.prompt_config(cfg.CLIENT_SCHEMA, defaults=config)
-            outdir = util.prompt("Output directory", config_dir)
+            outdir = util.prompt("Output directory", config_dir) or config_dir
         cfg.write_config(newconfig, outdir, codec=output_format)
 
 
@@ -195,7 +229,7 @@ class ListCodecs:
     """List available codecs"""
 
     @_handler
-    def handle(**_):
+    def handle(**_: object) -> None:
         print(" ".join(munge.codec.list_codecs()))
 
 
@@ -203,7 +237,7 @@ class Sync:
     """Synchronize local tables to PeeringDB"""
 
     @staticmethod
-    def add_arguments(parser):
+    def add_arguments(parser: ArgumentParser) -> None:
         parser.add_argument("-v", "--verbose", action="count", help="Be more verbose")
         parser.add_argument("-q", "--quiet", action="count", help="Be more quiet")
         parser.add_argument(
@@ -238,7 +272,14 @@ class Sync:
         )
 
     @_handler
-    def handle(config, verbose, quiet, init, since, **kwargs):  # noqa: N805
+    def handle(
+        config: dict[str, Value],
+        verbose: int | None,
+        quiet: int | None,
+        init: bool,
+        since: int,
+        **kwargs: object,
+    ) -> None:
         rs = resource.all_resources()
         # if only: rs = [resource.get_resource(tag) for tag in only]
 
@@ -254,14 +295,18 @@ class Sync:
         if init:
             return
 
-        if loglvl >= 0:
-            print("Syncing to", config["sync"]["url"])
+        sync_cfg = config.get("sync", {})
+        sync_cfg = sync_cfg if isinstance(sync_cfg, dict) else {}
 
-        if since < 0:
-            since = None
+        if loglvl >= 0:
+            print("Syncing to", sync_cfg.get("url"))
+
+        since_arg: int | None = since
+        if since_arg is not None and since_arg < 0:
+            since_arg = None
 
         # if fetch-private and PDB_SYNC_API_KEY isn't set, warn
-        if kwargs["fetch_private"] and not config["sync"].get("api_key"):
+        if kwargs["fetch_private"] and not sync_cfg.get("api_key"):
             print()
             print(
                 "Warning: api key not set, private data will not be fetched. "
@@ -277,11 +322,16 @@ class Sync:
             _log.info("Retrying previously failed entries...")
             Sync.retry_failed_entries(client, failed_entries)
         try:
-            client.updater.update_all(rs, since, fetch_private=kwargs["fetch_private"])
+            client.updater.update_all(
+                rs, since_arg, fetch_private=bool(kwargs["fetch_private"])
+            )
         except Exception as e:
             _log.info(f"Error during sync : {e}")
 
-    def retry_failed_entries(client, failed_entries):  # noqa: N805
+    @staticmethod
+    def retry_failed_entries(
+        client: Client, failed_entries: list[dict[str, str | int]]
+    ) -> None:
         """Retries entries that failed in previous sync runs.
 
         Args:
@@ -292,8 +342,8 @@ class Sync:
         """
         retried_entries = []
         for entry in failed_entries:
-            resource_tag = entry["resource_tag"]
-            pk = entry["pk"]
+            resource_tag = cast(str, entry["resource_tag"])
+            pk = cast(int, entry["pk"])
             try:
                 _log.info(f"Retrying {resource_tag}-{pk}...")
                 client.updater.update_one(resource.get_resource(resource_tag), pk)
@@ -305,14 +355,17 @@ class Sync:
         for entry in retried_entries:
             failed_entries.remove(entry)
 
-        save_failed_entries(client.config, failed_entries)
+        save_failed_entries(
+            cast("dict[str, Value]", client.config),
+            failed_entries,
+        )
 
 
 class DropTables:
     """Drop all database tables"""
 
     @_handler
-    def handle(config, **_):  # noqa: N805
+    def handle(config: dict[str, Value], **_: object) -> None:
         Client(config)
         backend = peeringdb.get_backend()
         backend.delete_all()
@@ -322,7 +375,7 @@ class Server:
     """Configure Peeringdb Server"""
 
     @staticmethod
-    def add_arguments(parser):
+    def add_arguments(parser: ArgumentParser) -> None:
         parser.add_argument(
             "--setup",
             action="store_true",
@@ -343,7 +396,13 @@ class Server:
         )
 
     @_handler
-    def handle(config, setup, start, stop, **_):  # noqa: N805
+    def handle(
+        config: dict[str, Value],
+        setup: bool,
+        start: bool,
+        stop: bool,
+        **_: object,
+    ) -> None:
         parent_directory = os.path.abspath(os.path.join(os.getcwd()))
         clone_path = os.path.join(parent_directory, "peeringdb_server")
 

@@ -1,9 +1,18 @@
 import logging
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 # import pdb
 
+if TYPE_CHECKING:
+    from django.core.exceptions import ValidationError
 
-def log_validation_errors(backend, e, obj, k):
+    from peeringdb.backend import Interface
+
+
+def log_validation_errors(
+    backend: "Interface", e: "ValidationError", obj: object, k: str
+) -> None:
     log = logging.getLogger("peeringdb.sync")
     log.debug(f"{e} : errors: {e.message_dict}")
     for k, v in e.message_dict.items():
@@ -14,7 +23,7 @@ def log_validation_errors(backend, e, obj, k):
             log.debug(f"{k}: Missing Object, dict: {field.__dict__}")
 
 
-def try_or_debug(f):
+def try_or_debug(f: Callable[[], object]) -> object:
     try:
         return f()
     except Exception:
