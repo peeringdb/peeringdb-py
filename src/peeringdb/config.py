@@ -229,7 +229,8 @@ def write_config(
     outpath = os.path.join(conf_dir, "config." + codec_obj.extensions[0])
     if backup_existing and os.path.exists(outpath):
         os.rename(outpath, outpath + ".bak")
-    codec_obj.dump(data, open(outpath, "w"))
+    with open(outpath, "w") as fobj:
+        codec_obj.dump(data, fobj)
 
 
 def prompt_config(
