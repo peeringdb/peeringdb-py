@@ -79,8 +79,7 @@ def backend_initialized() -> bool:
 def _get() -> tuple["Interface", tuple[str, str]]:
     global __backend
     if __backend:
-        return __backend  # type: ignore[unreachable]
-    # mypy has trouble with global analysis here
+        return __backend
     raise BackendError("Backend not initialized")
 
 

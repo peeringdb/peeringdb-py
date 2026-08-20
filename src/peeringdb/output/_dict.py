@@ -1,3 +1,4 @@
+from collections.abc import Iterator
 from datetime import datetime
 from decimal import Decimal
 from ipaddress import IPv4Address, IPv6Address
@@ -36,7 +37,9 @@ class DictWrap:
             return getattr(value, "id", None)
 
     @staticmethod
-    def _resolve_many(name: str, value: object, depth: int) -> list[dict | int] | None:
+    def _resolve_many(
+        name: str, value: object, depth: int
+    ) -> list[dict[str, object] | int | None] | None:
         if depth > 1:
             all_method = getattr(value, "all", None)
             if all_method:
@@ -67,7 +70,7 @@ class DictWrap:
         else:
             raise ValueError(group)
 
-    def field_values(self):
+    def field_values(self) -> Iterator[tuple[str, object]]:
         for group in self.fields:
             if self.depth == 0 and group == "many_refs":
                 continue
@@ -77,10 +80,10 @@ class DictWrap:
                     value = "None"
                 yield name, value
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, object] | None:
         if self.object is None:
             return None
-        data = {}
+        data: dict[str, object] = {}
         for name, value in self.field_values():
             data[name] = value
         return data

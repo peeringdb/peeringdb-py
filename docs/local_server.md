@@ -37,7 +37,7 @@ Below, we’ll focus on the **`peeringdb-py`** approach, while pulling in import
 
 ## 2. Prerequisites
 
-1. **Python 3.10+** – Required for the `peeringdb-py` CLI.
+1. **Python 3.11+** – Required for the `peeringdb-py` CLI.
 2. **Docker** (and **Docker Compose** if not already included with your Docker install).
 3. **Git** (optional, unless you want to also directly clone or reference PeeringDB’s code).
 
@@ -81,7 +81,9 @@ REAL_PEERINGDB_API_ENDPOINT = "https://www.peeringdb.com/api"
 # local endpoint
 LOCAL_PEERINGDB_API_ENDPOINT = "http://localhost:8000/api"
 
-PEERINGDB_API_ENDPOINT = os.getenv("PEERINGDB_API_ENDPOINT", LOCAL_PEERINGDB_API_ENDPOINT)
+PEERINGDB_API_ENDPOINT = os.getenv(
+    "PEERINGDB_API_ENDPOINT", LOCAL_PEERINGDB_API_ENDPOINT
+)
 ```
 
 If you wish to serve it locally, you can use nginx to reverse proxy the local server to a domain name. This is useful if you have scripts that rely on a domain name to access the API.

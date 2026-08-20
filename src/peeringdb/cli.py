@@ -4,8 +4,9 @@ from argparse import ArgumentParser
 
 import peeringdb
 from peeringdb import commands, config
+from peeringdb._types import Value
 
-COMMANDS = {
+COMMANDS: dict[str, type | commands.CommandGroup] = {
     "get": commands.Get,
     "whois": commands.Whois,
     "sync": commands.Sync,
@@ -22,7 +23,7 @@ COMMANDS = {
 }
 
 
-def check_load_config(config_dir):
+def check_load_config(config_dir: str) -> dict[str, Value]:
     convert = False
     loaded = config.read_config(config_dir) or {}
 
@@ -42,7 +43,7 @@ def check_load_config(config_dir):
     return cfg
 
 
-def main(args=sys.argv):
+def main(args: list[str] = sys.argv) -> int | str | None:
     parser = ArgumentParser()
     parser.add_argument(
         "--version", action="version", version="%(prog)s " + peeringdb.__version__

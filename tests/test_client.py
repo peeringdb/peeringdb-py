@@ -27,3 +27,16 @@ def test_update_all(client):
 def test_type_wrap(client):
     assert client.tags.net.get(NET0)
     assert client.tags.net.all()
+
+
+def test_client_cfg_none_loads_default(client, monkeypatch):
+    monkeypatch.setattr("peeringdb.client.config.load_config", lambda: helper.CONFIG)
+    c = peeringdb.client.Client(cfg=None)
+    assert c.config is helper.CONFIG
+
+
+def test_client_non_dict_sync_falls_back(client):
+    c = peeringdb.client.Client(
+        {"orm": {"backend": "django_peeringdb"}, "sync": "notadict"}
+    )
+    assert c.fetcher.url == ""

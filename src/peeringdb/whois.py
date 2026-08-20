@@ -1,21 +1,28 @@
 import collections.abc
 import sys
+from collections.abc import Iterable
+from typing import TextIO, cast
 
+from peeringdb._types import Value
 from peeringdb.util import pretty_speed
 
 
 class WhoisFormat:
-    def __init__(self, fobj=sys.stdout):
+    def __init__(self, fobj: TextIO = sys.stdout) -> None:
         self.fobj = fobj
 
         self.display_names = {
             "fac_set": "Facilities",
         }
 
-    def mk_fmt(self, *widths):
+    def mk_fmt(self, *widths: int) -> str:
         return "%-" + "s %-".join(map(str, widths)) + "s"
 
-    def mk_set_headers(self, data, columns):
+    def mk_set_headers(
+        self,
+        data: list[dict[str, Value]],
+        columns: Iterable[str],
+    ) -> str:
         """figure out sizes and create header fmt"""
         columns = tuple(columns)
         lens = []
@@ -28,31 +35,36 @@ class WhoisFormat:
         fmt = self.mk_fmt(*lens)
         return fmt
 
-    def _get_name(self, key):
+    def _get_name(self, key: str) -> str:
         """get display name for a key, or mangle for display"""
         if key in self.display_names:
             return self.display_names[key]
 
         return key.capitalize()
 
-    def _get_val(self, data, key):
+    def _get_val(self, data: dict[str, Value], key: str) -> Value:
         """get value from a dict, format if necessary"""
         return data.get(key, "")
 
-    def _get_columns(self, data):
+    def _get_columns(self, data: dict[str, Value]) -> Iterable[str]:
         """get columns from a dict"""
         return data.keys()
 
-    def display_section(self, name):
+    def display_section(self, name: str) -> None:
         self._print(name)
         self._print("=" * len(name))
         self._print("")
 
-    def display_headers(self, fmt, headers):
+    def display_headers(self, fmt: str, headers: tuple[str, ...]) -> None:
         self._print(fmt % headers)
         self._print(fmt % tuple("-" * len(x) for x in headers))
 
-    def display_set(self, typ, data, columns):
+    def display_set(
+        self,
+        typ: str,
+        data: list[dict[str, Value]],
+        columns: Iterable[str],
+    ) -> None:
         """display a list of dicts"""
         self.display_section(f"{self._get_name(typ)} ({len(data)})")
         headers = tuple(map(self._get_name, columns))
@@ -65,17 +77,23 @@ class WhoisFormat:
 
         self._print("\n")
 
-    def display_field(self, fmt, obj, field, display=None):
+    def display_field(
+        self,
+        fmt: str,
+        obj: dict[str, Value],
+        field: str,
+        display: str | None = None,
+    ) -> None:
         if not display:
             display = self._get_name(field)
         self._print(fmt % (display, obj[field]))
 
-    def check_set(self, data, name):
+    def check_set(self, data: dict[str, Value], name: str) -> None:
         if data.get(name, None):
             if hasattr(self, "print_" + name):
                 getattr(self, "print_" + name)(data[name])
 
-    def print_net(self, data):
+    def print_net(self, data: dict[str, Value]) -> None:
         self.display_section("Network Information")
         fmt = "%-21s: %s"
         self.display_field(fmt, data, "name", "Name")
@@ -104,7 +122,7 @@ class WhoisFormat:
         self.check_set(data, "netixlan_set")
         self.check_set(data, "netfac_set")
 
-    def print_poc_set(self, data):
+    def print_poc_set(self, data: list[dict[str, Value]]) -> None:
         self.display_section("Contact Information")
         fmt = self.mk_fmt(6, 20, 15, 20, 14)
         hdr = ("Role", "Name", "Email", "URL", "Phone")
@@ -124,7 +142,7 @@ class WhoisFormat:
 
         self._print("\n")
 
-    def print_netfac_set(self, data):
+    def print_netfac_set(self, data: list[dict[str, Value]]) -> None:
         self.display_section(f"Private Peering Facilities ({len(data)})")
         fmt = self.mk_fmt(51, 8, 15, 2)
         hdr = ("Facility Name", "ASN", "City", "CO")
@@ -141,7 +159,7 @@ class WhoisFormat:
             )
         self._print("\n")
 
-    def print_netixlan_set(self, data):
+    def print_netixlan_set(self, data: list[dict[str, Value]]) -> None:
         self.display_section(f"Public Peering Points ({len(data)})")
         fmt = self.mk_fmt(36, 8, 27, 5)
         hdr = ("Exchange Point", "ASN", "IP Address", "Speed")
@@ -154,7 +172,7 @@ class WhoisFormat:
                         ix.get("name", ix.get("ixlan_id")),
                         ix["asn"],
                         ix["ipaddr4"],
-                        pretty_speed(ix["speed"]),
+                        pretty_speed(cast("int | str", ix["speed"])),
                     )
                 )
             if ix.get("ipaddr6", None):
@@ -167,21 +185,21 @@ class WhoisFormat:
                             ix["name"],
                             ix["asn"],
                             ix["ipaddr6"],
-                            pretty_speed(ix["speed"]),
+                            pretty_speed(cast("int | str", ix["speed"])),
                         )
                     )
         self._print("\n")
 
-    def _print(self, *args):
+    def _print(self, *args: str) -> None:
         """internal print to self.fobj"""
         string = " ".join(args) + "\n"
         self.fobj.write(string)
 
-    def print(self, typ, data):
+    def print(self, typ: str, data: object) -> None:
         """*deprecated* - use display()"""
         return self.display(typ, data)
 
-    def display(self, typ, data):
+    def display(self, typ: str, data: object) -> None:
         """display section of typ with data"""
         if hasattr(self, "print_" + typ):
             getattr(self, "print_" + typ)(data)
@@ -197,7 +215,8 @@ class WhoisFormat:
         elif isinstance(data, (list, tuple)):
             # tabular data layout for lists of dicts
             if isinstance(data[0], collections.abc.Mapping):
-                self.display_set(typ, data, self._get_columns(data[0]))
+                rows = cast("list[dict[str, Value]]", list(data))
+                self.display_set(typ, rows, self._get_columns(rows[0]))
             else:
                 for each in data:
                     self.print(typ, each)

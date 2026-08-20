@@ -2,6 +2,7 @@ import inspect
 from collections.abc import Callable, Sequence
 from functools import wraps
 
+from peeringdb._types import Value
 from peeringdb.resource import RESOURCES_BY_TAG
 
 
@@ -193,9 +194,7 @@ class Interface(Base):
     # decorator on the methods that need it
 
     @reftag_to_cls
-    def create_object(
-        self, concrete: type, **data: str | int | bool | list | dict
-    ) -> object:
+    def create_object(self, concrete: type, **data: Value) -> object:
         """
         should create object from dict and return it
 

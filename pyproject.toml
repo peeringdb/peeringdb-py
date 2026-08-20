@@ -5,7 +5,7 @@ description = "PeeringDB Python client and library"
 readme = "README.md"
 authors = [{ name = "PeeringDB", email = "support@peeringdb.com" }]
 license = { text = "BSD-2-Clause" }
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 keywords = ["peeringdb", "networking", "peering", "internet", "api", "bgp", "asn"]
 
 classifiers = [
@@ -14,7 +14,6 @@ classifiers = [
     "Intended Audience :: System Administrators",
     "Intended Audience :: Telecommunications Industry",
     "License :: OSI Approved :: BSD License",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -43,7 +42,8 @@ dev = [
     "types-requests",
     "types-PyYAML",
     "pre-commit>=2.13",
-    "ruff>=0.1",
+    # Keep in range with the ruff-pre-commit rev in .pre-commit-config.yaml.
+    "ruff>=0.16",
     "markdown>=3",
     "markdown-include>=0.5,<1",
     "mkdocs>=1.2.3",
@@ -66,10 +66,12 @@ issues = "https://github.com/peeringdb/peeringdb-py/issues"
 
 [tool.ruff]
 line-length = 88
-target-version = "py310"
+target-version = "py311"
 
 [tool.ruff.lint]
-extend-select = [
+# `select`, not `extend-select`: this replaces ruff's built-in defaults rather
+# than adding to them, so the rule set stays fixed across ruff releases.
+select = [
     "UP",  # pyupgrade
     "I",   # isort
     "F",   # Pyflakes
@@ -104,55 +106,46 @@ max-complexity = 12
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]  # Allow unused imports in __init__.py
 "tests/**/*" = ["S101"]   # Allow assert statements in tests
+# Command handlers take `config` (not `self`) as their first arg; @_handler
+# turns them into staticmethods, which ruff's N805 check can't see.
+"commands.py" = ["N805"]
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.11"
 warn_return_any = false
 warn_unused_configs = true
-disallow_untyped_defs = false
-disallow_incomplete_defs = false
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
 check_untyped_defs = true
 disallow_untyped_decorators = false
 no_implicit_optional = true
 warn_redundant_casts = true
-warn_unused_ignores = false
+warn_unused_ignores = true
 warn_no_return = true
 warn_unreachable = true
 strict_equality = true
 show_error_codes = true
-# Start with basic type checking, can be made stricter later
 strict = false
 
+# Third-party packages without type information / stubs
 [[tool.mypy.overrides]]
 module = [
     "django.*",
-    "django_peeringdb.*",
     "confu.*",
     "munge.*",
-    "twentyc.*",
-    "yaml.*",
-    "httpx.*"
 ]
 ignore_missing_imports = true
 
-# Allow some dynamic attribute access for these modules that use metaclasses
+# The resource classes are built dynamically by a metaclass (see resource.py) and
+# carry a `tag` attribute mypy can't see; the sync path also reads attributes off
+# concrete Django model instances.
 [[tool.mypy.overrides]]
 module = [
     "peeringdb.backend",
-    "peeringdb.private",
-    "peeringdb._update"
+    "peeringdb._update",
+    "peeringdb.commands",
 ]
 disable_error_code = ["attr-defined"]
-
-# Ignore issues in __init__ (global checks and dynamic imports)
-[[tool.mypy.overrides]]
-module = "peeringdb.__init__"
-disable_error_code = ["unreachable", "import-untyped"]
-
-# Allow complex issues in commands module
-[[tool.mypy.overrides]]
-module = "peeringdb.commands"
-disable_error_code = ["attr-defined", "index", "arg-type"]
 
 
 [build-system]

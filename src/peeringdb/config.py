@@ -11,6 +11,7 @@ from confu import generator
 from confu import schema as _schema
 from munge.util import recursive_update
 
+from peeringdb._types import Value
 from peeringdb.util import prompt
 
 DEFAULT_CONFIG_DIR = "~/.peeringdb"
@@ -118,13 +119,17 @@ class ClientSchema(_schema.Schema):
 CLIENT_SCHEMA = ClientSchema()
 
 
-def default_config(schema=CLIENT_SCHEMA):
+def default_config(
+    schema: _schema.Schema = CLIENT_SCHEMA,
+) -> dict[str, Value]:
     "Get default config values."
     return generator.generate(schema)
     # return confu.config.Config(schema, data=generator.generate(schemas))
 
 
-def read_config(conf_dir=DEFAULT_CONFIG_DIR):
+def read_config(
+    conf_dir: str = DEFAULT_CONFIG_DIR,
+) -> dict[str, Value] | None:
     "Find and read config file for a directory, return None if not found."
 
     conf_path = os.path.expanduser(conf_dir)
@@ -136,7 +141,9 @@ def read_config(conf_dir=DEFAULT_CONFIG_DIR):
     return munge.load_datafile("config", conf_path, default=None)
 
 
-def load_config(conf_dir=DEFAULT_CONFIG_DIR, schema=CLIENT_SCHEMA):
+def load_config(
+    conf_dir: str = DEFAULT_CONFIG_DIR, schema: _schema.Schema = CLIENT_SCHEMA
+) -> dict[str, Value]:
     """
     Load config files from the specified directory, using defaults for missing values.
     Directory should contain a file named config.<ext> where <ext> is a
@@ -172,7 +179,7 @@ class _OldClientSchema(_schema.Schema):
 _OLD_SCHEMA = _OldClientSchema()
 
 
-def detect_old(data):
+def detect_old(data: dict[str, Value] | None) -> bool:
     "Check for a config file with old schema"
     if not data:
         return False
@@ -180,17 +187,30 @@ def detect_old(data):
     return ok and not (errors or warnings)
 
 
-def convert_old(data):
+def convert_old(
+    data: dict[str, Value],
+) -> dict[str, Value]:
     "Convert config data with old schema to new schema"
     ret = default_config()
-    ret["sync"].update(data.get("peeringdb", {}))
-    ret["orm"]["database"].update(data.get("database", {}))
+    sync = ret["sync"]
+    old_peeringdb = data.get("peeringdb", {})
+    if isinstance(sync, dict) and isinstance(old_peeringdb, dict):
+        sync.update(old_peeringdb)
+    orm = ret["orm"]
+    if isinstance(orm, dict):
+        orm_database = orm.get("database", {})
+        old_database = data.get("database", {})
+        if isinstance(orm_database, dict) and isinstance(old_database, dict):
+            orm_database.update(old_database)
     return ret
 
 
 def write_config(
-    data, conf_dir=DEFAULT_CONFIG_DIR, codec="yaml", backup_existing=False
-):
+    data: dict[str, Value],
+    conf_dir: str = DEFAULT_CONFIG_DIR,
+    codec: str = "yaml",
+    backup_existing: bool = False,
+) -> None:
     """
     Write config values to a file.
 
@@ -200,21 +220,24 @@ def write_config(
         - backup_existing<bool>: if a config file exists,
             make a copy before overwriting
     """
-    if not codec:
-        codec = "yaml"
-    codec = munge.get_codec(codec)()
+    codec_obj = munge.get_codec(codec or "yaml")()
     conf_dir = os.path.expanduser(conf_dir)
     if not os.path.exists(conf_dir):
         os.mkdir(conf_dir)
 
     # Check for existing file, back up if necessary
-    outpath = os.path.join(conf_dir, "config." + codec.extensions[0])
+    outpath = os.path.join(conf_dir, "config." + codec_obj.extensions[0])
     if backup_existing and os.path.exists(outpath):
         os.rename(outpath, outpath + ".bak")
-    codec.dump(data, open(outpath, "w"))
+    with open(outpath, "w") as fobj:
+        codec_obj.dump(data, fobj)
 
 
-def prompt_config(sch, defaults=None, path=None):
+def prompt_config(
+    sch: _schema.Schema,
+    defaults: dict[str, Value] | None = None,
+    path: str | None = None,
+) -> dict[str, Value]:
     """
     Utility function to recursively prompt for config values
 
@@ -222,24 +245,35 @@ def prompt_config(sch, defaults=None, path=None):
         - defaults<dict>: default values used for empty inputs
         - path<str>: path to prepend to config keys (eg. "path.keyname")
     """
-    out = {}
+    out: dict[str, Value] = {}
+    if defaults is None:
+        defaults = {}
     for name, attr in sch.attributes():
         fullpath = name
         if path:
             fullpath = f"{path}.{name}"
-        if defaults is None:
-            defaults = {}
         default = defaults.get(name)
         if isinstance(attr, _schema.Schema):
             # recurse on sub-schema
-            value = prompt_config(attr, defaults=default, path=fullpath)
+            sub_defaults = default if isinstance(default, dict) else None
+            out[name] = prompt_config(attr, defaults=sub_defaults, path=fullpath)
         else:
-            if default is None:
-                default = attr.default
-            if default is None:
-                default = ""
-            value = prompt(fullpath, default)
-        out[name] = value
+            resolved: Value
+            if default is not None:
+                resolved = default
+            elif attr.default is not None:
+                resolved = attr.default
+            else:
+                resolved = ""
+            # confu scalar defaults may be str/int/bool/list; prompt() only needs a
+            # display string. An empty answer keeps the raw default (its original
+            # type), which matters for non-str fields (e.g. the "only" list).
+            display_default = resolved if isinstance(resolved, str) else str(resolved)
+            entered = prompt(fullpath, display_default)
+            if entered is None or entered == display_default:
+                out[name] = resolved
+            else:
+                out[name] = entered
 
     return sch.validate(out)
 

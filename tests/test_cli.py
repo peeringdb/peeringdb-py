@@ -1,3 +1,4 @@
+import copy
 import io
 import json
 import re
@@ -10,6 +11,7 @@ import toml
 import yaml
 
 from peeringdb import cli as _cli
+from peeringdb import commands, util
 
 CMD = "peeringdb_test"
 
@@ -162,6 +164,173 @@ def test_verbosity(runcli, client, capsys):
 
     # Verbose output should be longer
     assert len(outq) < len(outv)
+
+
+def test_config_set_defaults(tmp_path):
+    # `config set -n` writes the default config without prompting
+    rc = _cli.main([CMD, "-C", str(tmp_path), "config", "set", "-n"])
+    assert rc == 0
+    assert list(tmp_path.glob("config.*"))
+
+
+def test_config_set_interactive(tmp_path, monkeypatch):
+    # empty answers keep defaults; the output-dir prompt defaults to the config dir
+    monkeypatch.setattr("builtins.input", lambda _prompt: "")
+    rc = _cli.main([CMD, "-C", str(tmp_path), "config", "set"])
+    assert rc == 0
+    assert list(tmp_path.glob("config.*"))
+
+
+def test_sync_init_only(runcli, client):
+    # --init returns before syncing
+    assert runcli("sync", "--init") == 0
+
+
+def test_get_unsupported_output_format(runcli, client, monkeypatch):
+    def _raise(_fmt):
+        raise TypeError
+
+    monkeypatch.setattr("peeringdb.commands.munge.get_codec", _raise)
+    assert runcli("get", NET0) == 1
+
+
+def test_check_load_config_converts_old_schema(tmp_path):
+    old = {
+        "peeringdb": {"url": "https://old.example.com/api", "timeout": 5},
+        "database": {
+            "engine": "sqlite3",
+            "name": "peeringdb.sqlite3",
+            "host": "",
+            "port": 0,
+            "user": "",
+            "password": "",
+        },
+    }
+    (tmp_path / "config.yaml").write_text(yaml.safe_dump(old))
+
+    cfg = _cli.check_load_config(str(tmp_path))
+    assert cfg["sync"]["url"] == "https://old.example.com/api"
+    assert list(tmp_path.glob("*.bak"))  # existing file backed up during conversion
+
+
+def test_server_noop(runcli):
+    # no action flags -> nothing to do, exits cleanly
+    assert runcli("server") == 0
+
+
+def test_server_full_lifecycle(runcli, monkeypatch):
+    calls = []
+    monkeypatch.setattr("subprocess.run", lambda *a, **k: calls.append(a))
+    assert runcli("server", "--setup", "--start", "--stop") == 0
+    # git clone + setup.sh + compose up + compose down
+    assert len(calls) >= 3
+
+
+def test_server_setup_invokes_subprocess(runcli, monkeypatch):
+    calls = []
+    monkeypatch.setattr("subprocess.run", lambda *a, **k: calls.append((a, k)))
+    assert runcli("server", "--setup") == 0
+    assert calls  # git clone + setup.sh were invoked
+
+
+def test_server_start_missing_dir(runcli, monkeypatch, capsys):
+    def _missing(*_a, **_k):
+        raise FileNotFoundError
+
+    monkeypatch.setattr("subprocess.run", _missing)
+    assert runcli("server", "--start") == 0
+    out, _ = capsys.readouterr()
+    assert "directory not found" in out
+
+
+def test_server_stop_missing_dir(runcli, monkeypatch, capsys):
+    def _missing(*_a, **_k):
+        raise FileNotFoundError
+
+    monkeypatch.setattr("subprocess.run", _missing)
+    assert runcli("server", "--stop") == 0
+    out, _ = capsys.readouterr()
+    assert "directory not found" in out
+
+
+def _sync_handle(config, **over):
+    kwargs = dict(
+        config=config, verbose=0, quiet=0, init=False, since=-1, fetch_private=False
+    )
+    kwargs.update(over)
+    return commands.Sync.handle(**kwargs)
+
+
+def test_sync_handle_warns_without_api_key(client, monkeypatch, capsys):
+    monkeypatch.setattr(
+        "peeringdb._update.Updater.update_all", lambda self, *a, **k: None
+    )
+    monkeypatch.setattr("peeringdb.commands.load_failed_entries", lambda config: [])
+
+    rc = _sync_handle(copy.deepcopy(helper.CONFIG), fetch_private=True)
+    assert rc == 0
+    assert "api key not set" in capsys.readouterr().err
+
+
+def test_sync_handle_retries_failed_entries(client, monkeypatch):
+    monkeypatch.setattr(
+        "peeringdb._update.Updater.update_all", lambda self, *a, **k: None
+    )
+    monkeypatch.setattr(
+        "peeringdb.commands.load_failed_entries",
+        lambda config: [{"resource_tag": "net", "pk": 1}],
+    )
+    retried = []
+    monkeypatch.setattr(
+        commands.Sync,
+        "retry_failed_entries",
+        lambda client, entries: retried.append(entries),
+    )
+
+    assert _sync_handle(copy.deepcopy(helper.CONFIG)) == 0
+    assert retried
+
+
+def test_sync_handle_logs_update_error(client, monkeypatch):
+    def _raise(self, *a, **k):
+        raise RuntimeError("boom")
+
+    monkeypatch.setattr("peeringdb._update.Updater.update_all", _raise)
+    monkeypatch.setattr("peeringdb.commands.load_failed_entries", lambda config: [])
+
+    # the sync error is caught and logged, not propagated
+    assert _sync_handle(copy.deepcopy(helper.CONFIG)) == 0
+
+
+def test_sync_retry_failed_entries(client, monkeypatch):
+    # succeeded entries are dropped; still-failing ones are retained
+    calls = []
+
+    def _update_one(res, pk):
+        calls.append(pk)
+        if pk == 2:
+            raise RuntimeError("still failing")
+
+    monkeypatch.setattr(client.updater, "update_one", _update_one)
+    entries = [
+        {"resource_tag": "net", "pk": 1, "error": "x"},
+        {"resource_tag": "net", "pk": 2, "error": "y"},
+    ]
+    commands.Sync.retry_failed_entries(client, entries)
+
+    assert calls == [1, 2]
+    assert entries == [{"resource_tag": "net", "pk": 2, "error": "y"}]
+
+
+def test_client_dump_and_load_roundtrip(client, tmp_path):
+    util.client_dump(client, tmp_path)
+    assert list(tmp_path.glob("*.json"))
+
+    client.backend.delete_all()
+    assert not client.tags.net.all()
+
+    util.client_load(client, tmp_path)
+    assert client.tags.net.all()
 
 
 @patch("time.sleep", return_value=None)

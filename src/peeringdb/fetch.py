@@ -8,6 +8,7 @@ import urllib
 
 import requests
 
+from peeringdb._types import Value
 from peeringdb.private import PRIVATE_OBJECTS
 
 
@@ -37,7 +38,7 @@ class Fetcher:
         """
         self._log: logging.Logger = logging.getLogger(__name__)
 
-        self.resources: dict[str, list[dict[str, str | int | bool | list | dict]]] = {}
+        self.resources: dict[str, list[dict[str, Value]]] = {}
         # normalize to avoid `//` in URL concatenations like f"{self.url}/{endpoint}"
         self.url: str = url.rstrip("/")
         self.timeout: int = timeout or 60
@@ -58,9 +59,7 @@ class Fetcher:
         # used for sync 429 status code (pause and resume)
         self.attempt: int = 0
 
-    def _get(
-        self, endpoint: str, **params: str | int
-    ) -> list[dict[str, str | int | bool | list | dict]]:
+    def _get(self, endpoint: str, **params: str | int) -> list[dict[str, Value]]:
         url = f"{self.url}/{endpoint}"
         url_params = urllib.parse.urlencode(params)
         if url_params:
@@ -175,7 +174,7 @@ class Fetcher:
 
             time.sleep(delay)
 
-    def entries(self, tag: str) -> list[dict[str, str | int | bool | list | dict]]:
+    def entries(self, tag: str) -> list[dict[str, Value]]:
         """
         Get all entries by tag ro load it if we don't already have the resource
         :param tag: Resource tag (i.e. "net")
@@ -187,7 +186,7 @@ class Fetcher:
 
     def get(
         self, tag: str, pk: int, depth: int = 0, force_fetch: bool = False
-    ) -> dict[str, str | int | bool | list | dict]:
+    ) -> dict[str, Value]:
         """
         Get an individual object or attempt to query
         :param tag: Resource tag (i.e. "net")
